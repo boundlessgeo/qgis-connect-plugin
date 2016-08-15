@@ -127,6 +127,8 @@ def initPluginManager(installer, boundlessOnly=False):
     settings = QSettings('Boundless', 'BoundlessConnect')
     repoUrl = settings.value('repoUrl', '', unicode)
 
+    repositories.load()
+
     if installer.statusLabel:
         iface.mainWindow().statusBar().removeWidget(installer.statusLabel)
 

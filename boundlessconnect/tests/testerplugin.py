@@ -38,6 +38,7 @@ from qgis.utils import active_plugins, home_plugin_path, unloadPlugin
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
+from boundlessconnect.gui.connectdialog import ConnectDialog
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils
 
@@ -52,15 +53,9 @@ def functionalTests():
     except:
         return []
 
-    openPluginManagerTest = Test('Verify that Boundless Connect can start Plugin Manager')
-    openPluginManagerTest.addStep('Check that OpenGeo Explorer listed in Plugin Manager as well as plugins from QGIS repository',
-                                prestep=lambda: _openPluginManager(False), isVerifyStep=True)
-    openPluginManagerTest.setIssueUrl("https://issues.boundlessgeo.com:8443/browse/QGIS-325")
-
     openPluginManagerBoundlessOnlyTest = Test('Verify that Boundless Connect can start Plugin Manager only with Boundless plugins')
     openPluginManagerBoundlessOnlyTest.addStep('Check that Plugin manager is open and contains only Boundless plugins',
                                 prestep=lambda: _openPluginManager(True), isVerifyStep=True)
-    openPluginManagerBoundlessOnlyTest.setIssueUrl("https://issues.boundlessgeo.com:8443/browse/QGIS-325")
 
     coreConnectUpdateTest = Test('Test updating core Connect plugin via Plugin Manager')
     coreConnectUpdateTest.addStep('Downgrade installed Connect plugin', lambda: _downgradePlugin('boundlessconnect'))
@@ -68,10 +63,19 @@ def functionalTests():
                                   prestep=lambda: _openPluginManager(True), isVerifyStep=True)
     coreConnectUpdateTest.addStep('Upgrade Connect plugin')
     coreConnectUpdateTest.addStep('Check that Connect plugin updated, loaded from user folder and has latest version', isVerifyStep=True)
-    coreConnectUpdateTest.setIssueUrl("https://issues.boundlessgeo.com:8443/browse/QGIS-602")
     coreConnectUpdateTest.setCleanup(lambda: _restoreVersion('boundlessconnect'))
 
-    return [openPluginManagerTest, openPluginManagerBoundlessOnlyTest, coreConnectUpdateTest]
+    connectTest = Test('Check Connect plugin write repo URL and authid')
+    connectTest.addStep('Accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    connectTest.addStep('Check that Boundless repo added to Plugin Manager',
+                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
+    connectTest.addStep('Enter Connect credentials and accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    connectTest.addStep('Check that Boundless repo added to Plugin Manager and has associated auth config',
+                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
+
+    return [connectTest, openPluginManagerBoundlessOnlyTest, coreConnectUpdateTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
@@ -84,21 +88,21 @@ class BoundlessConnectTests(unittest.TestCase):
             if utils.isBoundlessPlugin(plugins.all()[key]) and plugins.all()[key]['installed']:
                 installedPlugins.append(key)
 
-    def testBoundlessRepoAdded(self):
-        """Test that Boundless repository added to QGIS"""
-        settings = QSettings('Boundless', 'BoundlessConnect')
-        repoUrl = settings.value('repoUrl', '', unicode)
-
-        settings = QSettings()
-        settings.beginGroup(reposGroup)
-        self.assertTrue(boundlessRepoName in settings.childGroups())
-        settings.endGroup()
-
-        settings.beginGroup(reposGroup + '/' + boundlessRepoName)
-        url = settings.value('url', '', unicode)
-        self.assertEqual(url, repoUrl)
-        settings.endGroup()
-
+    #~ def testBoundlessRepoAdded(self):
+        #~ """Test that Boundless repository added to QGIS"""
+        #~ settings = QSettings('Boundless', 'BoundlessConnect')
+        #~ repoUrl = settings.value('repoUrl', '', unicode)
+#~
+        #~ settings = QSettings()
+        #~ settings.beginGroup(reposGroup)
+        #~ self.assertTrue(boundlessRepoName in settings.childGroups())
+        #~ settings.endGroup()
+#~
+        #~ settings.beginGroup(reposGroup + '/' + boundlessRepoName)
+        #~ url = settings.value('url', '', unicode)
+        #~ self.assertEqual(url, repoUrl)
+        #~ settings.endGroup()
+#~
     def testInstallFromZip(self):
         """Test plugin installation from ZIP package"""
         pluginPath = os.path.join(testPath, 'data', 'connecttest.zip')
@@ -136,20 +140,6 @@ class BoundlessConnectTests(unittest.TestCase):
         self.assertTrue('http://dummyurl.com', settings.value('repoUrl', '', unicode))
         settings.setValue('repoUrl', oldRepoUrl)
 
-    def testInstallAll(self):
-        """Test that Connect installs all Boundless plugins"""
-        utils.installAllPlugins()
-
-        total = 0
-        installed = 0
-        for key in plugins.all():
-            if utils.isBoundlessPlugin(plugins.all()[key]):
-                total += 1
-                if plugins.all()[key]['installed']:
-                    installed += 1
-
-        assert (total == installed), 'Number of installed Boundless plugins does not match number of available Boundless plugins'
-
     @classmethod
     def tearDownClass(cls):
         # Remove installed HelloWorld plugin
@@ -174,12 +164,8 @@ def unitTests():
     return _tests
 
 
-def _openPluginManager(boundlessOnly):
+def _openPluginManager(boundlessOnly=False):
     utils.showPluginManager(boundlessOnly)
-
-
-def _installAllPlugins():
-    utils.installAllPlugins()
 
 
 def _downgradePlugin(pluginName, corePlugin=True):
@@ -212,11 +198,16 @@ def _restoreVersion(pluginName, corePlugin=True):
 
     originalVersion = None
 
+def _startConectPlugin():
+    dlg = ConnectDialog()
+    dlg.exec_()
+
 
 def suite():
     suite = unittest.TestSuite()
     suite.addTests(unittest.makeSuite(BoundlessConnectTests, 'test'))
     return suite
+
 
 def run_tests():
     unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite())
