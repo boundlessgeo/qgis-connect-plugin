@@ -13,7 +13,7 @@ icon=icons/connect.svg
 
 tags=plugins,boundless
 
-homepage=https://github.com/boundlessgeo/qgis-connect-plugin
+homepage=http://boundlessgeo.github.io/qgis-plugins-documentation/connect/
 tracker=https://github.com/boundlessgeo/qgis-connect-plugin/issues
 repository=https://github.com/boundlessgeo/qgis-connect-plugin
 
