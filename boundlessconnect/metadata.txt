@@ -1,17 +1,17 @@
 [general]
 name=Boundless Connect
-description=Access Boundless services and plugins
-about=Get latest news, tutorials and other cool stuff from Boundless
+description=Browse and work with curated Boundless tools and content from the Desktop
+about=Boundless Connect is the access point for everything Boundless: plugins, tutorials, forums, documentation, and more. Discover the Boundless Connect ecosystem without leaving QGIS.
 category=Plugins
-version=1.1.0
+version=1.0.0
 qgisMinimumVersion=2.8
 
-author=Alexander Bruy
-email=abruy@boundlessgeo.com
+author=Boundless
+email=info@boundlessgeo.com
 
 icon=icons/connect.svg
 
-tags=plugins,boundless
+tags=boundless,connect,help
 
 homepage=https://connect.boundlessgeo.com/docs/desktop/plugins/connect/
 tracker=https://github.com/boundlessgeo/qgis-connect-plugin/issues
