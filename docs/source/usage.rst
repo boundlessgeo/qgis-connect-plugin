@@ -3,10 +3,10 @@ Usage
 
 .. _connect-tool:
 
-Boundless Connect tool
-----------------------
+Boundless Connect Login
+-----------------------
 
-The aim of the *Boundless Connect* tool is to help the user to setup the
+The aim of the *Boundless Connect Login* tool is to help the user to setup the
 `Boundless QGIS Plugin Repository <http://qgis.boundlessgeo.com>`_ and install
 additional plugins, both Boundless and 3rd party ones (depending on what have
 been configured by the system administrator).
@@ -23,7 +23,7 @@ the |connect_plugin| activated or whenever this plugin is updated.
 
    If at the time, you don't want to enter your credentials and install plugins,
    you can safely close it. While the tool starts automatically only once, you can
-   open it at any time from the :menuselection:`Plugins --> Boundless Connect`
+   open it at any time from the :menuselection:`Plugins --> Boundless Connect Login`
    menu item.
 
 If your organization works with the remote *Boundless QGIS Plugin Repository*,
