@@ -6,10 +6,10 @@ category=Plugins
 version=1.0.0
 qgisMinimumVersion=2.8
 
-author=Boundless
+author=Boundless (Alexander Bruy)
 email=info@boundlessgeo.com
 
-icon=icons/connect.svg
+icon=icons/desktop.png
 
 tags=boundless,connect,help
 
