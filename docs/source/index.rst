@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Boundless Connect QGIS Plugin Documentation
-===========================================
+Boundless Connect QGIS Documentation
+====================================
 
 The main goal of |connect_plugin| is to help users setting up Boundless Plugin
 Repository and make it easier for them install plugins and their components.
