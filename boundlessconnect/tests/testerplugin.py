@@ -57,14 +57,6 @@ def functionalTests():
     openPluginManagerBoundlessOnlyTest.addStep('Check that Plugin manager is open and contains only Boundless plugins',
                                 prestep=lambda: _openPluginManager(True), isVerifyStep=True)
 
-    coreConnectUpdateTest = Test('Test updating core Connect plugin via Plugin Manager')
-    coreConnectUpdateTest.addStep('Downgrade installed Connect plugin', lambda: _downgradePlugin('boundlessconnect'))
-    coreConnectUpdateTest.addStep('Check that Connect plugin is upgradable',
-                                  prestep=lambda: _openPluginManager(True), isVerifyStep=True)
-    coreConnectUpdateTest.addStep('Upgrade Connect plugin')
-    coreConnectUpdateTest.addStep('Check that Connect plugin updated, loaded from user folder and has latest version', isVerifyStep=True)
-    coreConnectUpdateTest.setCleanup(lambda: _restoreVersion('boundlessconnect'))
-
     connectTest = Test('Check Connect plugin write repo URL and authid')
     connectTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
@@ -75,7 +67,7 @@ def functionalTests():
     connectTest.addStep('Check that Boundless repo added to Plugin Manager and has associated auth config',
                         prestep=lambda: _openPluginManager(False), isVerifyStep=True)
 
-    return [connectTest, openPluginManagerBoundlessOnlyTest, coreConnectUpdateTest]
+    return [connectTest, openPluginManagerBoundlessOnlyTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
@@ -88,21 +80,6 @@ class BoundlessConnectTests(unittest.TestCase):
             if utils.isBoundlessPlugin(plugins.all()[key]) and plugins.all()[key]['installed']:
                 installedPlugins.append(key)
 
-    #~ def testBoundlessRepoAdded(self):
-        #~ """Test that Boundless repository added to QGIS"""
-        #~ settings = QSettings('Boundless', 'BoundlessConnect')
-        #~ repoUrl = settings.value('repoUrl', '', unicode)
-#~
-        #~ settings = QSettings()
-        #~ settings.beginGroup(reposGroup)
-        #~ self.assertTrue(boundlessRepoName in settings.childGroups())
-        #~ settings.endGroup()
-#~
-        #~ settings.beginGroup(reposGroup + '/' + boundlessRepoName)
-        #~ url = settings.value('url', '', unicode)
-        #~ self.assertEqual(url, repoUrl)
-        #~ settings.endGroup()
-#~
     def testInstallFromZip(self):
         """Test plugin installation from ZIP package"""
         pluginPath = os.path.join(testPath, 'data', 'connecttest.zip')
@@ -197,6 +174,7 @@ def _restoreVersion(pluginName, corePlugin=True):
         cfg.write(f)
 
     originalVersion = None
+
 
 def _startConectPlugin():
     dlg = ConnectDialog()
