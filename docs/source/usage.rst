@@ -45,7 +45,7 @@ in QGIS's authentication database.
    .. figure:: img/add-master-password.png
       :align: center
 
-   Setting QGIS master authentication password
+      Setting QGIS master authentication password
 
    If you already have a master password, you will be asked to enter it to be able unlock
    QGIS's authentication database and save your *Boundless Connect* credentials in it.
@@ -53,7 +53,7 @@ in QGIS's authentication database.
    .. figure:: img/enter-master-password.png
       :align: center
 
-   Entering QGIS master authentication password
+      Entering QGIS master authentication password
 
 If the |connect_plugin| was configured to use a local directory-based
 repository (check this with your system administrator), you can leave
@@ -62,6 +62,12 @@ to continue. (In this case you won't be asked for a master password.)
 
 After entering the *Boundless Connect* credentials, the QGIS *Plugin Manager* will
 open only with Boundless plugins available. This makes it easier to find and install them.
+
+   .. figure:: img/install-plugins.png
+      :align: center
+
+      Not installed Boundless plugins in plugin manager
+
 
 .. note::
 
