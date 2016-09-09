@@ -72,7 +72,7 @@ def addBoundlessRepository():
     repoUrl = settings.value('repoUrl', '', unicode)
 
     if repoUrl == '':
-        setRepositoryUrl()
+        repoUrl = setRepositoryUrl()
 
     if isRepositoryInDirectory():
         return
@@ -368,6 +368,7 @@ def setRepositoryUrl():
 
     settings = QSettings('Boundless', 'BoundlessConnect')
     settings.setValue('repoUrl', url)
+    return url
 
 
 def upgradeConnect():
