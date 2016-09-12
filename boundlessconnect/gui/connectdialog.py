@@ -25,6 +25,7 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 __revision__ = '$Format:%H$'
 
 import os
+import base64
 
 from PyQt4 import uic
 from PyQt4.QtCore import QUrl, QSettings
@@ -34,13 +35,14 @@ from PyQt4.QtGui import (QDialog,
                          QDialogButtonBox,
                          QMessageBox
                         )
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply, QNetworkAccessManager
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
 
 from pyplugin_installer.installer_data import reposGroup
 
 from boundlessconnect import utils
-from boundlessconnect.plugins import boundlessRepoName
+from boundlessconnect.plugins import boundlessRepoName, authEndpointUrl
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
@@ -84,6 +86,32 @@ class ConnectDialog(BASE, WIDGET):
             QDialog.accept(self)
             return
 
+        self.request = QNetworkRequest(QUrl(authEndpointUrl))
+        httpAuth = base64.encodestring('{}:{}'.format(self.leLogin.text(), self.lePassword.text()))[:-1]
+        self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
+        self.manager = QNetworkAccessManager()
+        self.reply = self.manager.get(self.request)
+        self.reply.finished.connect(self.requestFinished)
+
+    def requestFinished(self):
+        reply = self.sender()
+        if reply.error() != QNetworkReply.NoError:
+            if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
+                msg = self.tr('Seems you credentials are invalid. Do you want '
+                              'to save them anyway?')
+            else:
+                msg = self.tr('An error occured when validating your '
+                              'credentials. Server responded:\n{}.\n'
+                              'Do you want to save them anyway?'.format(reply.errorString()))
+            ret = QMessageBox.warning(self, self.tr('Error!'), msg,
+                                      QMessageBox.Yes | QMessageBox.No,
+                                      QMessageBox.No)
+            if ret == QMessageBox.Yes:
+                self.saveOrUpdateAuthId()
+        else:
+            self.saveOrUpdateAuthId()
+
+    def saveOrUpdateAuthId(self):
         if self.authId == '':
             authConfig = QgsAuthMethodConfig('Basic')
             authId = QgsAuthManager.instance().uniqueConfigId()
@@ -96,6 +124,7 @@ class ConnectDialog(BASE, WIDGET):
             authConfig.setUri(settings.value('repoUrl', '', unicode))
 
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
+                print 'Setting AUTH'
                 utils.setRepositoryAuth(authId)
             else:
                 QMessageBox.information(self, self.tr('Error!'), self.tr('Unable to save credentials'))

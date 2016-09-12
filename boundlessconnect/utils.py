@@ -97,11 +97,14 @@ def setRepositoryAuth(authConfigId):
     settings = QSettings('Boundless', 'BoundlessConnect')
     repoUrl = settings.value('repoUrl', '', unicode)
 
+    print 'Found repo in Connect settings', repoUrl
+
     settings = QSettings()
     settings.beginGroup(reposGroup)
     for repo in settings.childGroups():
         url = settings.value(repo + '/url', '', unicode)
         if url == repoUrl:
+            print 'Found BOUNDLESS repo. Updating auth'
             settings.setValue(repo + '/authcfg', authConfigId)
     settings.endGroup()
 
@@ -134,7 +137,7 @@ def initPluginManager(installer, boundlessOnly=False):
 
     # Load plugins from remote repositories and export repositories
     # to Plugin Manager
-    installer.fetchAvailablePlugins(False)
+    installer.fetchAvailablePlugins(True)
     installer.exportRepositoriesToManager()
 
     # If Boundless repository is a local directory, add plugins

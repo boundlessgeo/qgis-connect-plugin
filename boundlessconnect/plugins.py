@@ -49,6 +49,7 @@ pluginPath = os.path.dirname(__file__)
 boundlessRepoName = QCoreApplication.translate('Boundless Connect',
                                                'Boundless Plugin Repository')
 defaultRepoUrl = 'https://qgis.boundlessgeo.com/plugins.xml'
+authEndpointUrl = 'https://qgis.boundlessgeo.com/api/user_roles'
 
 repoUrlFile = 'repoUrl.txt'
 firstRunPluginsPath = 'first-run-plugins'

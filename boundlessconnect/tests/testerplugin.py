@@ -57,17 +57,25 @@ def functionalTests():
     openPluginManagerBoundlessOnlyTest.addStep('Check that Plugin manager is open and contains only Boundless plugins',
                                 prestep=lambda: _openPluginManager(True), isVerifyStep=True)
 
+    invalidCredentialsTest = Test('Check Connect plugin recognize invalid credentials')
+    invalidCredentialsTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button. '
+                                   'Check that Connect shows error message complaining about invalid credentials.'
+                                   'Close error message by pressing "No" button.',
+                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    invalidCredentialsTest.addStep('Check that Boundless repo added to Plugin Manager and has no auth config associated with it',
+                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
+
     connectTest = Test('Check Connect plugin write repo URL and authid')
     connectTest.addStep('Accept dialog by pressing "Login" button',
-                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-    connectTest.addStep('Check that Boundless repo added to Plugin Manager',
+                        prestep=lambda: _startConectPlugin())
+    connectTest.addStep('Check that Boundless repo added to Plugin Manager and has no auth config associated with it',
                         prestep=lambda: _openPluginManager(False), isVerifyStep=True)
-    connectTest.addStep('Enter Connect credentials and accept dialog by pressing "Login" button',
-                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+    connectTest.addStep('Enter valid Connect credentials and accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin())
     connectTest.addStep('Check that Boundless repo added to Plugin Manager and has associated auth config',
                         prestep=lambda: _openPluginManager(False), isVerifyStep=True)
 
-    return [connectTest, openPluginManagerBoundlessOnlyTest]
+    return [connectTest, invalidCredentialsTest, openPluginManagerBoundlessOnlyTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
