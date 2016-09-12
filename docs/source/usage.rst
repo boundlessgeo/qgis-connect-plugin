@@ -40,7 +40,7 @@ in QGIS's authentication database.
    The *master password* is used to protect all your credentials inside QGIS,
    for example, usernames and passwords for connecting to spatial databases. Choose
    your master password wisely and make sure you memorize it, as **the master
-   password is not retrievable**. Press :guilabel:`OK`to complete the process.
+   password is not retrievable**. Press :guilabel:`OK` to complete the process.
 
    .. figure:: img/add-master-password.png
       :align: center
@@ -63,10 +63,10 @@ to continue. (In this case you won't be asked for a master password.)
 After entering the *Boundless Connect* credentials, the QGIS *Plugin Manager* will
 open only with Boundless plugins available. This makes it easier to find and install them.
 
-   .. figure:: img/install-plugins.png
-      :align: center
+.. figure:: img/install-plugins.png
+   :align: center
 
-      Not installed Boundless plugins in plugin manager
+   Not installed Boundless plugins in plugin manager
 
 
 .. note::
