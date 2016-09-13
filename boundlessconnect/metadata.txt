@@ -1,7 +1,7 @@
 [general]
 name=Boundless Connect
 description=Browse and work with curated Boundless tools and content from the Desktop
-about=Boundless Connect is the access point for everything Boundless: plugins, tutorials, forums, documentation, and more. Discover the Boundless Connect ecosystem without leaving QGIS.
+about=<p>Boundless Connect is the access point for everything Boundless: plugins, tutorials, forums, documentation, and more. Discover the Boundless Connect ecosystem without leaving QGIS.</p><p>This plugin is available for all registered Boundless Desktop users.</p>
 category=Plugins
 version=1.0.0
 qgisMinimumVersion=2.8
