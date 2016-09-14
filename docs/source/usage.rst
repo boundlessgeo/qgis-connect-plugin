@@ -31,8 +31,9 @@ you  will need to enter `Boundless Connect <https://connect.boundlessgeo.com/>`_
 credentials in the :guilabel:`email` and :guilabel:`password` fields, and press
 :guilabel:`OK` to have access to the repository.
 
-After pressing the :guilabel:`OK` button, |connect_plugin| will save your credentials
-in QGIS's authentication database.
+After pressing the :guilabel:`OK` button, |connect_plugin| will try to validate
+your credentials by querying Boundless Connect portal. If your credentials are
+valid it will save them in QGIS's authentication database.
 
 .. note::
 
@@ -54,6 +55,26 @@ in QGIS's authentication database.
       :align: center
 
       Entering QGIS master authentication password
+
+If credentials are invalid (e.g. unknown login or wrong password), you will see
+a message, asking you what to do
+
+   .. figure:: img/invalid-credentials.png
+      :align: center
+
+      Message about invalid credentials
+
+You have two options here:
+
+# press :guilabel:`No` button to enter valid credential and try again
+# press :guilabel:`Yes` button to use invalid credentials
+
+.. note::
+
+   Even with invalid credentials you will be able to see lust of plugins
+   available in the Boundless Plugins repository. Also you will be able
+   to download plugins which does not require authentication. But if you
+   try to download protected plugins, you will be asked for valid credential.
 
 If the |connect_plugin| was configured to use a local directory-based
 repository (check this with your system administrator), you can leave
