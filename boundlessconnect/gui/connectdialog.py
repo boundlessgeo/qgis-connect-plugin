@@ -97,7 +97,7 @@ class ConnectDialog(BASE, WIDGET):
         reply = self.sender()
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
-                msg = self.tr('Seems you credentials are invalid. Do you want '
+                msg = self.tr('Your credentials seem invalid. Do you want '
                               'to save them anyway?')
             else:
                 msg = self.tr('An error occured when validating your '
