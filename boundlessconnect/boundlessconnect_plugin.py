@@ -37,7 +37,6 @@ from PyQt4.QtGui import (QMessageBox,
                          QFileDialog,
                          QPushButton)
 
-from qgis.core import QGis
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from pyplugin_installer.installer_data import (repositories,

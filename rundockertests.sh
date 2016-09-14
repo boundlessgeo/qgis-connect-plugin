@@ -9,8 +9,8 @@ docker rm -f qgis-testing-environment
 
 # replace latest with master if you wish to test on master, latest is
 # latest supported Boundless release
-docker pull elpaso/qgis-testing-environment:latest
-docker tag elpaso/qgis-testing-environment:latest qgis-testing-environment
+docker pull elpaso/qgis-testing-environment:master
+docker tag elpaso/qgis-testing-environment:master qgis-testing-environment
 
 docker run -d  --name qgis-testing-environment  -e DISPLAY=:99 -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`:/tests_directory qgis-testing-environment
 
@@ -18,6 +18,7 @@ docker run -d  --name qgis-testing-environment  -e DISPLAY=:99 -v /tmp/.X11-unix
 docker exec -it qgis-testing-environment sh -c "qgis_setup.sh $PLUGIN_NAME"
 
 # Install the plugin
+docker exec -it qgis-testing-environment sh -c "easy_install --upgrade pip"
 docker exec -it qgis-testing-environment sh -c "pip install paver"
 docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup"
 docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.qgis2/python/plugins/"

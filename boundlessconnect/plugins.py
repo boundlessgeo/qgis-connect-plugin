@@ -34,7 +34,11 @@ from PyQt4.QtCore import (QCoreApplication,
                           QSettings)
 from PyQt4.QtXml import QDomDocument
 
-from qgis.core import QGis
+try:
+    from qgis.core import QGis
+except ImportError:
+    from qgis.core import Qgis as QGis
+    
 import qgis.utils
 
 from pyplugin_installer.installer_data import (settingsGroup,
