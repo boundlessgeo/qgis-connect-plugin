@@ -11,7 +11,7 @@ The aim of the *Boundless Connect Login* tool is to help the user to setup the
 additional plugins, both Boundless and 3rd party ones (depending on what have
 been configured by the system administrator).
 
-The tool will run automatically when QGIS is started for the first time with
+The tool will automatically run when QGIS is started for the first time with
 the |connect_plugin| activated or whenever this plugin is updated.
 
 .. figure:: img/connect-tool.png
@@ -32,8 +32,9 @@ credentials in the :guilabel:`email` and :guilabel:`password` fields, and press
 :guilabel:`OK` to have access to the repository.
 
 After pressing the :guilabel:`OK` button, |connect_plugin| will try to validate
-your credentials by querying Boundless Connect portal. If your credentials are
-valid it will save them in QGIS's authentication database.
+your credentials in Boundless Connect portal (internet
+connection is needed). If the credentials are valid, it will save them in QGIS's
+authentication database.
 
 .. note::
 
@@ -48,7 +49,7 @@ valid it will save them in QGIS's authentication database.
 
       Setting QGIS master authentication password
 
-   If you already have a master password, you will be asked to enter it to be able unlock
+   If you already have a master password, you will be asked to enter it to be able to unlock
    QGIS's authentication database and save your *Boundless Connect* credentials in it.
 
    .. figure:: img/enter-master-password.png
@@ -56,25 +57,23 @@ valid it will save them in QGIS's authentication database.
 
       Entering QGIS master authentication password
 
-If credentials are invalid (e.g. unknown login or wrong password), you will see
-a message, asking you what to do
+If the credentials are invalid (unknown email or wrong password), you will see
+a message dialog, asking you what to do.
 
-   .. figure:: img/invalid-credentials.png
-      :align: center
+* Press :guilabel:`No` to enter valid credentials and try again
+* Press :guilabel:`Yes` to use/save the invalid credentials
 
-      Message about invalid credentials
+.. figure:: img/invalid-credentials.png
+   :align: center
 
-You have two options here:
-
-# press :guilabel:`No` button to enter valid credential and try again
-# press :guilabel:`Yes` button to use invalid credentials
+   Message about invalid credentials
 
 .. note::
 
-   Even with invalid credentials you will be able to see lust of plugins
-   available in the Boundless Plugins repository. Also you will be able
-   to download plugins which does not require authentication. But if you
-   try to download protected plugins, you will be asked for valid credential.
+   Even with invalid credentials, you will be able to see a list available plugins
+   in the Boundless Plugins repository. Also, you will be able
+   to download plugins that don't require authentication. But, if you
+   try to download protected plugins, you will be asked for valid credentials.
 
 If the |connect_plugin| was configured to use a local directory-based
 repository (check this with your system administrator), you can leave
