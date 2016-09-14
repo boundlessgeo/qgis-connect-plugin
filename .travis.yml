@@ -34,3 +34,6 @@ install:
 script:
     # Run the unit tests
     - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.testerplugin.run_tests"
+notifications:
+  slack:
+    secure: baDd8yfaSifW04GxsYAXRtlIxz8zMd8Eb8dENVWSV+jrx0Z0d+GVFRKO0nnsSnDAw8XZgxNbUz9N+t2j6YE8Sz++U5bjCtam4vPBgNeAvu4NjfkhlH1sTTE2nGA1vvyvGNr2Z/YosPY/8weeRqnaYoOdEI1k/sTkbbiKvzEgW+FL9U9lA2xC/b9r+LycDHSjH9UMzNp7hzjFwJlQPO3jo1tXOHLy2VFfuRAxf8MrQS0aM3DggGKneo9bfJV6aBoMyWsKE/P2bTgHxbk3SvlycSEUVUhH4bqfO2tLl2M2NQVcmRzzlZoGp+EEzBCVzVZm/yjQqpKFt/+aLtHjeYvuXD+zaxZMZ+R+YriuXbrjvWPpx1VAOuo3DAce9KB80QyEy/lBtkvQUrDC7tajVB7wT/A3Jbh1UXTZJ91mp4PRaPwcZAD+ZsU/kke1Y5OsTpZjjCyXrsOmhE0MrBllK6M+fWHwlfRV7+8c9We5mfhKQ5blF1gnWaB1cHcqO7xK1IEj2aTcBfCkVepJFlsdfx6wbM2IPdGed1jukAOfh36EGP61qUhcHFqaRmpp3qQjx2JdRXSMaG+itEn6Kmfs0O3hMgDipS6QLiMHqeJV00eMEHDzh9kpO1yPbtN0kPmcWQ4tEjcBSdqZ2XOo4badZacd61+TONlgKn9E+lx87CGVUdU=
