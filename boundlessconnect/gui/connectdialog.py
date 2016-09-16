@@ -144,7 +144,7 @@ class ConnectDialog(BASE, WIDGET):
             proxyHost = settings.value('proxy/proxyHost', '')
             proxyPort = settings.value('proxy/proxyPort', 0, type=int)
             proxyUser = settings.value('proxy/proxyUser', '')
-            proxyPassword = settings.value('proxy/proxyPassword', ')
+            proxyPassword = settings.value('proxy/proxyPassword', '')
             proxyTypeString = settings.value('proxy/proxyType', '')
 
             if proxyTypeString == 'DefaultProxy':
