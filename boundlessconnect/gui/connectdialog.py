@@ -90,6 +90,7 @@ class ConnectDialog(BASE, WIDGET):
         httpAuth = base64.encodestring('{}:{}'.format(self.leLogin.text(), self.lePassword.text()))[:-1]
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         self.manager = QNetworkAccessManager()
+        self.setProxy()
         self.reply = self.manager.get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
@@ -124,7 +125,6 @@ class ConnectDialog(BASE, WIDGET):
             authConfig.setUri(settings.value('repoUrl', '', unicode))
 
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
-                print 'Setting AUTH'
                 utils.setRepositoryAuth(authId)
             else:
                 QMessageBox.information(self, self.tr('Error!'), self.tr('Unable to save credentials'))
@@ -136,6 +136,36 @@ class ConnectDialog(BASE, WIDGET):
             QgsAuthManager.instance().updateAuthenticationConfig(authConfig)
 
         QDialog.accept(self)
+
+    def setProxy(self):
+        proxy = None
+        settings = QSettings()
+        if settings.value('proxy/proxyEnabled', False):
+            proxyHost = settings.value('proxy/proxyHost', '')
+            proxyPort = settings.value('proxy/proxyPort', 0, type=int)
+            proxyUser = settings.value('proxy/proxyUser', '')
+            proxyPassword = settings.value('proxy/proxyPassword', ')
+            proxyTypeString = settings.value('proxy/proxyType', '')
+
+            if proxyTypeString == 'DefaultProxy':
+                QNetworkProxyFactory.setUseSystemConfiguration(True)
+                proxies = QNetworkProxyFactory.systemProxyForQuery()
+                if len(proxies) > 0:
+                    proxy = proxies[0]
+            else:
+                proxyType = QNetworkProxy.DefaultProxy
+                if proxyTypeString == 'Socks5Proxy':
+                    proxyType = QNetworkProxy.Socks5Proxy
+                elif proxyTypeString == 'HttpProxy':
+                    proxyType = QNetworkProxy.HttpProxy
+                elif proxyTypeString == 'HttpCachingProxy':
+                    proxyType = QNetworkProxy.HttpCachingProxy
+                elif proxyTypeString == 'FtpCachingProxy':
+                    proxyType = QNetworkProxy.FtpCachingProxy
+
+                proxy = QNetworkProxy(proxyType, proxyHost, proxyPort,
+                                      proxyUser, proxyPassword)
+            self.manager.setProxy(proxy)
 
     def reject(self):
         QDialog.reject(self)
