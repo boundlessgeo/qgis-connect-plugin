@@ -10,7 +10,7 @@ The main goal of |connect_plugin| is to help users setting up Boundless Plugin
 Repository and make it easier for them install plugins and their components.
 The current version provides:
 
-* Connect Wizard for post-installation QGIS setup
+* Boundless Connect Login
 * Support for local directory-based plugins repository
 * Automated way of installing additional non-Boundless plugins
 * Ability to install QGIS plugins from local ZIP packages
