@@ -56,3 +56,4 @@ ext-libs
 ext-src
 boundlessconnect.zip
 help
+travis_secrets.tar.gz
