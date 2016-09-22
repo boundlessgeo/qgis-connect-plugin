@@ -4,13 +4,15 @@
 xhost +
 
 PLUGIN_NAME="boundlessconnect"
+# One of master_2, master, release
+TARGET_VERSION=master_2
 
 docker rm -f qgis-testing-environment
 
 # replace latest with master if you wish to test on master, latest is
 # latest supported Boundless release
-docker pull elpaso/qgis-testing-environment:master
-docker tag elpaso/qgis-testing-environment:master qgis-testing-environment
+docker pull elpaso/qgis-testing-environment:$TARGET_VERSION
+docker tag elpaso/qgis-testing-environment:$TARGET_VERSION qgis-testing-environment
 
 docker run -d  --name qgis-testing-environment  -e DISPLAY=:99 -v /tmp/.X11-unix:/tmp/.X11-unix -v `pwd`:/tests_directory qgis-testing-environment
 
@@ -27,7 +29,7 @@ docker exec -it qgis-testing-environment sh -c "ln -s /tests_directory/$PLUGIN_N
 # Disable first run wizard
 PLUGIN_VERSION=`grep version $PLUGIN_NAME/metadata.txt | perl -npe 's/[^\d-]//g'`
 docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.config/Boundless; printf \"[General]\n\" >> /root/.config/Boundless/BoundlessConnect.conf"
-docker exec -it qgis-testing-environment sh -c "printf  \"firstRun${PLUGIN_VERSION}=false\n\n\" >> /root/.config/Boundless/BoundlessConnect.conf"
+docker exec -it qgis-testing-environment sh -c "printf  \"firstRun${PLUGIN_VERSION}=false\nfirstRun=false\n\n\" >> /root/.config/Boundless/BoundlessConnect.conf"
 
 
 # run the tests
