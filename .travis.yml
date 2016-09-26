@@ -48,4 +48,5 @@ after_success:
 - echo "Uploading ${RELEASE_ZIPNAME} to QGIS Dev..."
 - scp ${PLUGIN_NAME}.zip qgisrepoguest:${UPLOADS}/${RELEASE_ZIPNAME}
 - export GIT_REV=$(git rev-parse --short HEAD)
-- ssh qgisrepoguest "${UPDATER} update --dev --role DesktopPartner,DesktopDeveloper --git-hash ${GIT_REV} ${RELEASE_ZIPNAME}"
+# No roles on this plugin, everybody should be able to download it (auth lock out)
+- ssh qgisrepoguest "${UPDATER} update --dev --git-hash ${GIT_REV} ${RELEASE_ZIPNAME}"
