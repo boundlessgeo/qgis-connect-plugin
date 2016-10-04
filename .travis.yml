@@ -36,17 +36,20 @@ notifications:
   slack:
     secure: MlYINsDyh7j3hRwU4hwhgZzO6C4aTGrvfUtYcPxncSTlNrNcwzU+veeDTx0uA31AH3ljZX+T4qMCJ0Oto5jwSqQ8ABfo3hOr+qOHHLgjO6An0Oa4IpKbRMRRehrzofAmJ9z2cybeXwi5dQMPkaMD2PJ4NuGsjMBmESM6n9ufiP1pjnKpJj8nNhe96UJsy+0xi8NnRSlY1VzIj3vrYG4wn7D5sxOSFCct5Ol1Z0POa//IeDHdz6M5UAExslJQ5n/veTiv6LY4zy2+L6L4IGxTxsXWr3gu2BVJEgH7M1X3b9nq7OLYkGNesQzGPmcweeJyXL/QF6qQUQE1O+CCw4e10dbJ0UZuOBh1aQnyuXn+DJNVzt9MfgZmHDbOH9BsRydi/obXc34sRUYp4j6BdeQ7Us15nZ4gJQSbmUfyPy45QoMQfYZNU/4eznD3/0sFk3F8dQVVi+q01bWWPpJ+blILRb/euc38/NYlomZ8BEUFTfXn7JdnPajfiFMFHc2k+guxeWc+JLCfTii3YtwSEdC8fYxazUBSrnahM6YqboFvax3Z3wJaziSytCB7cQIS1jT/SE2K8RUscMYhMdRRleM1Evss4fXJIoji+dPbQQkFAwAsgDDNlbePqNBytJPwLskCCbi2Ic52I53ZFLOaqh5y9KWUj5v5Z//wwxq1ec5AGX0=
 after_success:
-- mkdir /home/travis/.ssh/
-- chmod 700 /home/travis/.ssh/
-- openssl aes-256-cbc -K $encrypted_4eeb1b79489f_key -iv $encrypted_4eeb1b79489f_iv -in travis_secrets.tar.gz.enc -out travis_secrets.tar.gz -d
-- tar xzvf travis_secrets.tar.gz
-- mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest
-- mv ssh_config /home/travis/.ssh/config
-- chmod 600 /home/travis/.ssh/id_rsa.qgisrepoguest
-- chmod 600 /home/travis/.ssh/config
-- export RELEASE_ZIPNAME=${PLUGIN_NAME}.zip
-- echo "Uploading ${RELEASE_ZIPNAME} to QGIS Dev..."
-- scp ${PLUGIN_NAME}.zip qgisrepoguest:${UPLOADS}/${RELEASE_ZIPNAME}
-- export GIT_REV=$(git rev-parse --short HEAD)
-# No roles on this plugin, everybody should be able to download it (auth lock out)
-- ssh qgisrepoguest "${UPDATER} update --dev --git-hash ${GIT_REV} ${RELEASE_ZIPNAME}"
+- |
+    if [ "${TRAVIS_PULL_REQUEST}" = "false" ] && [ "${TRAVIS_BRANCH}" = "master" ]; then
+        mkdir /home/travis/.ssh/
+        chmod 700 /home/travis/.ssh/
+        openssl aes-256-cbc -K $encrypted_4eeb1b79489f_key -iv $encrypted_4eeb1b79489f_iv -in travis_secrets.tar.gz.enc -out travis_secrets.tar.gz -d
+        tar xzvf travis_secrets.tar.gz
+        mv id_rsa.qgisrepoguest /home/travis/.ssh/id_rsa.qgisrepoguest
+        mv ssh_config /home/travis/.ssh/config
+        chmod 600 /home/travis/.ssh/id_rsa.qgisrepoguest
+        chmod 600 /home/travis/.ssh/config
+        export RELEASE_ZIPNAME=${PLUGIN_NAME}.zip
+        echo "Uploading ${RELEASE_ZIPNAME} to QGIS Dev..."
+        scp ${PLUGIN_NAME}.zip qgisrepoguest:${UPLOADS}/${RELEASE_ZIPNAME}
+        export GIT_REV=$(git rev-parse --short HEAD)
+        # No roles on this plugin, everybody should be able to download it (auth lock out)
+        ssh qgisrepoguest "${UPDATER} update --dev --git-hash ${GIT_REV} ${RELEASE_ZIPNAME}"
+    fi
