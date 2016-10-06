@@ -148,8 +148,10 @@ class BoundlessConnectPlugin:
     def startFirstRunWizard(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
         firstRun = settings.value('firstRun', True, bool)
+        print 'first read', firstRun
         settings.setValue('firstRun', False)
         settings.sync()
+        print 'second read', settings.value('firstRun', True, bool)
 
         if firstRun:
             self.runWizardAndProcessResults()
