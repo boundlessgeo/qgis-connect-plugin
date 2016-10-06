@@ -121,7 +121,8 @@ def showPluginManager(boundlessOnly):
     initPluginManager(installer, boundlessOnly)
     iface.pluginManagerInterface().showPluginManager(2)
     # Restore repositories, as we don't want to keep local repo in cache
-    repositories.load()
+    if repositories is not None:
+        repositories.load()
 
 
 def initPluginManager(installer, boundlessOnly=False):
