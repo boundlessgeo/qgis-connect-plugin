@@ -43,6 +43,7 @@ from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 
 from boundlessconnect.gui.connectdialog import ConnectDialog
+from boundlessconnect.gui.pluginsdialog import PluginsDialog
 from boundlessconnect import utils
 
 pluginPath = os.path.dirname(__file__)
@@ -181,7 +182,9 @@ class BoundlessConnectPlugin:
     def runWizardAndProcessResults(self):
         dlg = ConnectDialog()
         if dlg.exec_():
-            utils.showPluginManager(True)
+            #utils.showPluginManager(True)
+            d = PluginsDialog()
+            d.exec_()
 
             utils.installFromStandardPath()
 
