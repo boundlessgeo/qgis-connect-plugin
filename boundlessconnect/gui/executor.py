@@ -27,7 +27,6 @@ __revision__ = '$Format:%H$'
 
 
 from qgis.core import *
-from geogig import config
 from PyQt4 import QtGui, QtCore
 
 
