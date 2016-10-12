@@ -147,7 +147,8 @@ def loadPlugins():
 			_plugins.append(copy(plugins.all()[plugin]))
 
 def getPlugins(text):
-	return [p for p in _plugins if text in p['name'] or text in p['description']]
+        text = text.lower()
+	return [p for p in _plugins if text in p['name'].lower() or text in p['description'].lower()]
 
 
 def search(text):
