@@ -48,8 +48,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'connectdialogbase.ui'))
 
-HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html#first-run-wizard"
-
 class ConnectDialog(BASE, WIDGET):
     def __init__(self, parent=None):
         super(ConnectDialog, self).__init__(parent)
@@ -79,7 +77,7 @@ class ConnectDialog(BASE, WIDGET):
     def showHelp(self):
         #if not QDesktopServices.openUrl(QUrl(HELP_URL)):
         if not QDesktopServices.openUrl(
-                QUrl('file://{}'.format(os.path.join(pluginPath, 'help', 'index.html')))):
+                QUrl('file://{}'.format(os.path.join(pluginPath, 'docs', 'html', 'index.html')))):
             QMessageBox.warning(self, self.tr('Error'), self.tr('Can not open help URL in browser'))
 
     def accept(self):

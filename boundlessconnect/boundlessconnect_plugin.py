@@ -230,7 +230,7 @@ class BoundlessConnectPlugin:
 
     def showHelp(self):
         if not QDesktopServices.openUrl(
-                QUrl('file://{}'.format(os.path.join(pluginPath, 'help', 'index.html')))):
+                QUrl('file://{}'.format(os.path.join(pluginPath, 'docs', 'html', 'index.html')))):
             QMessageBox.warning(None,
                                 self.tr('Error'),
                                 self.tr('Can not open help URL in browser'))
