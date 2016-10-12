@@ -30,20 +30,23 @@ import json
 import unittest
 import ConfigParser
 
-from PyQt4.QtCore import QSettings
+from PyQt4.QtCore import Qt, QSettings
 
 from qgis.core import QgsApplication
 
-from qgis.utils import active_plugins, home_plugin_path, unloadPlugin
+from qgis.utils import active_plugins, home_plugin_path, unloadPlugin, iface
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
-from boundlessconnect.gui.connectdialog import ConnectDialog
+#from boundlessconnect.gui.connectdialog import ConnectDialog
+from boundlessconnect.gui.connectdockwidget import ConnectDockWidget
+
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils
 
 testPath = os.path.dirname(__file__)
 
+dock = None
 originalVersion = None
 installedPlugins = []
 
@@ -185,8 +188,11 @@ def _restoreVersion(pluginName, corePlugin=True):
 
 
 def _startConectPlugin():
-    dlg = ConnectDialog()
-    dlg.exec_()
+    global dock
+    if dock is None:
+        dock = ConnectDockWidget()
+    iface.addDockWidget(Qt.RightDockWidgetArea, dock)
+    dock.show()
 
 
 def suite():
