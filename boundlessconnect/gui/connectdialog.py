@@ -144,7 +144,7 @@ class ConnectDialog(BASE, WIDGET):
         settings = QSettings()
         if settings.value('proxy/proxyEnabled', False):
             proxyHost = settings.value('proxy/proxyHost', '')
-            proxyPort = settings.value('proxy/proxyPort', 0, type=int)
+            proxyPort = int(settings.value('proxy/proxyPort', '0'))
             proxyUser = settings.value('proxy/proxyUser', '')
             proxyPassword = settings.value('proxy/proxyPassword', '')
             proxyTypeString = settings.value('proxy/proxyType', '')
