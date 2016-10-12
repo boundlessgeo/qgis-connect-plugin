@@ -12,7 +12,7 @@ additional plugins, both Boundless and 3rd party ones (depending on what have
 been configured by the system administrator).
 
 The tool will automatically run when QGIS is started for the first time with
-the |connect_plugin| activated or whenever this plugin is updated.
+the |connect_plugin| activated.
 
 .. figure:: img/connect-tool.png
    :align: center
@@ -32,9 +32,8 @@ credentials in the :guilabel:`email` and :guilabel:`password` fields, and press
 :guilabel:`OK` to have access to the repository.
 
 After pressing the :guilabel:`OK` button, |connect_plugin| will try to validate
-your credentials in Boundless Connect portal (internet
-connection is needed). If the credentials are valid, it will save them in QGIS's
-authentication database.
+your credentials in Boundless Connect portal (internet connection is needed).
+If the credentials are valid, it will save them in QGIS's authentication database.
 
 .. note::
 
@@ -71,31 +70,33 @@ a message dialog, asking you what to do.
 .. note::
 
    Even with invalid credentials, you will be able to see a list available plugins
-   in the Boundless Plugins repository. Also, you will be able
-   to download plugins that don't require authentication. But, if you
-   try to download protected plugins, you will be asked for valid credentials.
+   in the Boundless Plugins repository. Also, you will be able to download plugins
+   that don't require authentication. But, if you try to download protected plugins,
+   you will be asked for valid credentials.
 
 If the |connect_plugin| was configured to use a local directory-based
 repository (check this with your system administrator), you can leave
 :guilabel:`Email` and :guilabel:`Password` fields empty. Press :guilabel:`OK`
 to continue. (In this case you won't be asked for a master password.)
 
-After entering the *Boundless Connect* credentials, the QGIS *Plugin Manager* will
-open only with Boundless plugins available. This makes it easier to find and install them.
+After entering the *Boundless Connect* credentials, the *Boundless plugins* dialog
+will open to help you install additional Boundless plugins.
 
 .. figure:: img/install-plugins.png
    :align: center
 
-   Not installed Boundless plugins in plugin manager
+   Boundless plugins dialog.
 
 
 .. note::
 
-   In this case, *Plugin Manager* is opened in the :guilabel:`Not Installed`
-   tab. At this tab, you will see only Boundless plugins available from the
-   *Boundless QGIS Plugin Repository*. At the same time, in the :guilabel:`Installed`
-   tab, you will see all core C++ plugins as well as all Python plugins
-   (Boundless and 3rd party) already installed.
+   If you don't want to install Boundless plugins now, you can safely close this
+   dialog. You can install Boundless plugins later in any time by opening QGIS
+   *Plugin Manager* from :menuselection:`Plugins --> Manage and instal plugins`
+   and entering "Boundless" in the filter field in the top of the *Plugin Manager*
+   dialog. Alternatively, you can start *Boundless Connect Login* tool again from
+   menu :menuselection:`Plugins --> Boundless Connect Login` and press
+   :guilabel:`Login` button to open *Boundless plugins* dialog again.
 
 Beside the plugins installed by the user, if previously configured by the system
 administrator, |connect_plugin| will install additional predefined plugins (see
