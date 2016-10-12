@@ -77,7 +77,9 @@ class ConnectDialog(BASE, WIDGET):
         self.buttonBox.helpRequested.connect(self.showHelp)
 
     def showHelp(self):
-        if not QDesktopServices.openUrl(QUrl(HELP_URL)):
+        #if not QDesktopServices.openUrl(QUrl(HELP_URL)):
+        if not QDesktopServices.openUrl(
+                QUrl('file://{}'.format(os.path.join(pluginPath, 'help', 'index.html')))):
             QMessageBox.warning(self, self.tr('Error'), self.tr('Can not open help URL in browser'))
 
     def accept(self):

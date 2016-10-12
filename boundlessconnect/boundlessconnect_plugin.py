@@ -30,13 +30,16 @@ from PyQt4.QtCore import (QCoreApplication,
                           QSettings,
                           QLocale,
                           QTranslator,
-                          QFileInfo)
+                          QFileInfo,
+                          QUrl)
 from PyQt4.QtGui import (QMessageBox,
                          QAction,
                          QIcon,
                          QFileDialog,
-                         QPushButton)
+                         QPushButton,
+                         QDesktopServices)
 
+from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from pyplugin_installer.installer_data import (repositories,
@@ -91,8 +94,17 @@ class BoundlessConnectPlugin:
             self.tr('Install plugin from ZIP file stored on disk'))
         self.actionPluginFromZip.setObjectName('actionPluginFromZip')
 
+        self.actionHelp = QAction(
+            self.tr('Help'), self.iface.mainWindow())
+        self.actionHelp.setIcon(
+            QgsApplication.getThemeIcon('/mActionHelpContents.svg'))
+        self.actionHelp.setWhatsThis(
+            self.tr('Boundless Connect documentation'))
+        self.actionHelp.setObjectName('actionConnectHelp')
+
         self.actionRunWizard.triggered.connect(self.runWizardAndProcessResults)
         self.actionPluginFromZip.triggered.connect(self.installPlugin)
+        self.actionHelp.triggered.connect(self.showHelp)
 
         # If Boundless repository is a directory, add menu entry
         # to start modified Plugin Manager which works with local repositories
@@ -119,6 +131,8 @@ class BoundlessConnectPlugin:
                 menuPlugin.insertAction(separator, self.actionPluginFromZip)
                 if utils.isRepositoryInDirectory():
                     menuPlugin.insertAction(separator, self.actionPluginManager)
+
+        self.iface.addPluginToMenu(self.tr('Boundless Connect'), self.actionHelp)
 
         # Add Boundless plugin repository to list of the available
         # plugin repositories if it is not presented here
@@ -213,6 +227,13 @@ class BoundlessConnectPlugin:
                                           self.iface.messageBar()
                                           )
             self.iface.messageBar().pushItem(updateMsg)
+
+    def showHelp(self):
+        if not QDesktopServices.openUrl(
+                QUrl('file://{}'.format(os.path.join(pluginPath, 'help', 'index.html')))):
+            QMessageBox.warning(None,
+                                self.tr('Error'),
+                                self.tr('Can not open help URL in browser'))
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         self.iface.messageBar().pushMessage(
