@@ -16,6 +16,7 @@
 ***************************************************************************
 """
 
+
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
@@ -26,11 +27,14 @@ __revision__ = '$Format:%H$'
 
 import os
 
+from boundlessconnect.gui.connectdockwidget import ConnectDockWidget
+
 from PyQt4.QtCore import (QCoreApplication,
                           QSettings,
                           QLocale,
                           QTranslator,
-                          QFileInfo)
+                          QFileInfo,
+                          Qt)
 from PyQt4.QtGui import (QMessageBox,
                          QAction,
                          QIcon,
@@ -42,8 +46,8 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 
-from boundlessconnect.gui.connectdialog import ConnectDialog
-from boundlessconnect.gui.pluginsdialog import PluginsDialog
+#from boundlessconnect.gui.connectdialog import ConnectDialog
+#from boundlessconnect.gui.pluginsdialog import PluginsDialog
 from boundlessconnect import utils
 
 pluginPath = os.path.dirname(__file__)
@@ -73,11 +77,12 @@ class BoundlessConnectPlugin:
             self.translator.load(qmPath)
             QCoreApplication.installTranslator(self.translator)
 
-        self.iface.initializationCompleted.connect(self.startFirstRunWizard)
+        #self.iface.initializationCompleted.connect(self.startFirstRunWizard)
 
     def initGui(self):
-        self.actionRunWizard = QAction(
-            self.tr('Boundless Connect Login'), self.iface.mainWindow())
+        self.dockWidget = ConnectDockWidget()
+        self.actionRunWizard = self.dockWidget.toggleViewAction()
+        self.actionRunWizard.setText(self.tr('Boundless Connect Login'))
         self.actionRunWizard.setIcon(
             QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.actionRunWizard.setWhatsThis(
@@ -92,7 +97,7 @@ class BoundlessConnectPlugin:
             self.tr('Install plugin from ZIP file stored on disk'))
         self.actionPluginFromZip.setObjectName('actionPluginFromZip')
 
-        self.actionRunWizard.triggered.connect(self.runWizardAndProcessResults)
+        #self.actionRunWizard.triggered.connect(self.runWizardAndProcessResults)
         self.actionPluginFromZip.triggered.connect(self.installPlugin)
 
         # If Boundless repository is a directory, add menu entry
@@ -127,6 +132,8 @@ class BoundlessConnectPlugin:
 
         # Enable check for updates if it is not enabled
         utils.addCheckForUpdates()
+
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
 
     def unload(self):
         actions = self.iface.mainWindow().menuBar().actions()
@@ -180,17 +187,20 @@ class BoundlessConnectPlugin:
         utils.showPluginManager(False)
 
     def runWizardAndProcessResults(self):
-        dlg = ConnectDialog()
-        if dlg.exec_():
-            #utils.showPluginManager(True)
-            d = PluginsDialog()
-            d.exec_()
-
-            utils.installFromStandardPath()
-
-            self._showMessage(
-                self.tr('Boundless Connect is done configuring your QGIS.'),
-                QgsMessageBar.SUCCESS)
+        pass
+#===============================================================================
+#         dlg = ConnectDialog()
+#         if dlg.exec_():
+#             #utils.showPluginManager(True)
+#             d = PluginsDialog()
+#             d.exec_()
+#
+#             utils.installFromStandardPath()
+#
+#             self._showMessage(
+#                 self.tr('Boundless Connect is done configuring your QGIS.'),
+#                 QgsMessageBar.SUCCESS)
+#===============================================================================
 
     def checkingDone(self):
         updateNeeded, allInstalled = utils.checkPluginsStatus()
