@@ -82,11 +82,11 @@ class BoundlessConnectPlugin:
     def initGui(self):
         self.dockWidget = ConnectDockWidget()
         self.actionRunWizard = self.dockWidget.toggleViewAction()
-        self.actionRunWizard.setText(self.tr('Boundless Connect Login'))
+        self.actionRunWizard.setText(self.tr('Boundless Connect'))
         self.actionRunWizard.setIcon(
             QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.actionRunWizard.setWhatsThis(
-            self.tr('Login to Boundless Connect'))
+            self.tr('Boundless Connect'))
         self.actionRunWizard.setObjectName('actionRunWizard')
 
         self.actionPluginFromZip = QAction(

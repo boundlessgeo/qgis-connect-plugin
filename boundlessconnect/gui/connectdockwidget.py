@@ -85,19 +85,19 @@ class ConnectDockWidget(BASE, WIDGET):
         self.btnInstall.clicked.connect(self.install)
         self.searchWidget.setVisible(False)
 
-        self.resetWebView()
-
         self.resultsTree.currentItemChanged.connect(self.itemChanged)
 
     def itemChanged(self):
         self.btnInstall.setEnabled(False)
         current = self.resultsTree.currentItem()
-        if current and isinstance(current.data(0, Qt.UserRole), ConnectContent):
-            content = current.data(0, Qt.UserRole)
-            self.webView.setHtml(content.description)
-            self.btnInstall.setEnabled(True)
-        else:
-            self.resetWebView()
+        if current:
+            if isinstance(current.data(0, Qt.UserRole), ConnectContent):
+                content = current.data(0, Qt.UserRole)
+                self.webView.setHtml(content.description)
+                self.btnInstall.setEnabled(True)
+            else:
+                self.webView.setHtml(current.child(0).data(0, Qt.UserRole).categoryDescription())
+
 
     def showHelp(self):
         if not QDesktopServices.openUrl(QUrl(HELP_URL)):
@@ -105,7 +105,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def install(self):
         content = self.resultsTree.currentItem().data(0, Qt.UserRole)
-        execute(content.open())
+        execute(content.open)
 
     def resetWebView(self):
         self.webView.setHtml("<h2>Select an element to show its description</h2>")
@@ -138,14 +138,18 @@ class ConnectDockWidget(BASE, WIDGET):
                     for r in results:
                         resultsByGroups[r.typeName()].append(r)
                     for group, items in resultsByGroups.iteritems():
+                        icon = items[0].icon()
                         treeItem = QTreeWidgetItem()
                         treeItem.setText(0, group)
+                        treeItem.setIcon(0, icon)
                         for item in items:
                             treeSubItem = QTreeWidgetItem()
                             treeSubItem.setText(0, item.name)
                             treeSubItem.setData(0, Qt.UserRole, item)
+                            treeSubItem.setIcon(0, icon)
                             treeItem.addChild(treeSubItem)
                         self.resultsTree.addTopLevelItem(treeItem)
+                    self.resetWebView()
             except RequestException, e:
                     QMessageBox.warning(self, "Search",
                         u"There has been a problem performing the search:\n" + unicode(e.args[0]),

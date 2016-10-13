@@ -127,7 +127,11 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLineEdit" name="leSearch"/>
+          <widget class="QLineEdit" name="leSearch">
+           <property name="placeholderText">
+            <string>[Enter text to search in Connect catalog]</string>
+           </property>
+          </widget>
          </item>
          <item>
           <widget class="QPushButton" name="btnSearch">

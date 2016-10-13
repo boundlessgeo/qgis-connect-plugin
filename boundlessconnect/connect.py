@@ -6,12 +6,24 @@ from pyplugin_installer.installer_data import plugins
 from boundlessconnect import utils
 from copy import copy
 import os
+from PyQt4.Qt import QIcon
+
+pluginPath = os.path.dirname(__file__)
 
 class ConnectContent():
 	def __init__(self, url, name, description):
 		self.url = url
 		self.name = name
 		self.description = description
+
+	def icon(self):
+		return QIcon(os.path.join(pluginPath, "icons", "%s.png" % self.typeName().lower()))
+
+	def categoryDescription(self):
+		path = os.path.join(pluginPath, "html", "%s.html" % self.typeName().lower())
+		with open(path) as f:
+			return f.read()
+
 
 LESSONS_PLUGIN_NAME = ""
 class ConnectLesson(ConnectContent):
@@ -33,7 +45,6 @@ class ConnectWebAdress(ConnectContent):
 		webbrowser.open_new(self.url)
 
 
-pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 class ConnectPlugin(ConnectContent):
 
@@ -147,7 +158,7 @@ def loadPlugins():
 			_plugins.append(copy(plugins.all()[plugin]))
 
 def getPlugins(text):
-        text = text.lower()
+	text = text.lower()
 	return [p for p in _plugins if text in p['name'].lower() or text in p['description'].lower()]
 
 
