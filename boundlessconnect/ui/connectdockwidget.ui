@@ -127,7 +127,7 @@
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
-          <widget class="QLineEdit" name="leSearch">
+          <widget class="QgsFilterLineEdit" name="leSearch">
            <property name="placeholderText">
             <string>[Enter text to search in Connect catalog]</string>
            </property>
@@ -212,7 +212,7 @@
   <customwidget>
    <class>QWebView</class>
    <extends>QWidget</extends>
-   <header>QtWebKit/QWebView</header>
+   <header>QtWebKitWidgets/QWebView</header>
   </customwidget>
   <customwidget>
    <class>PasswordLineEdit</class>
@@ -229,6 +229,11 @@
    <extends>QWidget</extends>
    <header location="global">boundlessconnect.gui.fixedaspectsvgwidget</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header location="global">qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>
