@@ -149,6 +149,7 @@ class ConnectDockWidget(BASE, WIDGET):
                             treeSubItem.setIcon(0, icon)
                             treeItem.addChild(treeSubItem)
                         self.resultsTree.addTopLevelItem(treeItem)
+                        treeItem.setExpanded(True)
                     self.resetWebView()
             except RequestException, e:
                     QMessageBox.warning(self, "Search",
