@@ -163,7 +163,7 @@ def getPlugins(text):
 
 
 def search(text):
-	response =  TEST_SEARCH_RESULT
+	response =  copy(TEST_SEARCH_RESULT)
 	response.extend([ConnectPlugin(p) for p in getPlugins(text)])
 	return response
 	r = requests.get(BASE_URL, params = {"search": text})
