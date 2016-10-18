@@ -40,7 +40,8 @@ from PyQt4.QtGui import (QIcon,
                          QDialogButtonBox,
                          QMessageBox
                         , QTreeWidgetItem)
-from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply, QNetworkAccessManager
+from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply, QNetworkAccessManager,\
+    QNetworkProxyFactory, QNetworkProxy
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
 
@@ -182,10 +183,11 @@ class ConnectDockWidget(BASE, WIDGET):
                 self.saveOrUpdateAuthId()
         else:
             self.saveOrUpdateAuthId()
-            execute(connect.loadPlugins)
-            self.authWidget.setVisible(False)
-            self.searchWidget.setVisible(True)
-            self.labelLogged.setText("Logged as: <b>%s</b> &nbsp; &nbsp; <a href='change'>Change</a>" % self.leLogin.text())
+
+        execute(connect.loadPlugins)
+        self.authWidget.setVisible(False)
+        self.searchWidget.setVisible(True)
+        self.labelLogged.setText("Logged as: <b>%s</b> &nbsp; &nbsp; <a href='change'>Change</a>" % self.leLogin.text())
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
@@ -215,7 +217,10 @@ class ConnectDockWidget(BASE, WIDGET):
         settings = QSettings()
         if settings.value('proxy/proxyEnabled', False):
             proxyHost = settings.value('proxy/proxyHost', '')
-            proxyPort = int(settings.value('proxy/proxyPort', '0'))
+            try:
+                proxyPort = int(settings.value('proxy/proxyPort', '0'))
+            except:
+                proxyPort = 0
             proxyUser = settings.value('proxy/proxyUser', '')
             proxyPassword = settings.value('proxy/proxyPassword', '')
             proxyTypeString = settings.value('proxy/proxyType', '')
