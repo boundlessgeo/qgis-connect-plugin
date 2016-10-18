@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from boundlessconnect.gui.connectdockwidget import ConnectDockWidget
+from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 
 from PyQt4.QtCore import (QCoreApplication,
                           QSettings,
@@ -80,7 +80,7 @@ class BoundlessConnectPlugin:
         #self.iface.initializationCompleted.connect(self.startFirstRunWizard)
 
     def initGui(self):
-        self.dockWidget = ConnectDockWidget()
+        self.dockWidget = getConnectDockWidget()
         self.actionRunWizard = self.dockWidget.toggleViewAction()
         self.actionRunWizard.setText(self.tr('Boundless Connect'))
         self.actionRunWizard.setIcon(

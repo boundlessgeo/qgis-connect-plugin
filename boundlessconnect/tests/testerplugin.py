@@ -39,7 +39,7 @@ from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
 #from boundlessconnect.gui.connectdialog import ConnectDialog
-from boundlessconnect.gui.connectdockwidget import ConnectDockWidget
+from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils
@@ -188,11 +188,10 @@ def _restoreVersion(pluginName, corePlugin=True):
 
 
 def _startConectPlugin():
-    global dock
-    if dock is None:
-        dock = ConnectDockWidget()
+    dock = getConnectDockWidget()
     iface.addDockWidget(Qt.RightDockWidgetArea, dock)
     dock.show()
+    dock.showLogin()
 
 
 def suite():

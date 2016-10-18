@@ -87,6 +87,15 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.resultsTree.currentItemChanged.connect(self.itemChanged)
 
+        self.labelLogged.linkActivated.connect(self.showLogin)
+
+    def showLogin(self):
+        self.authWidget.setVisible(True)
+        self.searchWidget.setVisible(False)
+        self.resultsTree.clear()
+        self.webView.setHtml("")
+        self.leSearch.setText("")
+
     def itemChanged(self):
         self.btnInstall.setEnabled(False)
         current = self.resultsTree.currentItem()
@@ -116,7 +125,7 @@ class ConnectDockWidget(BASE, WIDGET):
             execute(connect.loadPlugins)
             self.authWidget.setVisible(False)
             self.searchWidget.setVisible(True)
-            self.labelLogged.setText("Logged as: <b>Not logged</b>")
+            self.labelLogged.setText("Logged as: <b>Not logged</b> &nbsp; &nbsp; <a href='change'>Change</a>")
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
@@ -176,8 +185,7 @@ class ConnectDockWidget(BASE, WIDGET):
             execute(connect.loadPlugins)
             self.authWidget.setVisible(False)
             self.searchWidget.setVisible(True)
-            print "yes"
-            self.labelLogged.setText("Logged as: <b>%s</b>" % self.leLogin.text())
+            self.labelLogged.setText("Logged as: <b>%s</b> &nbsp; &nbsp; <a href='change'>Change</a>" % self.leLogin.text())
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
@@ -232,3 +240,11 @@ class ConnectDockWidget(BASE, WIDGET):
                                       proxyUser, proxyPassword)
             self.manager.setProxy(proxy)
 
+
+_widget = None
+
+def getConnectDockWidget():
+    global _widget
+    if _widget is None:
+        _widget = ConnectDockWidget()
+    return _widget
