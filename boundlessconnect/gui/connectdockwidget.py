@@ -181,13 +181,15 @@ class ConnectDockWidget(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
+            username = "Not logged"
         else:
+            username = self.leLogin.text()
             self.saveOrUpdateAuthId()
 
         execute(connect.loadPlugins)
         self.authWidget.setVisible(False)
         self.searchWidget.setVisible(True)
-        self.labelLogged.setText("Logged as: <b>%s</b> &nbsp; &nbsp; <a href='change'>Change</a>" % self.leLogin.text())
+        self.labelLogged.setText("Logged as: <b>%s</b> &nbsp; &nbsp; <a href='change'>Change</a>" % username)
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
