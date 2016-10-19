@@ -40,6 +40,7 @@ from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
 #from boundlessconnect.gui.connectdialog import ConnectDialog
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
+from boundlessconnect.connect import search, ConnectPlugin, loadPlugins
 
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils
@@ -80,6 +81,26 @@ def functionalTests():
 
     return [connectTest, invalidCredentialsTest, openPluginManagerBoundlessOnlyTest]
 
+
+class SearchApiTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        loadPlugins()
+
+    def testPluginsSearchResultsCorrectlyRetrieved(self):
+        results = search("MIL-STD-2525")
+        self.assertEqual(1, len(results))
+        self.assertTrue(isinstance(results[0], ConnectPlugin))
+
+    def testNonPluginsSearchResultsCorrectlyRetrieved(self):
+        results = search("MIL-STD-2525")
+        self.assertEqual(1, len(results))
+        self.assertTrue(isinstance(results[0], ConnectPlugin))
+
+    def testEmptySearch(self):
+        results = search("")
+        self.assertEqual(0, len(results))
 
 class BoundlessConnectTests(unittest.TestCase):
 
@@ -144,10 +165,14 @@ class BoundlessConnectTests(unittest.TestCase):
                 installer.uninstallPlugin(key, quiet=True)
 
 
+
+
 def unitTests():
     connectSuite = unittest.makeSuite(BoundlessConnectTests, 'test')
+    apiSuite = unittest.makeSuite(SearchApiTests, 'test')
     _tests = []
     _tests.extend(connectSuite)
+    _tests.extend(apiSuite)
 
     return _tests
 
