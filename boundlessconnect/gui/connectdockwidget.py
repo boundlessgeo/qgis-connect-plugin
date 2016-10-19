@@ -30,16 +30,14 @@ import base64
 from boundlessconnect import connect
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
-from collections import defaultdict
 from requests.exceptions import RequestException
 
-from PyQt4 import uic
+from PyQt4 import uic, QtWebKit, QtCore
 from PyQt4.QtCore import QUrl, QSettings, Qt
 from PyQt4.QtGui import (QIcon,
                          QDesktopServices,
                          QDialogButtonBox,
-                         QMessageBox
-                        , QTreeWidgetItem)
+                         QMessageBox)
 from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply, QNetworkAccessManager,\
     QNetworkProxyFactory, QNetworkProxy
 
@@ -57,6 +55,7 @@ WIDGET, BASE = uic.loadUiType(
 HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html#first-run-wizard"
 
 class ConnectDockWidget(BASE, WIDGET):
+
     def __init__(self, parent=None):
         super(ConnectDockWidget, self).__init__(parent)
         self.setupUi(self)
@@ -81,52 +80,48 @@ class ConnectDockWidget(BASE, WIDGET):
             self.lePassword.setText(password)
 
         self.buttonBox.helpRequested.connect(self.showHelp)
-        self.buttonBox.accepted.connect(self.accept)
+        self.buttonBox.accepted.connect(self.logIn)
         self.btnSearch.clicked.connect(self.search)
-        self.btnInstall.clicked.connect(self.install)
+        self.btnSignOut.clicked.connect(self.showLogin)
         self.searchWidget.setVisible(False)
 
-        self.resultsTree.currentItemChanged.connect(self.itemChanged)
+        self.labelLevel.linkActivated.connect(self.showLogin)
 
-        self.labelLogged.linkActivated.connect(self.showLogin)
+        self.webView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
+        self.webView.settings().setUserStyleSheetUrl(QtCore.QUrl("file://" +
+            os.path.join(os.path.dirname(__file__), "search.css").replace("\\", "/")))
+        self.webView.linkClicked.connect(self.linkClicked)
+
+        self.showLogin()
 
     def showLogin(self):
         self.authWidget.setVisible(True)
         self.searchWidget.setVisible(False)
-        self.resultsTree.clear()
         self.webView.setHtml("")
         self.leSearch.setText("")
-
-    def itemChanged(self):
-        self.btnInstall.setEnabled(False)
-        current = self.resultsTree.currentItem()
-        if current:
-            if isinstance(current.data(0, Qt.UserRole), ConnectContent):
-                content = current.data(0, Qt.UserRole)
-                self.webView.setHtml(content.description)
-                self.btnInstall.setEnabled(True)
-            else:
-                self.webView.setHtml(current.child(0).data(0, Qt.UserRole).categoryDescription())
-
+        self.webView.setVisible(False)
 
     def showHelp(self):
         if not QDesktopServices.openUrl(QUrl(HELP_URL)):
             QMessageBox.warning(self, self.tr('Error'), self.tr('Can not open help URL in browser'))
 
-    def install(self):
-        content = self.resultsTree.currentItem().data(0, Qt.UserRole)
-        execute(content.open)
+    def linkClicked(self, url):
+        name = url.toString()
+        content = self.searchResults[name]
+        if content.canInstall(self.level):
+            execute(content.open)
+        else:
+            pass
+            #TODO
 
-    def resetWebView(self):
-        self.webView.setHtml("<h2>Select an element to show its description</h2>")
-
-    def accept(self):
+    def logIn(self):
         utils.addBoundlessRepository()
         if self.leLogin.text() == '' or self.lePassword.text() == '':
             execute(connect.loadPlugins)
             self.authWidget.setVisible(False)
             self.searchWidget.setVisible(True)
-            self.labelLogged.setText("Logged as: <b>Not logged</b> &nbsp; &nbsp; <a href='change'>Change</a>")
+            self.labelLevel.setText("Subscription Level: <b>Open</b>")
+            self.level = 0
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
@@ -142,25 +137,14 @@ class ConnectDockWidget(BASE, WIDGET):
         if text:
             try:
                 results = execute(lambda: connect.search(text))
-                self.resultsTree.clear()
                 if results:
-                    resultsByGroups = defaultdict(list)
+                    self.searchResults = {r.url:r for r in results}
+                    html = "<ul>"
                     for r in results:
-                        resultsByGroups[r.typeName()].append(r)
-                    for group, items in resultsByGroups.iteritems():
-                        icon = items[0].icon()
-                        treeItem = QTreeWidgetItem()
-                        treeItem.setText(0, group)
-                        treeItem.setIcon(0, icon)
-                        for item in items:
-                            treeSubItem = QTreeWidgetItem()
-                            treeSubItem.setText(0, item.name)
-                            treeSubItem.setData(0, Qt.UserRole, item)
-                            treeSubItem.setIcon(0, icon)
-                            treeItem.addChild(treeSubItem)
-                        self.resultsTree.addTopLevelItem(treeItem)
-                        treeItem.setExpanded(True)
-                    self.resetWebView()
+                        html += "<li>%s</li>" % r.asHtmlEntry(self.level)
+                    html += "</ul>"
+                    self.webView.setHtml(html)
+                    self.webView.setVisible(True)
             except RequestException, e:
                     QMessageBox.warning(self, "Search",
                         u"There has been a problem performing the search:\n" + unicode(e.args[0]),
@@ -181,15 +165,15 @@ class ConnectDockWidget(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
-            username = "Not logged"
+            self.level = 0
         else:
-            username = self.leLogin.text()
+            self.level = 0 #TODO
             self.saveOrUpdateAuthId()
 
         execute(connect.loadPlugins)
         self.authWidget.setVisible(False)
         self.searchWidget.setVisible(True)
-        self.labelLogged.setText("Logged as: <b>%s</b> &nbsp; &nbsp; <a href='change'>Change</a>" % username)
+        self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[self.level])
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':

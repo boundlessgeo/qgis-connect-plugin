@@ -10,11 +10,15 @@ from PyQt4.Qt import QIcon
 
 pluginPath = os.path.dirname(__file__)
 
+LEVELS = ["open", "registered", "desktop basic", "desktop standard", "desktop enterprise", "student"]
+
+
 class ConnectContent():
-	def __init__(self, url, name, description):
+	def __init__(self, url, name, description, level = 0):
 		self.url = url
 		self.name = name
 		self.description = description
+		self.level = level
 
 	def icon(self):
 		return QIcon(os.path.join(pluginPath, "icons", "%s.png" % self.typeName().lower()))
@@ -23,6 +27,17 @@ class ConnectContent():
 		path = os.path.join(pluginPath, "html", "%s.html" % self.typeName().lower())
 		with open(path) as f:
 			return f.read()
+
+	def canInstall(self, level):
+		return level == self.level
+
+	def asHtmlEntry(self, level):
+		levelClass = 'canInstall' if self.canInstall(level) else 'cannotInstall'
+		s = ("<div class='title'>%s</div><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div>"
+			% (self.name, self.typeName(), levelClass, LEVELS[self.level], self.description))
+		return s
+
+
 
 
 LESSONS_PLUGIN_NAME = ""
@@ -44,80 +59,14 @@ class ConnectWebAdress(ConnectContent):
 	def open(self):
 		webbrowser.open_new(self.url)
 
-
-
 class ConnectPlugin(ConnectContent):
 
 	def __init__(self, plugin):
 		self.plugin = plugin
 		self.name = plugin["name"]
-		self.description = self._pluginDescription(plugin)
-
-	def _pluginDescription(self, plugin):
-		html = '<style>body, table {padding:0px; margin:0px; font-family:verdana; font-size: 1.1em;}</style>'
-		html += '<body>'
-		html += '<table cellspacing="4" width="100%"><tr><td>'
-		html += '<img src="file://{}" style="float:right;max-width:64px;max-height:64px;">'.format(
-														os.path.join(pluginPath, 'icons', 'desktop.png'))
-		html += '<h1>{}</h1>'.format(plugin['name'])
-		html += '<h3>{}</h3>'.format(plugin['description'])
-
-		if plugin['about'] != '':
-			html += plugin['about'].replace('\n', '<br/>')
-
-		html += '<br/><br/>'
-
-		if plugin['category'] != '':
-			html += '{}: {} <br/>'.format(self.tr('Category'), plugin['category'])
-
-		if plugin['tags'] != '':
-			html += '{}: {} <br/>'.format(self.tr('Tags'), plugin['tags'])
-
-		if plugin['homepage'] != '' or plugin['tracker'] != '' or plugin['code_repository'] != '':
-			html += self.tr('More info:')
-
-			if plugin['homepage'] != '':
-				html += '<a href="{}">{}</a> &nbsp;'.format(plugin['homepage'], self.tr('homepage') )
-
-			if plugin['tracker'] != '':
-				html += '<a href="{}">{}</a> &nbsp;'.format(plugin['tracker'], self.tr('bug_tracker') )
-
-			if plugin['code_repository'] != '':
-				html += '<a href="{}">{}</a> &nbsp;'.format(plugin['code_repository'], self.tr('code_repository') )
-
-			html += '<br/>'
-
-		html += '<br/>'
-
-		if plugin['author_email'] != '':
-			html += '{}: <a href="mailto:{}">{}</a>'.format(self.tr('Author'), plugin['author_email'], plugin['author_name'])
-			html += '<br/><br/>'
-		elif plugin['author_name'] != '':
-			html += '{}: {}'.format(self.tr('Author'), plugin['author_name'])
-			html += '<br/><br/>'
-
-		if plugin['version_installed'] != '':
-			ver = plugin['version_installed']
-			if ver == '-1':
-				ver = '?'
-
-			html += self.tr('Installed version: {} (in {})<br/>'.format(ver, plugin['library']))
-
-		if plugin['version_available'] != '':
-			html += self.tr('Available version: {} (in {})<br/>'.format(plugin['version_available'], plugin['zip_repository']))
-
-		if plugin['changelog'] != '':
-			html += '<br/>'
-			changelog = self.tr('Changelog:<br/>{} <br/>'.format(plugin['changelog']))
-			html += changelog.replace('\n', '<br/>')
-
-		html += '</td></tr></table>'
-		html += '</body>'
-
-		return html
-
-	def tr(self, t):
-		return t
+		self.description = plugin["description"]
+		self.url = plugin["url"]
+		self.level = 0
 
 	def typeName(self):
 		return "Plugin"
@@ -130,22 +79,31 @@ class ConnectVideo(ConnectWebAdress):
 	def typeName(self):
 		return "Video"
 
-class ConnectTutorial(ConnectWebAdress):
+class ConnectLearning(ConnectWebAdress):
 	def typeName(self):
-		return "Tutorial"
+		return "Learning"
 
-class ConnectDocument(ConnectWebAdress):
+class ConnectQA(ConnectWebAdress):
 	def typeName(self):
-		return "Document"
+		return "Q & A"
 
+class ConnectBlog(ConnectWebAdress):
+	def typeName(self):
+		return "Blog"
 
-BASE_URL = ""
+class ConnectDocumentation(ConnectWebAdress):
+	def typeName(self):
+		return "Documentation"
 
-TEST_SEARCH_RESULT = [
-	ConnectTutorial("http://workshops.boundlessgeo.com/tutorial-lidar/", "Lidar tutorial", "Analyzing and Visualizing LiDAR"),
-	ConnectVideo("https://www.youtube.com/watch?v=dQw4w9WgXcQ", "Introduction to Desktop", "Learn the basic ideas about Boundless Desktop"),
-	ConnectDocument("http://docs.qgis.org/2.14/pdf/en/QGIS-2.14-PyQGISDeveloperCookbook-en.pdf", "PyQGIS Cookbook", "Learn to use Python in QGIS")
-]
+class ConnectDiscussion(ConnectWebAdress):
+	def typeName(self):
+		return "Discussion"
+
+class ConnectOther(ConnectWebAdress):
+	def typeName(self):
+		return "Other"
+
+BASE_URL = "http://api.dev.boundlessgeo.com/v1/search/"
 
 _plugins = []
 def loadPlugins():
@@ -164,15 +122,26 @@ def getPlugins(text):
 	else:
 		return []
 
+categories = {"LC": ConnectLearning,
+			  "DOC": ConnectDocumentation,
+			  "VID": ConnectVideo,
+			  "BLOG": ConnectBlog,
+			  "QA": ConnectQA,
+			  "DIS": ConnectDiscussion,
+			  "PLUG": ConnectPlugin}
 
 def search(text):
-	response =  copy(TEST_SEARCH_RESULT)
-	response.extend([ConnectPlugin(p) for p in getPlugins(text)])
-	return response
-	r = requests.get(BASE_URL, params = {"search": text})
-	r._raise_for_status()
-	return r.json()
-
+	r = requests.get(BASE_URL, params = {"q": text})
+	r.raise_for_status()
+	json = r.json()
+	results = []
+	print json
+	for element in json["features"]:
+		props = element["properties"]
+		results.append(categories[props["category"]](props["url"],
+									props["title"], props["description"], LEVELS.index(props["role"])))
+	results.extend([ConnectPlugin(p) for p in getPlugins(text)])
+	return results
 
 
 class OpenContentException(Exception):

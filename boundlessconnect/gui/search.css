@@ -1,0 +1,85 @@
+* {margin: 0; padding: 0;}
+
+div {
+  margin: 20px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+title {
+  font: bold 15px Helvetica, Verdana, sans-serif;
+  margin: 0 0 10px 0px;
+}
+
+h2 {
+  font: bold 20px Helvetica, Verdana, sans-serif;
+  margin: 0 0 15px 15px;
+}
+
+li {
+    border-bottom: 1px dashed grey;
+    margin: 0 0 10px 0;
+    font: 12px Helvetica, Verdana, sans-serif;
+}
+
+.canInstall{
+    background-color:#00bb00;
+    -moz-border-radius:22px;
+    -webkit-border-radius:22px;
+    border-radius:22px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:12px 34px;
+    text-decoration:none;
+    float: right;
+    margin: 0 15px 0 0;
+    width: 100px;
+    text-align: center;
+    position:relative;
+    top:1px;
+}
+
+.cannotInstall{
+    background-color:#bb0000;
+    -moz-border-radius:22px;
+    -webkit-border-radius:22px;
+    border-radius:22px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:12px 34px;
+    text-decoration:none;
+    float: right;
+    margin: 0 15px 0 0;
+    width: 100px;
+    text-align: center;
+    position:relative;
+    top:1px;
+}
+
+.category{
+    background-color:#0000bb;
+    -moz-border-radius:22px;
+    -webkit-border-radius:22px;
+    border-radius:22px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:12px 34px;
+    text-decoration:none;
+    float: right;
+    margin: 0 15px 0 0;
+    width: 100px;
+    text-align: center;
+    position:relative;
+    top:1px;
+}
+
+
+
