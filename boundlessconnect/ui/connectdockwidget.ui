@@ -181,7 +181,7 @@
          <item>
           <widget class="QPushButton" name="btnSignOut">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>Sign out</string>

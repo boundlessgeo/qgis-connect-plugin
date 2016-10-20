@@ -10,11 +10,11 @@ from PyQt4.Qt import QIcon
 
 pluginPath = os.path.dirname(__file__)
 
-LEVELS = ["open", "registered", "desktop basic", "desktop standard", "desktop enterprise", "student"]
-
+LEVELS = ["Open", "Registered Users", "Desktop Basic", "Desktop standard", "Desktop enterprise", "Student"]
+_LEVELS = [p.replace(" ", "").lower().strip() for p in LEVELS]
 
 class ConnectContent():
-	def __init__(self, url, name, description, level = 0):
+	def __init__(self, url, name, description, level = ["open"]):
 		self.url = url
 		self.name = name
 		self.description = description
@@ -29,16 +29,13 @@ class ConnectContent():
 			return f.read()
 
 	def canInstall(self, level):
-		return level == self.level
+		return level in self.level or self.level == _LEVELS[0]
 
 	def asHtmlEntry(self, level):
 		levelClass = 'canInstall' if self.canInstall(level) else 'cannotInstall'
 		s = ("<div class='title'>%s</div><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div>"
 			% (self.name, self.typeName(), levelClass, LEVELS[self.level], self.description))
 		return s
-
-
-
 
 LESSONS_PLUGIN_NAME = ""
 class ConnectLesson(ConnectContent):
@@ -66,10 +63,13 @@ class ConnectPlugin(ConnectContent):
 		self.name = plugin["name"]
 		self.description = plugin["description"]
 		self.url = plugin["url"]
-		self.level = 0
+		self.level = []
 
 	def typeName(self):
 		return "Plugin"
+
+	def canInstall(self, level):
+		return True
 
 	def open(self):
 		installer = pyplugin_installer.instance()
@@ -117,7 +117,6 @@ def loadPlugins():
 
 def getPlugins(text):
 	if text:
-		text = text.lower()
 		return [p for p in _plugins if text in p['name'].lower() or text in p['description'].lower()]
 	else:
 		return []
@@ -135,14 +134,18 @@ def search(text):
 	r.raise_for_status()
 	json = r.json()
 	results = []
-	print json
 	for element in json["features"]:
 		props = element["properties"]
-		results.append(categories[props["category"]](props["url"],
-									props["title"], props["description"], LEVELS.index(props["role"])))
+		level = [p.replace(" ", "").lower().strip() for p in props["role"].split(",")]
+		if props["category"] != "PLUG":
+			results.append(categories[props["category"]](props["url"],
+									props["title"], props["description"], level))
 	results.extend([ConnectPlugin(p) for p in getPlugins(text)])
 	return results
 
+USER_ROLES_URL = "https://qgis-dev.boundlessgeo.com/api/user_roles"
+def getUserRoles(user, password):
+	pass
 
 class OpenContentException(Exception):
 	pass

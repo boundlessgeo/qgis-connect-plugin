@@ -27,6 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 import base64
+
+from qgis.utils import iface
+
 from boundlessconnect import connect
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
@@ -121,7 +124,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.authWidget.setVisible(False)
             self.searchWidget.setVisible(True)
             self.labelLevel.setText("Subscription Level: <b>Open</b>")
-            self.level = 0
+            self.level = "open"
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
@@ -165,15 +168,15 @@ class ConnectDockWidget(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
-            self.level = 0
+            self.level = "open"
         else:
-            self.level = 0 #TODO
+            self.level = "open" #TODO
             self.saveOrUpdateAuthId()
 
         execute(connect.loadPlugins)
         self.authWidget.setVisible(False)
         self.searchWidget.setVisible(True)
-        self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[self.level])
+        self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level)])
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':

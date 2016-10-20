@@ -46,8 +46,6 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 
-#from boundlessconnect.gui.connectdialog import ConnectDialog
-#from boundlessconnect.gui.pluginsdialog import PluginsDialog
 from boundlessconnect import utils
 
 pluginPath = os.path.dirname(__file__)
@@ -56,6 +54,7 @@ pluginPath = os.path.dirname(__file__)
 class BoundlessConnectPlugin:
     def __init__(self, iface):
         self.iface = iface
+        self.dockWidget = None
 
         try:
             from boundlessconnect.tests import testerplugin
@@ -77,12 +76,18 @@ class BoundlessConnectPlugin:
             self.translator.load(qmPath)
             QCoreApplication.installTranslator(self.translator)
 
-        #self.iface.initializationCompleted.connect(self.startFirstRunWizard)
+        self.iface.initializationCompleted.connect(self.checkFirstRun)
+
+    def openDockWidget(self):
+        toggleView = self.dockWidget is not None
+        self.dockWidget = getConnectDockWidget()
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
+        if toggleView:
+            self.dockWidget.toggleViewAction().trigger()
 
     def initGui(self):
-        self.dockWidget = getConnectDockWidget()
-        self.actionRunWizard = self.dockWidget.toggleViewAction()
-        self.actionRunWizard.setText(self.tr('Boundless Connect'))
+        self.actionRunWizard = QAction(
+            self.tr('Boundless Connect'), self.iface.mainWindow())
         self.actionRunWizard.setIcon(
             QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.actionRunWizard.setWhatsThis(
@@ -97,7 +102,7 @@ class BoundlessConnectPlugin:
             self.tr('Install plugin from ZIP file stored on disk'))
         self.actionPluginFromZip.setObjectName('actionPluginFromZip')
 
-        #self.actionRunWizard.triggered.connect(self.runWizardAndProcessResults)
+        self.actionRunWizard.triggered.connect(self.openDockWidget)
         self.actionPluginFromZip.triggered.connect(self.installPlugin)
 
         # If Boundless repository is a directory, add menu entry
@@ -133,8 +138,6 @@ class BoundlessConnectPlugin:
         # Enable check for updates if it is not enabled
         utils.addCheckForUpdates()
 
-        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
-
     def unload(self):
         actions = self.iface.mainWindow().menuBar().actions()
         for action in actions:
@@ -144,8 +147,6 @@ class BoundlessConnectPlugin:
                 menuPlugin.removeAction(self.actionPluginFromZip)
                 if utils.isRepositoryInDirectory():
                     menuPlugin.removeAction(self.actionPluginManager)
-
-
         try:
             from boundlessconnect.tests import testerplugin
             from qgistester.tests import removeTestModule
@@ -153,13 +154,13 @@ class BoundlessConnectPlugin:
         except Exception as e:
             pass
 
-    def startFirstRunWizard(self):
+    def checkFirstRun(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
         firstRun = settings.value('firstRun', True, bool)
         settings.setValue('firstRun', False)
 
         if firstRun:
-            self.runWizardAndProcessResults()
+            self.openDockWidget()
 
     def installPlugin(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
@@ -185,22 +186,6 @@ class BoundlessConnectPlugin:
 
     def pluginManagerLocal(self):
         utils.showPluginManager(False)
-
-    def runWizardAndProcessResults(self):
-        pass
-#===============================================================================
-#         dlg = ConnectDialog()
-#         if dlg.exec_():
-#             #utils.showPluginManager(True)
-#             d = PluginsDialog()
-#             d.exec_()
-#
-#             utils.installFromStandardPath()
-#
-#             self._showMessage(
-#                 self.tr('Boundless Connect is done configuring your QGIS.'),
-#                 QgsMessageBar.SUCCESS)
-#===============================================================================
 
     def checkingDone(self):
         updateNeeded, allInstalled = utils.checkPluginsStatus()
