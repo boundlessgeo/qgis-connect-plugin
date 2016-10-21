@@ -69,19 +69,6 @@ class ConnectDockWidget(BASE, WIDGET):
         btnOk = self.buttonBox.button(QDialogButtonBox.Ok)
         btnOk.setText(self.tr('Login'))
 
-        settings = QSettings()
-        settings.beginGroup(reposGroup)
-        self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
-        settings.endGroup()
-
-        if self.authId != '':
-            authConfig = QgsAuthMethodConfig()
-            QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
-            username = authConfig.config('username')
-            password = authConfig.config('password')
-            self.leLogin.setText(username)
-            self.lePassword.setText(password)
-
         self.buttonBox.helpRequested.connect(self.showHelp)
         self.buttonBox.accepted.connect(self.logIn)
         self.btnSearch.clicked.connect(self.search)
@@ -97,12 +84,27 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.showLogin()
 
+        settings = QSettings()
+        settings.beginGroup(reposGroup)
+        self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
+        settings.endGroup()
+
+        if self.authId != '':
+            authConfig = QgsAuthMethodConfig()
+            QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
+            username = authConfig.config('username')
+            password = authConfig.config('password')
+            self.leLogin.setText(username)
+            self.lePassword.setText(password)
+
     def showLogin(self):
         self.authWidget.setVisible(True)
         self.searchWidget.setVisible(False)
         self.webView.setHtml("")
         self.leSearch.setText("")
         self.webView.setVisible(False)
+        self.leLogin.setText("")
+        self.lePassword.setText("")
 
     def showHelp(self):
         if not QDesktopServices.openUrl(QUrl(HELP_URL)):
@@ -124,7 +126,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.authWidget.setVisible(False)
             self.searchWidget.setVisible(True)
             self.labelLevel.setText("Subscription Level: <b>Open</b>")
-            self.level = "open"
+            self.level = ["open"]
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
@@ -168,21 +170,21 @@ class ConnectDockWidget(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
-            self.level = "open"
+            self.level = ["open"]
         else:
-            self.level = "open" #TODO
+            self.level = connect.getUserRoles(self.authid)
             self.saveOrUpdateAuthId()
 
         execute(connect.loadPlugins)
         self.authWidget.setVisible(False)
         self.searchWidget.setVisible(True)
-        self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level)])
+        self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level[0])])
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
             authConfig = QgsAuthMethodConfig('Basic')
-            authId = QgsAuthManager.instance().uniqueConfigId()
-            authConfig.setId(authId)
+            self.authId = QgsAuthManager.instance().uniqueConfigId()
+            authConfig.setId(self.authId)
             authConfig.setConfig('username', self.leLogin.text())
             authConfig.setConfig('password', self.lePassword.text())
             authConfig.setName('Boundless Connect Portal')
@@ -191,7 +193,7 @@ class ConnectDockWidget(BASE, WIDGET):
             authConfig.setUri(settings.value('repoUrl', '', unicode))
 
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
-                utils.setRepositoryAuth(authId)
+                utils.setRepositoryAuth(self.authId)
             else:
                 QMessageBox.information(self, self.tr('Error!'), self.tr('Unable to save credentials'))
         else:

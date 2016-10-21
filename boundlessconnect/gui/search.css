@@ -26,18 +26,17 @@ li {
 
 .canInstall{
     background-color:#00bb00;
-    -moz-border-radius:22px;
-    -webkit-border-radius:22px;
-    border-radius:22px;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
     display:inline-block;
     color:#ffffff;
     font-family:arial;
     font-size:12px;
-    padding:12px 34px;
+    padding:8px 8px;
     text-decoration:none;
     float: right;
-    margin: 0 15px 0 0;
-    width: 100px;
+    margin: 0 8px 0 0;
     text-align: center;
     position:relative;
     top:1px;
@@ -45,18 +44,17 @@ li {
 
 .cannotInstall{
     background-color:#bb0000;
-    -moz-border-radius:22px;
-    -webkit-border-radius:22px;
-    border-radius:22px;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
     display:inline-block;
     color:#ffffff;
     font-family:arial;
     font-size:12px;
-    padding:12px 34px;
+    padding:8px 8px;
     text-decoration:none;
     float: right;
-    margin: 0 15px 0 0;
-    width: 100px;
+    margin: 0 8px 0 0;
     text-align: center;
     position:relative;
     top:1px;
@@ -64,18 +62,17 @@ li {
 
 .category{
     background-color:#0000bb;
-    -moz-border-radius:22px;
-    -webkit-border-radius:22px;
-    border-radius:22px;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
     display:inline-block;
     color:#ffffff;
     font-family:arial;
     font-size:12px;
-    padding:12px 34px;
+    padding:8px 8px;
     text-decoration:none;
     float: right;
-    margin: 0 15px 0 0;
-    width: 100px;
+    margin: 0 8px 0 0;
     text-align: center;
     position:relative;
     top:1px;

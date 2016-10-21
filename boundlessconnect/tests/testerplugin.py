@@ -57,29 +57,32 @@ def functionalTests():
     except:
         return []
 
-    openPluginManagerBoundlessOnlyTest = Test('Verify that Boundless Connect can start Plugin Manager only with Boundless plugins')
-    openPluginManagerBoundlessOnlyTest.addStep('Check that Plugin manager is open and contains only Boundless plugins',
-                                prestep=lambda: _openPluginManager(True), isVerifyStep=True)
-
     invalidCredentialsTest = Test('Check Connect plugin recognize invalid credentials')
     invalidCredentialsTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button. '
                                    'Check that Connect shows error message complaining about invalid credentials.'
                                    'Close error message by pressing "No" button.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-    invalidCredentialsTest.addStep('Check that Boundless repo added to Plugin Manager and has no auth config associated with it',
-                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
-
-    connectTest = Test('Check Connect plugin write repo URL and authid')
-    connectTest.addStep('Accept dialog by pressing "Login" button',
+  
+    repeatedLoginTest = Test("Check repeated logging")
+    repeatedLoginTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
-    connectTest.addStep('Check that Boundless repo added to Plugin Manager and has no auth config associated with it',
-                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
-    connectTest.addStep('Enter valid Connect credentials and accept dialog by pressing "Login" button',
-                        prestep=lambda: _startConectPlugin())
-    connectTest.addStep('Check that Boundless repo added to Plugin Manager and has associated auth config',
-                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
+    repeatedLoginTest.addStep('Check that your subscription level is "Open"',
+                        isVerifyStep=True)
+    repeatedLoginTest.addStep('Click on the "log out" button')
+    repeatedLoginTest.addStep('Login with valid credentials"')
+    repeatedLoginTest.addStep('Check that your subscription level corresponds to the used credentials')
 
-    return [connectTest, invalidCredentialsTest, openPluginManagerBoundlessOnlyTest]
+    emptySearchTest = Test("Check empty search")
+    emptySearchTest.addStep('Accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin())
+    emptySearchTest.addStep('Click the "Search" button leaving the search text box empty. Verify that no results are shown and no error is thrown')
+    
+    searchTest = Test("Check normal search")
+    searchTest.addStep('Accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin())
+    searchTest.addStep('Type "MIL" in the search box and click the "Search" button. Verify that two results are shown: 1 plugin and 1 documentation item')
+    
+    return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest]
 
 
 class SearchApiTests(unittest.TestCase):
@@ -95,12 +98,14 @@ class SearchApiTests(unittest.TestCase):
 
     def testNonPluginsSearchResultsCorrectlyRetrieved(self):
         results = search("MIL-STD-2525")
-        self.assertEqual(1, len(results))
-        self.assertTrue(isinstance(results[0], ConnectPlugin))
+        self.assertEqual(2, len(results))
+        self.assertTrue(isinstance(results[1], ConnectPlugin))
+        self.assertTrue(isinstance(results[0], ConnectDocumentation))
 
     def testEmptySearch(self):
         results = search("")
         self.assertEqual(0, len(results))
+
 
 class BoundlessConnectTests(unittest.TestCase):
 
