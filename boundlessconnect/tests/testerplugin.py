@@ -82,6 +82,10 @@ def functionalTests():
                         prestep=lambda: _startConectPlugin())
     searchTest.addStep('Type "MIL" in the search box and click the "Search" button. Verify that two results are shown: 1 plugin and 1 documentation item')
     
+
+    helpTest = Test("Help test")
+    helpTest.addStep('Click on "Help" button and verify help is correctly open in a browser.',
+                        prestep=lambda: _startConectPlugin())
     return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest]
 
 
