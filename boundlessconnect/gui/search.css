@@ -78,5 +78,22 @@ li {
     top:1px;
 }
 
+.pagination{
+    background-color:#fabada;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:3px 3px;
+    text-decoration:none;
+    float: right;
+    margin: 0 3px 0 0;
+    text-align: center;
+    position:relative;
+    top:1px;
+}
 
 

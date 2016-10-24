@@ -35,7 +35,7 @@ from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
 from requests.exceptions import RequestException
 
-from PyQt4 import uic, QtWebKit, QtCore
+from PyQt4 import uic, QtWebKit, QtCore, QtGui
 from PyQt4.QtCore import QUrl, QSettings, Qt
 from PyQt4.QtGui import (QIcon,
                          QDesktopServices,
@@ -112,8 +112,13 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def linkClicked(self, url):
         name = url.toString()
-        content = self.searchResults[name]
-        execute(lambda:content.open(self.level))
+        if name == "next":
+            self.search(self.searchPage + 1)
+        elif name == "previous":
+            self.search(self.searchPage - 1)
+        else:
+            content = self.searchResults[name]
+            execute(lambda:content.open(self.level))
 
 
     def logIn(self):
@@ -131,20 +136,26 @@ class ConnectDockWidget(BASE, WIDGET):
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         self.manager = QNetworkAccessManager()
         self.setProxy()
+        QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
         self.reply = self.manager.get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
-    def search(self):
+    def search(self, page=0):
         text = self.leSearch.text().strip()
         if text:
+            self.searchPage = page
             try:
-                results = execute(lambda: connect.search(text))
+                results = execute(lambda: connect.search(text, self.searchPage))
                 if results:
                     self.searchResults = {r.url:r for r in results}
                     html = "<ul>"
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.level)
                     html += "</ul>"
+                    if self.searchPage == 0:
+                        html += "<a class='pagination' href='next'>Next</a>"
+                    else:
+                        html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
             except RequestException, e:
@@ -172,10 +183,11 @@ class ConnectDockWidget(BASE, WIDGET):
             self.saveOrUpdateAuthId()
             self.level = connect.getUserRoles(self.authId)
 
-        execute(connect.loadPlugins)
+        connect.loadPlugins()
         self.authWidget.setVisible(False)
         self.searchWidget.setVisible(True)
         self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level[0])])
+        QtGui.QApplication.restoreOverrideCursor()
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':

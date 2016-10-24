@@ -139,11 +139,10 @@ categories = {"LC": ConnectLearning,
               "DIS": ConnectDiscussion,
               "PLUG": ConnectPlugin}
 
-def search(text):
-    r = requests.get(BASE_URL, params = {"q": text})
+def search(text, page):
+    r = requests.get(BASE_URL, params = {"q": text, "p": page})
     r.raise_for_status()
     json = r.json()
-    print json
     results = []
     for element in json["features"]:
         props = element["properties"]
