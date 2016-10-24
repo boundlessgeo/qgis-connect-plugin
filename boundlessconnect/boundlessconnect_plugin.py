@@ -182,4 +182,3 @@ class BoundlessConnectPlugin:
 
     def tr(self, text):
         return QCoreApplication.translate('Boundless Connect', text)
-
