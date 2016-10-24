@@ -7,11 +7,14 @@ from boundlessconnect import utils
 from copy import copy
 import os
 from PyQt4.Qt import QIcon
+import json
 
 pluginPath = os.path.dirname(__file__)
 
 LEVELS = ["Open", "Registered Users", "Desktop Basic", "Desktop standard", "Desktop enterprise", "Student"]
 _LEVELS = [p.replace(" ", "").lower().strip() for p in LEVELS]
+
+SUBSCRIBE_URL = ""
 
 class ConnectContent():
     def __init__(self, url, name, description, level = ["open"]):
@@ -28,11 +31,17 @@ class ConnectContent():
         with open(path) as f:
             return f.read()
 
-    def canInstall(self, level):
+    def canOpen(self, level):
         return level in self.level or _LEVELS[0] in self.level
 
+    def open(self, level):
+        if self.canOpen(level):
+            self._open()
+        else:
+            webbrowser.open_new(SUBSCRIBE_URL)
+
     def asHtmlEntry(self, level):
-        levelClass = 'canInstall' if self.canInstall(level) else 'cannotInstall'
+        levelClass = 'canInstall' if self.canOpen(level) else 'cannotInstall'
         levels = ", ".join([LEVELS[_LEVELS.index(lev)] for lev in level])
         s = ("<a class='title' href='%s'>%s</a><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div>"
             % (self.url, self.name, self.typeName(), levelClass, levels, self.description))
@@ -40,7 +49,7 @@ class ConnectContent():
 
 LESSONS_PLUGIN_NAME = ""
 class ConnectLesson(ConnectContent):
-    def open(self):
+    def _open(self):
         if LESSONS_PLUGIN_NAME not in available_plugins:
             raise OpenContentException("Lessons plugin is not installed")
         elif LESSONS_PLUGIN_NAME not in active_plugins:
@@ -54,7 +63,7 @@ class ConnectLesson(ConnectContent):
         return "Lesson"
 
 class ConnectWebAdress(ConnectContent):
-    def open(self):
+    def _open(self):
         webbrowser.open_new(self.url)
 
 class ConnectPlugin(ConnectContent):
@@ -69,10 +78,10 @@ class ConnectPlugin(ConnectContent):
     def typeName(self):
         return "Plugin"
 
-    def canInstall(self, level):
+    def canOpen(self, level):
         return True
 
-    def open(self):
+    def _open(self):
         installer = pyplugin_installer.instance()
         installer.installPlugin(self.name)
 
@@ -150,6 +159,7 @@ def getUserRoles(authid):
     nam = NetworkAccessManager(authid)
     try:
         (response, content) = nam.request(USER_ROLES_URL)
+        jsoncontent = json.loads(content)
         return [p.replace(" ", "").lower().strip() for p in content]
     except Exception, e:
         return ["open"]

@@ -113,11 +113,8 @@ class ConnectDockWidget(BASE, WIDGET):
     def linkClicked(self, url):
         name = url.toString()
         content = self.searchResults[name]
-        if content.canInstall(self.level):
-            execute(content.open)
-        else:
-            pass
-            #TODO
+        execute(lambda:content.open(self.level))
+
 
     def logIn(self):
         utils.addBoundlessRepository()
@@ -172,8 +169,8 @@ class ConnectDockWidget(BASE, WIDGET):
                 self.saveOrUpdateAuthId()
             self.level = ["open"]
         else:
-            self.level = connect.getUserRoles(self.authid)
             self.saveOrUpdateAuthId()
+            self.level = connect.getUserRoles(self.authId)
 
         execute(connect.loadPlugins)
         self.authWidget.setVisible(False)
