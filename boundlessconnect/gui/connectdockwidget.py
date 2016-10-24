@@ -76,6 +76,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.searchWidget.setVisible(False)
 
         self.labelLevel.linkActivated.connect(self.showLogin)
+        self.leSearch.returnPressed.connect(self.search)
 
         self.webView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(QtCore.QUrl("file://" +
