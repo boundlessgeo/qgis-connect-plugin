@@ -16,7 +16,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
@@ -27,16 +26,13 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
-
 from PyQt4.QtCore import (QCoreApplication,
                           QSettings,
                           QLocale,
                           QTranslator,
                           QFileInfo,
                           Qt)
-from PyQt4.QtGui import (QMessageBox,
-                         QAction,
+from PyQt4.QtGui import (QAction,
                          QIcon,
                          QFileDialog,
                          QPushButton)
@@ -46,6 +42,7 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 
+from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
 
 pluginPath = os.path.dirname(__file__)
@@ -131,10 +128,6 @@ class BoundlessConnectPlugin:
                 if utils.isRepositoryInDirectory():
                     menuPlugin.insertAction(separator, self.actionPluginManager)
 
-        # Add Boundless plugin repository to list of the available
-        # plugin repositories if it is not presented here
-        #utils.addBoundlessRepository()
-
         # Enable check for updates if it is not enabled
         utils.addCheckForUpdates()
 
@@ -186,31 +179,6 @@ class BoundlessConnectPlugin:
 
     def pluginManagerLocal(self):
         utils.showPluginManager(False)
-
-    def checkingDone(self):
-        updateNeeded, allInstalled = utils.checkPluginsStatus()
-
-        res = utils.upgradeConnect()
-        if res != '':
-            self._showMessage(res)
-            return
-
-        if allInstalled and not updateNeeded:
-            self._showMessage(self.tr('You are up to date with Boundless plugins'))
-        elif updateNeeded:
-            self.btnUpdate = QPushButton(self.tr('Update'))
-            self.btnUpdate.clicked.connect(utils.upgradeInstalledPlugins)
-            self.btnUpdate.clicked.connect(self.iface.messageBar().popWidget)
-
-            updateMsg = QgsMessageBarItem(self.tr('Update plugins'),
-                                          self.tr('Some Boundless plugins need '
-                                                  'to be updated. Update them now?'),
-                                          self.btnUpdate,
-                                          QgsMessageBar.INFO,
-                                          0,
-                                          self.iface.messageBar()
-                                          )
-            self.iface.messageBar().pushItem(updateMsg)
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         self.iface.messageBar().pushMessage(
