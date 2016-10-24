@@ -26,6 +26,7 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 __revision__ = '$Format:%H$'
 
 import os
+import json
 import base64
 
 from qgis.utils import iface
@@ -121,7 +122,6 @@ class ConnectDockWidget(BASE, WIDGET):
             content = self.searchResults[name]
             execute(lambda:content.open(self.level))
 
-
     def logIn(self):
         utils.addBoundlessRepository()
         if self.leLogin.text() == '' or self.lePassword.text() == '':
@@ -182,7 +182,8 @@ class ConnectDockWidget(BASE, WIDGET):
             self.level = ["open"]
         else:
             self.saveOrUpdateAuthId()
-            self.level = connect.getUserRoles(self.authId)
+            roles = json.loads(str(reply.readAll()))
+            self.level = [role.replace(' ', '').lower().strip() for role in roles]
 
         connect.loadPlugins()
         self.authWidget.setVisible(False)
