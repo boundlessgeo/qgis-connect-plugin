@@ -75,16 +75,13 @@ class BoundlessConnectPlugin:
 
         self.iface.initializationCompleted.connect(self.checkFirstRun)
 
-    def openDockWidget(self):
-        toggleView = self.dockWidget is not None
+    def initGui(self):
         self.dockWidget = getConnectDockWidget()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
-        if toggleView:
-            self.dockWidget.toggleViewAction().trigger()
-
-    def initGui(self):
-        self.actionRunWizard = QAction(
-            self.tr('Boundless Connect'), self.iface.mainWindow())
+        self.dockWidget.hide()
+        
+        self.actionRunWizard = self.dockWidget.toggleViewAction()
+        self.actionRunWizard.setText(self.tr('Boundless Connect'))
         self.actionRunWizard.setIcon(
             QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.actionRunWizard.setWhatsThis(
@@ -99,7 +96,6 @@ class BoundlessConnectPlugin:
             self.tr('Install plugin from ZIP file stored on disk'))
         self.actionPluginFromZip.setObjectName('actionPluginFromZip')
 
-        self.actionRunWizard.triggered.connect(self.openDockWidget)
         self.actionPluginFromZip.triggered.connect(self.installPlugin)
 
         # If Boundless repository is a directory, add menu entry
@@ -153,7 +149,7 @@ class BoundlessConnectPlugin:
         settings.setValue('firstRun', False)
 
         if firstRun:
-            self.openDockWidget()
+            self.dockWidget.show()
 
     def installPlugin(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
@@ -186,3 +182,4 @@ class BoundlessConnectPlugin:
 
     def tr(self, text):
         return QCoreApplication.translate('Boundless Connect', text)
+
