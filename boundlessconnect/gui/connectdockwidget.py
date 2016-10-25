@@ -47,7 +47,7 @@ from PyQt4.QtNetwork import (QNetworkRequest,
                              QNetworkAccessManager,
                              QNetworkProxyFactory,
                              QNetworkProxy)
-from PyQt4.QtWebkit import QWebPage
+from PyQt4.QtWebKit import QWebPage
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
 
@@ -64,9 +64,11 @@ HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.
 
 class ConnectDockWidget(BASE, WIDGET):
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, visible=False):
         super(ConnectDockWidget, self).__init__(parent)
         self.setupUi(self)
+
+        self.setVisible(visible)
 
         self.setWindowIcon(QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.svgLogo.load(os.path.join(pluginPath, 'icons', 'connect-logo.svg'))
@@ -95,6 +97,15 @@ class ConnectDockWidget(BASE, WIDGET):
         self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
         settings.endGroup()
 
+        if self.isVisible() and self.authId != '':
+            authConfig = QgsAuthMethodConfig()
+            QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
+            username = authConfig.config('username')
+            password = authConfig.config('password')
+            self.leLogin.setText(username)
+            self.lePassword.setText(password)
+
+    def showEvent(self, event):
         if self.authId != '':
             authConfig = QgsAuthMethodConfig()
             QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
@@ -102,6 +113,8 @@ class ConnectDockWidget(BASE, WIDGET):
             password = authConfig.config('password')
             self.leLogin.setText(username)
             self.lePassword.setText(password)
+
+        BASE.showEvent(self, event)
 
     def showLogin(self):
         self.authWidget.setVisible(True)
