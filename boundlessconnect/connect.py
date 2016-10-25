@@ -1,5 +1,4 @@
 import webbrowser
-import requests
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
 from boundlessconnect.networkaccessmanager import NetworkAccessManager
@@ -140,11 +139,11 @@ categories = {"LC": ConnectLearning,
               "PLUG": ConnectPlugin}
 
 def search(text, page):
-    r = requests.get(BASE_URL, params = {"q": text, "p": page})
-    r.raise_for_status()
-    json = r.json()
+    nam = NetworkAccessManager()
+    res, resText = nam.request(BASE_URL + "?q=%s&p=%s" % (text, page))
+    jsonText = json.loads(resText)
     results = []
-    for element in json["features"]:
+    for element in jsonText["features"]:
         props = element["properties"]
         level = [p.replace(" ", "").lower().strip() for p in props["role"].split(",")]
         if props["category"] != "PLUG":
@@ -152,16 +151,6 @@ def search(text, page):
                                     props["title"], props["description"], level))
     results.extend([ConnectPlugin(p) for p in getPlugins(text)])
     return results
-
-USER_ROLES_URL = "https://qgis-dev.boundlessgeo.com/api/user_roles"
-def getUserRoles(authid):
-    nam = NetworkAccessManager(authid)
-    try:
-        (response, content) = nam.request(USER_ROLES_URL)
-        jsoncontent = json.loads(content)
-        return [p.replace(" ", "").lower().strip() for p in content]
-    except Exception, e:
-        return ["open"]
 
 class OpenContentException(Exception):
     pass

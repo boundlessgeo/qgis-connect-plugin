@@ -34,7 +34,6 @@ from qgis.utils import iface
 from boundlessconnect import connect
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
-from requests.exceptions import RequestException
 
 from PyQt4 import uic, QtWebKit, QtCore, QtGui
 from PyQt4.QtCore import QUrl, QSettings, Qt
@@ -159,10 +158,10 @@ class ConnectDockWidget(BASE, WIDGET):
                         html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
-            except RequestException, e:
-                    QMessageBox.warning(self, "Search",
-                        u"There has been a problem performing the search:\n" + unicode(e.args[0]),
-                        QMessageBox.Ok)
+            except Exception, e:
+                QMessageBox.warning(self, "Search",
+                    u"There has been a problem performing the search:\n" + unicode(e.args[0]),
+                    QMessageBox.Ok)
 
     def requestFinished(self):
         reply = self.sender()
