@@ -62,7 +62,7 @@ def functionalTests():
                                    'Check that Connect shows error message complaining about invalid credentials.'
                                    'Close error message by pressing "No" button.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-  
+
     repeatedLoginTest = Test("Check repeated logging")
     repeatedLoginTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
@@ -76,12 +76,16 @@ def functionalTests():
     emptySearchTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
     emptySearchTest.addStep('Click the "Search" button leaving the search text box empty. Verify that no results are shown and no error is thrown')
-    
+
     searchTest = Test("Check normal search")
     searchTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
-    searchTest.addStep('Type "MIL" in the search box and click the "Search" button. Verify that two results are shown: 1 plugin and 1 documentation item')
-    
+    searchTest.addStep('Type "MIL-STD-2525" in the search box and click the "Search" button. Verify that one plugin result is shown',
+                       isVerifyStep=True)
+    searchTest.addStep('Type "geoserver" in the search box and click the "Search" button. Verify that a list of results is shown and pagination links ("next") are shown as well.',
+                       isVerifyStep=True)
+    searchTest.addStep('Verify that pagination links work')
+
 
     helpTest = Test("Help test")
     helpTest.addStep('Click on "Help" button and verify help is correctly open in a browser.',
@@ -101,10 +105,12 @@ class SearchApiTests(unittest.TestCase):
         self.assertTrue(isinstance(results[0], ConnectPlugin))
 
     def testNonPluginsSearchResultsCorrectlyRetrieved(self):
-        results = search("MIL-STD-2525")
-        self.assertEqual(2, len(results))
-        self.assertTrue(isinstance(results[1], ConnectPlugin))
-        self.assertTrue(isinstance(results[0], ConnectDocumentation))
+        results = search("geoserver")
+        self.assertEqual(20, len(results))
+        results2 = search("geoserver", 1)
+        self.assertEqual(20, len(results))
+        self.assertNotEqual(results, results2)
+
 
     def testEmptySearch(self):
         results = search("")
