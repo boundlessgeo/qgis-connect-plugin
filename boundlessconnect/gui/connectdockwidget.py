@@ -16,7 +16,6 @@
 ***************************************************************************
 """
 
-
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
 __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
@@ -35,14 +34,20 @@ from boundlessconnect import connect
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
 
-from PyQt4 import uic, QtWebKit, QtCore, QtGui
+from PyQt4 import uic, QtWebKit
 from PyQt4.QtCore import QUrl, QSettings, Qt
 from PyQt4.QtGui import (QIcon,
+                         QCursor,
+                         QApplication,
                          QDesktopServices,
                          QDialogButtonBox,
                          QMessageBox)
-from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply, QNetworkAccessManager,\
-    QNetworkProxyFactory, QNetworkProxy
+from PyQt4.QtNetwork import (QNetworkRequest,
+                             QNetworkReply,
+                             QNetworkAccessManager,
+                             QNetworkProxyFactory,
+                             QNetworkProxy)
+from PyQt4.QtWebkit import QWebPage
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
 
@@ -78,8 +83,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.labelLevel.linkActivated.connect(self.showLogin)
         self.leSearch.returnPressed.connect(self.search)
 
-        self.webView.page().setLinkDelegationPolicy(QtWebKit.QWebPage.DelegateAllLinks)
-        self.webView.settings().setUserStyleSheetUrl(QtCore.QUrl("file://" +
+        self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
+        self.webView.settings().setUserStyleSheetUrl(QUrl("file://" +
             os.path.join(os.path.dirname(__file__), "search.css").replace("\\", "/")))
         self.webView.linkClicked.connect(self.linkClicked)
 
@@ -136,7 +141,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         self.manager = QNetworkAccessManager()
         self.setProxy()
-        QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.reply = self.manager.get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
@@ -188,7 +193,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.authWidget.setVisible(False)
         self.searchWidget.setVisible(True)
         self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level[0])])
-        QtGui.QApplication.restoreOverrideCursor()
+        QApplication.restoreOverrideCursor()
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
