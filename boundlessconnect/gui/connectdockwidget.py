@@ -182,6 +182,7 @@ class ConnectDockWidget(BASE, WIDGET):
                     QMessageBox.Ok)
 
     def requestFinished(self):
+        QApplication.restoreOverrideCursor()
         reply = self.sender()
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
@@ -202,11 +203,11 @@ class ConnectDockWidget(BASE, WIDGET):
             roles = json.loads(str(reply.readAll()))
             self.level = [role.replace(' ', '').lower().strip() for role in roles]
 
-        connect.loadPlugins()
+        execute(connect.loadPlugins)
         self.authWidget.setVisible(False)
         self.searchWidget.setVisible(True)
         self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level[0])])
-        QApplication.restoreOverrideCursor()
+
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
