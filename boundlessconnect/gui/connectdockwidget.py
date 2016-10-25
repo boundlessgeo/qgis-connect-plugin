@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 import os
 import json
 import base64
+import webbrowser
 
 from qgis.utils import iface
 
@@ -39,7 +40,6 @@ from PyQt4.QtCore import QUrl, QSettings, Qt
 from PyQt4.QtGui import (QIcon,
                          QCursor,
                          QApplication,
-                         QDesktopServices,
                          QDialogButtonBox,
                          QMessageBox)
 from PyQt4.QtNetwork import (QNetworkRequest,
@@ -113,8 +113,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.lePassword.setText("")
 
     def showHelp(self):
-        if not QDesktopServices.openUrl(QUrl(HELP_URL)):
-            QMessageBox.warning(self, self.tr('Error'), self.tr('Can not open help URL in browser'))
+        webbrowser.open(HELP_URL)
 
     def linkClicked(self, url):
         name = url.toString()
