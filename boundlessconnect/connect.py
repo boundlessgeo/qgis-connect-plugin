@@ -138,9 +138,11 @@ categories = {"LC": ConnectLearning,
               "DIS": ConnectDiscussion,
               "PLUG": ConnectPlugin}
 
+RESULTS_PER_PAGE = 20
+
 def search(text, page):
     nam = NetworkAccessManager()
-    res, resText = nam.request(BASE_URL + "?q=%s&p=%s" % (text, page))
+    res, resText = nam.request(BASE_URL + "?q=%s&p=%s&c=%i" % (text, page, RESULTS_PER_PAGE))
     jsonText = json.loads(resText)
     results = []
     for element in jsonText["features"]:

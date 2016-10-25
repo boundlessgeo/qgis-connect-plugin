@@ -169,10 +169,11 @@ class ConnectDockWidget(BASE, WIDGET):
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.level)
                     html += "</ul>"
-                    if self.searchPage == 0:
-                        html += "<a class='pagination' href='next'>Next</a>"
-                    else:
-                        html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
+                    if len(results) == connect.RESULTS_PER_PAGE:
+                        if self.searchPage == 0:
+                            html += "<a class='pagination' href='next'>Next</a>"
+                        else:
+                            html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
             except Exception, e:
