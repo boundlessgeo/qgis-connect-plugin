@@ -8,9 +8,17 @@ ul {
   list-style-type: none;
 }
 
-title {
+.title {
   font: bold 15px Helvetica, Verdana, sans-serif;
   margin: 0 0 10px 0px;
+  display: block;
+  color:#4f90c5;
+}
+
+.description {
+  font: Helvetica, Verdana, sans-serif;
+  margin: 0 0 10px 0px;
+  display: block;
 }
 
 h2 {
@@ -19,13 +27,21 @@ h2 {
 }
 
 li {
-    border-bottom: 1px dashed grey;
     margin: 0 0 10px 0;
     font: 12px Helvetica, Verdana, sans-serif;
 }
 
+a {
+    text-decoration: none;
+}
+
+.inner {
+    margin-left:20px;
+    margin-right:20px;
+}
+
 .canInstall{
-    background-color:#00bb00;
+    background-color:#79ae5e;
     -moz-border-radius:6px;
     -webkit-border-radius:6px;
     border-radius:6px;
@@ -33,17 +49,17 @@ li {
     color:#ffffff;
     font-family:arial;
     font-size:12px;
-    padding:8px 8px;
+    padding:4px 4px;
     text-decoration:none;
-    float: right;
-    margin: 0 8px 0 0;
+    float: left;
+    margin: 0 4px 0 0;
     text-align: center;
-    position:relative;
     top:1px;
+    font-weight: bold;
 }
 
 .cannotInstall{
-    background-color:#bb0000;
+    background-color:#c75f59;
     -moz-border-radius:6px;
     -webkit-border-radius:6px;
     border-radius:6px;
@@ -51,17 +67,17 @@ li {
     color:#ffffff;
     font-family:arial;
     font-size:12px;
-    padding:8px 8px;
+    padding:4px 4px;
     text-decoration:none;
-    float: right;
-    margin: 0 8px 0 0;
+    float: left;
+    margin: 0 4px 0 0;
     text-align: center;
-    position:relative;
     top:1px;
+    font-weight: bold;
 }
 
 .category{
-    background-color:#0000bb;
+    background-color:#4f90c5;
     -moz-border-radius:6px;
     -webkit-border-radius:6px;
     border-radius:6px;
@@ -69,13 +85,13 @@ li {
     color:#ffffff;
     font-family:arial;
     font-size:12px;
-    padding:8px 8px;
+    padding:4px 4px;
     text-decoration:none;
-    float: right;
-    margin: 0 8px 0 0;
+    float: left;
+    margin: 0 4px 0 0;
     text-align: center;
-    position:relative;
     top:1px;
+    font-weight: bold;
 }
 
 .pagination{
@@ -93,6 +109,7 @@ li {
     margin: 0 3px 0 0;
     position:relative;
     top:1px;
+    font-weight: bold;
 }
 
 

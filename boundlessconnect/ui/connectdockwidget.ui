@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1039</width>
-    <height>799</height>
+    <width>537</width>
+    <height>722</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,22 +111,7 @@
      <widget class="QWidget" name="searchWidget" native="true">
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <item>
-          <widget class="QgsFilterLineEdit" name="leSearch">
-           <property name="placeholderText">
-            <string>[Enter text to search in Connect catalog]</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="btnSearch">
-           <property name="text">
-            <string>Search</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+        <widget class="IconLineEdit" name="leSearch"/>
        </item>
        <item>
         <widget class="QWebView" name="webView">
@@ -217,11 +202,6 @@
    <extends>QWidget</extends>
    <header location="global">boundlessconnect.gui.fixedaspectsvgwidget</header>
    <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header location="global">qgis.gui</header>
   </customwidget>
  </customwidgets>
  <resources/>

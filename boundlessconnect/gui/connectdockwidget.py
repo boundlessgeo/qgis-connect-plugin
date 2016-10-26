@@ -78,12 +78,16 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.buttonBox.helpRequested.connect(self.showHelp)
         self.buttonBox.accepted.connect(self.logIn)
-        self.btnSearch.clicked.connect(self.search)
         self.btnSignOut.clicked.connect(self.showLogin)
         self.searchWidget.setVisible(False)
 
         self.labelLevel.linkActivated.connect(self.showLogin)
         self.leSearch.returnPressed.connect(self.search)
+        self.leSearch.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'search.svg')))
+        self.leSearch.setPlaceholderText("Search text string")
+
+        self.leLogin.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'envelope.svg')))
+        self.leLogin.setPlaceholderText("Email")
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(QUrl("file://" +
@@ -136,7 +140,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.search(self.searchPage - 1)
         else:
             content = self.searchResults[name]
-            execute(lambda:content.open(self.level))
+            content.open(self.level)
 
     def logIn(self):
         utils.addBoundlessRepository()

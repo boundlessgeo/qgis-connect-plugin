@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 import os
 
 from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QLineEdit, QToolButton, QIcon, QStyle
+from PyQt4.QtGui import QLineEdit, QToolButton, QStyle
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -36,10 +36,7 @@ class IconLineEdit(QLineEdit):
     def __init__(self, parent=None):
         QLineEdit.__init__(self, parent)
 
-        self.setPlaceholderText(self.tr('Email'))
-
         self.btnIcon = QToolButton(self)
-        self.btnIcon.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'envelope.svg')))
         self.btnIcon.setEnabled(False)
         self.btnIcon.setStyleSheet('QToolButton { border: none; padding: 0px; }')
 
@@ -55,3 +52,7 @@ class IconLineEdit(QLineEdit):
         sz = self.btnIcon.sizeHint()
         self.btnIcon.move(frameWidth + 1,
                            (self.rect().bottom() + 1 - sz.height()) / 2)
+
+    def setIcon(self, icon):
+        self.btnIcon.setIcon(icon)
+
