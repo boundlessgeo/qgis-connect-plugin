@@ -40,6 +40,11 @@ a {
     margin-right:20px;
 }
 
+.outer {
+    margin-left:10px;
+    margin-right:10px;
+}
+
 .canInstall{
     background-color:#79ae5e;
     -moz-border-radius:6px;

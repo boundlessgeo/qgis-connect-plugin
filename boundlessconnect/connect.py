@@ -47,7 +47,7 @@ class ConnectContent():
     def asHtmlEntry(self, level):
         levelClass = 'canInstall' if self.canOpen(level) else 'cannotInstall'
         levels = ", ".join([LEVELS[_LEVELS.index(lev)] for lev in level])
-        s = ("<a class='title' href='%s'>%s</a><div class='inner'><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div></div>"
+        s = ("<div class='outer'><a class='title' href='%s'>%s</a><div class='inner'><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div></div></div>"
             % (self.url, self.name, self.typeName(), levelClass, levels, self.description))
         return s
 
