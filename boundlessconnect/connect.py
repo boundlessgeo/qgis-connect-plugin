@@ -1,3 +1,5 @@
+# -*- coding: cp1252 -*-
+
 import webbrowser
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
@@ -7,6 +9,9 @@ from copy import copy
 import os
 from PyQt4.Qt import QIcon
 import json
+from boundlessconnect.gui.executor import execute
+from PyQt4.QtGui import QMessageBox
+from qgis.utils import iface
 
 pluginPath = os.path.dirname(__file__)
 
@@ -42,7 +47,7 @@ class ConnectContent():
     def asHtmlEntry(self, level):
         levelClass = 'canInstall' if self.canOpen(level) else 'cannotInstall'
         levels = ", ".join([LEVELS[_LEVELS.index(lev)] for lev in level])
-        s = ("<a class='title' href='%s'>%s</a><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div>"
+        s = ("<a class='title' href='%s'>%s</a><div class='inner'><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div></div>"
             % (self.url, self.name, self.typeName(), levelClass, levels, self.description))
         return s
 
@@ -67,22 +72,36 @@ class ConnectWebAdress(ConnectContent):
 
 class ConnectPlugin(ConnectContent):
 
-    def __init__(self, plugin):
+    def __init__(self, plugin, level):
         self.plugin = plugin
         self.name = plugin["name"]
         self.description = plugin["description"]
         self.url = plugin["download_url"]
-        self.level = []
+        self.level = level
 
     def typeName(self):
         return "Plugin"
 
-    def canOpen(self, level):
-        return True
-
     def _open(self):
-        installer = pyplugin_installer.instance()
-        installer.installPlugin(self.name)
+        if self.plugin['status'] == 'upgradeable':
+            reply = QMessageBox.question(iface.mainWindow(), 'Plugin',
+                     "An older version of the plugin is already installed. Do you want to upgrade it?",
+                     QMessageBox.Yes | QMessageBox.No)
+
+            if reply != QMessageBox.Yes:
+                return
+        elif self.plugin['status'] in ['not installed', 'new']:
+            pass
+        else:
+            reply = QMessageBox.question(iface.mainWindow(), 'Plugin',
+                     "The plugin is already installed. Do you want to reinstall it?",
+                     QMessageBox.Yes | QMessageBox.No)
+            if reply != QMessageBox.Yes:
+                return
+        def _install():
+            installer = pyplugin_installer.instance()
+            installer.installPlugin(self.plugin["id"])
+        execute(_install)
 
 class ConnectVideo(ConnectWebAdress):
     def typeName(self):
@@ -149,9 +168,10 @@ def search(text, page):
         props = element["properties"]
         level = [p.replace(" ", "").lower().strip() for p in props["role"].split(",")]
         if props["category"] != "PLUG":
+            title = props["title"] or props["description"].split(".")[0]
             results.append(categories[props["category"]](props["url"],
-                                    props["title"], props["description"], level))
-    results.extend([ConnectPlugin(p) for p in getPlugins(text)])
+                                    title, props["description"], level))
+    results.extend([ConnectPlugin(p, level) for p in getPlugins(text)])
     return results
 
 class OpenContentException(Exception):
