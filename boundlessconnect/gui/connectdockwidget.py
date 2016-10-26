@@ -79,7 +79,6 @@ class ConnectDockWidget(BASE, WIDGET):
         self.buttonBox.helpRequested.connect(self.showHelp)
         self.buttonBox.accepted.connect(self.logIn)
         self.btnSignOut.clicked.connect(self.showLogin)
-        self.searchWidget.setVisible(False)
 
         self.labelLevel.linkActivated.connect(self.showLogin)
         self.leSearch.returnPressed.connect(self.search)
@@ -94,8 +93,6 @@ class ConnectDockWidget(BASE, WIDGET):
             os.path.join(os.path.dirname(__file__), "search.css").replace("\\", "/")))
         self.webView.linkClicked.connect(self.linkClicked)
 
-        self.showLogin()
-
         settings = QSettings()
         settings.beginGroup(reposGroup)
         self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
@@ -109,6 +106,8 @@ class ConnectDockWidget(BASE, WIDGET):
             self.leLogin.setText(username)
             self.lePassword.setText(password)
 
+        self.stackedWidget.setCurrentIndex(0)
+
     def showEvent(self, event):
         if self.authId != '':
             authConfig = QgsAuthMethodConfig()
@@ -121,11 +120,9 @@ class ConnectDockWidget(BASE, WIDGET):
         BASE.showEvent(self, event)
 
     def showLogin(self):
-        self.authWidget.setVisible(True)
-        self.searchWidget.setVisible(False)
+        self.stackedWidget.setCurrentIndex(0)
         self.webView.setHtml("")
         self.leSearch.setText("")
-        self.webView.setVisible(False)
         self.leLogin.setText("")
         self.lePassword.setText("")
 
@@ -146,8 +143,7 @@ class ConnectDockWidget(BASE, WIDGET):
         utils.addBoundlessRepository()
         if self.leLogin.text() == '' or self.lePassword.text() == '':
             execute(connect.loadPlugins)
-            self.authWidget.setVisible(False)
-            self.searchWidget.setVisible(True)
+            self.stackedWidget.setCurrentIndex(0)
             self.labelLevel.setText("Subscription Level: <b>Open</b>")
             self.level = ["open"]
             return
@@ -208,10 +204,8 @@ class ConnectDockWidget(BASE, WIDGET):
             self.level = [role.replace(' ', '').lower().strip() for role in roles]
 
         execute(connect.loadPlugins)
-        self.authWidget.setVisible(False)
-        self.searchWidget.setVisible(True)
+        self.stackedWidget.setCurrentIndex(1)
         self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level[0])])
-
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
