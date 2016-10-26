@@ -15,7 +15,7 @@ from qgis.utils import iface
 
 pluginPath = os.path.dirname(__file__)
 
-LEVELS = ["Open", "Registered Users", "Desktop Basic", "Desktop standard", "Desktop enterprise", "Student"]
+LEVELS = ["Open", "Registered Users", "Desktop Basic", "Desktop standard", "Desktop enterprise", "Student", "Boundless", "Desktop Developer", "Subscribers"]
 _LEVELS = [p.replace(" ", "").lower().strip() for p in LEVELS]
 
 SUBSCRIBE_URL = ""
