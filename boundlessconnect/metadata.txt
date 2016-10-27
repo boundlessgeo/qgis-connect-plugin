@@ -9,7 +9,7 @@ qgisMinimumVersion=2.8
 author=Boundless (Alexander Bruy)
 email=info@boundlessgeo.com
 
-icon=icons/desktop.png
+icon=icons/desktop.svg
 
 tags=boundless,connect,help
 
