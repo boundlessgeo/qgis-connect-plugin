@@ -155,6 +155,7 @@ class BoundlessConnectPlugin:
 
         if firstRun:
             self.dockWidget.show()
+            utils.installFromStandardPath()
 
         self.dockWidget.askForAuth = True
 

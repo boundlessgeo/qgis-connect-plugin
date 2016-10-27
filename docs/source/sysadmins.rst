@@ -53,9 +53,8 @@ additional plugins during the post-installation step, he can create a directory
 ``$HOME/.qgis2/first-run-plugins`` under the user folder and put all the
 desired plugins ZIP packages in it.
 
-The *Boundless Connect Wizard* tool from |connect_plugin| will check if the
-directory exists and will install all the ZIP packages from it. Notice that the
-packages will be removed after the installation.
+The |connect_plugin| will check if the directory exists and will install all the
+ZIP packages from it. Notice that the packages will be removed after the installation.
 
 Setting up repository in Docker container
 -----------------------------------------
@@ -116,7 +115,7 @@ To add new plugin to the repository follow these steps:
 
     ssh repository.domain "/opt/repo-updater/plugins-xml/plugins-xml.sh update plugin.zip"
 
-Run `plugins-xml.sh --help` to get infomation about script usage and subcommands.
+Run `plugins-xml.sh --help` to get information about script usage and subcommands.
 
 More details in `README <https://github.com/boundlessgeo/qgis-plugins-xml/blob/master/README.md>`_
 file inside GitHub repository.
