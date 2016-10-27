@@ -80,17 +80,36 @@ def functionalTests():
     searchTest = Test("Check normal search")
     searchTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
-    searchTest.addStep('Type "MIL-STD-2525" in the search box and click the "Search" button. Verify that one plugin result is shown',
+    searchTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown',
                        isVerifyStep=True)
-    searchTest.addStep('Type "geoserver" in the search box and click the "Search" button. Verify that a list of results is shown and pagination links ("next") are shown as well.',
+    searchTest.addStep('Type "gdal" in the search box and press Enter. Verify that a list of results is shown and pagination links ("next") are shown as well.',
                        isVerifyStep=True)
     searchTest.addStep('Verify that pagination links work')
 
+    rolesDisplayTest = Test("Check roles display")
+    rolesDisplayTest.addStep('Accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin())
+    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is not available (red)',
+                       isVerifyStep=True)
+    rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it opens a browser where the user can subscribe to Boundless Connect',
+                       isVerifyStep=True)
+    rolesDisplayTest.addStep('Click on the "log out" button')
+    rolesDisplayTest.addStep('Login with credentials for Desktop enterprise"')
+    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is available (green)',
+                       isVerifyStep=True)
+    rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it install the plugins or tells you that it is already installed',
+                       isVerifyStep=True)
+
+    wrongSearchTest = Test("Check wrong search")
+    wrongSearchTest.addStep('Accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin())
+    wrongSearchTest.addStep('Type "wrongsearch" in the search box and press Enter. Verify that no result is shown.',
+                       isVerifyStep=True)
 
     helpTest = Test("Help test")
     helpTest.addStep('Click on "Help" button and verify help is correctly open in a browser.',
                         prestep=lambda: _startConectPlugin())
-    return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest]
+    return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest, wrongSearchTest, rolesDisplayTest]
 
 
 class SearchApiTests(unittest.TestCase):
