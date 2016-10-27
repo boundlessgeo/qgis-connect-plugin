@@ -108,7 +108,23 @@ def functionalTests():
     helpTest = Test("Help test")
     helpTest.addStep('Click on "Help" button and verify help is correctly open in a browser.',
                         prestep=lambda: _startConectPlugin())
-    return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest, wrongSearchTest, rolesDisplayTest]
+
+    toggleVisibilityTest = Test("Check visibility toggling")
+    toggleVisibilityTest.addStep('Close dock.',
+                                 prestep=lambda: _startConectPlugin())
+    toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless Connect". Verify that dock opened with active login screen.',
+                                 isVerifyStep=True)
+    toggleVisibilityTest.addStep('Close dock.')
+    toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check "Boundless Connect" panel. Verify that dock opened with active login screen.',
+                                 isVerifyStep=True)
+    toggleVisibilityTest.addStep('Login by pressing "Login" button and then close dock.')
+    toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless Connect". Verify that dock opened with active search screen.',
+                                 isVerifyStep=True)
+    toggleVisibilityTest.addStep('Close dock.')
+    toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check "Boundless Connect" panel. Verify that dock opened with active search screen.',
+                                 isVerifyStep=True)
+    
+    return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest, wrongSearchTest, rolesDisplayTest, toggleVisibilityTest]
 
 
 class SearchApiTests(unittest.TestCase):
