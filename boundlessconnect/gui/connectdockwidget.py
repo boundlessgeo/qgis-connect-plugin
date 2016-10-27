@@ -115,6 +115,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def showLogin(self):
         self.stackedWidget.setCurrentIndex(0)
+        self.webView.setVisible(False)
         self.webView.setHtml("")
         self.leSearch.setText("")
         self.leLogin.setText("")
