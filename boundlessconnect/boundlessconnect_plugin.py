@@ -136,7 +136,9 @@ class BoundlessConnectPlugin:
                 menuPlugin.removeAction(self.actionPluginFromZip)
                 if utils.isRepositoryInDirectory():
                     menuPlugin.removeAction(self.actionPluginManager)
+
         self.dockWidget.hide()
+
         try:
             from boundlessconnect.tests import testerplugin
             from qgistester.tests import removeTestModule
