@@ -6,32 +6,33 @@ Usage
 Boundless Connect Login
 -----------------------
 
-The aim of the *Boundless Connect Login* tool is to help the user to setup the
+The aim of the *Boundless Connect* is to help the user to setup the
 `Boundless QGIS Plugin Repository <http://qgis.boundlessgeo.com>`_ and install
 additional plugins, both Boundless and 3rd party ones (depending on what have
-been configured by the system administrator).
+been configured by the system administrator). Also it acts as gateway for
+additional Boundless resources and services.
 
 The tool will automatically run when QGIS is started for the first time with
 the |connect_plugin| activated.
 
-.. figure:: img/connect-tool.png
+.. figure:: img/connect-dock.png
    :align: center
 
-   Boundless Connect tool
+   Boundless Connect Login
 
 .. note::
 
-   If at the time, you don't want to enter your credentials and install plugins,
-   you can safely close it. While the tool starts automatically only once, you can
-   open it at any time from the :menuselection:`Plugins --> Boundless Connect Login`
+   If at the time, you don't want to enter your credentials and search for additional
+   resources, you can safely close it. While the tool starts automatically only once,
+   you can open it at any time from the :menuselection:`Plugins --> Boundless Connect Login`
    menu item.
 
 If your organization works with the remote *Boundless QGIS Plugin Repository*,
 you  will need to enter `Boundless Connect <https://connect.boundlessgeo.com/>`_
 credentials in the :guilabel:`email` and :guilabel:`password` fields, and press
-:guilabel:`OK` to have access to the repository.
+:guilabel:`Login` to have access to the repository and additional resources.
 
-After pressing the :guilabel:`OK` button, |connect_plugin| will try to validate
+After pressing the :guilabel:`Login` button, |connect_plugin| will try to validate
 your credentials in Boundless Connect portal (internet connection is needed).
 If the credentials are valid, it will save them in QGIS's authentication database.
 
@@ -69,34 +70,55 @@ a message dialog, asking you what to do.
 
 .. note::
 
-   Even with invalid credentials, you will be able to see a list available plugins
-   in the Boundless Plugins repository. Also, you will be able to download plugins
-   that don't require authentication. But, if you try to download protected plugins,
-   you will be asked for valid credentials.
+   Even with invalid credentials, you will be able to use *Boundless Connect* and even
+   perform search in the Boundless Connect portal. Also, you will be able to download plugins
+   and other resources that don't require authentication. But, if you try to download protected
+   plugins, you will be asked for valid credentials.
 
 If the |connect_plugin| was configured to use a local directory-based
 repository (check this with your system administrator), you can leave
-:guilabel:`Email` and :guilabel:`Password` fields empty. Press :guilabel:`OK`
+:guilabel:`Email` and :guilabel:`Password` fields empty. Press :guilabel:`Login`
 to continue. (In this case you won't be asked for a master password.)
 
-After entering the *Boundless Connect* credentials, the *Boundless plugins* dialog
-will open to help you install additional Boundless plugins.
+After entering the *Boundless Connect* credentials or just pressing :guilabel:`Login`
+without entering anything in the fields, you will see search panel which will
+be used to access Boundless plugins and additional content.
 
-.. figure:: img/install-plugins.png
+.. figure:: img/search-panel.png
    :align: center
 
-   Boundless plugins dialog.
+   Boundless Connect Search.
 
+At the bottom of the search panel you can find information about your subscription
+level and :guilabel:`Sign out` button. Clicking on :guilabel:`Sign out` button will
+return you to the login page where you can enter another credentials.
 
 .. note::
 
-   If you don't want to install Boundless plugins now, you can safely close this
-   dialog. You can install Boundless plugins later in any time by opening QGIS
+   Credentials you entered in the login dialog will be used also for accessing
+   *Boundless Plugins Repository*.
+
+To get any content you need to type some search text into search field and press
+``Enter`` button on your keyboard. 
+
+.. figure:: img/search-results.png
+   :align: center
+
+   Search results
+
+Each item has title and description. Description also contains tags, and information
+about subscription level, required to access this item. Clicking on the item title
+will open web browser with content or install corresponding plugin.
+
+If your subscription level is lower that required, you will be redirected to the
+subscription page.
+
+.. note::
+
+   Boundless plugins also can be installed in the usual way by opening QGIS
    *Plugin Manager* from :menuselection:`Plugins --> Manage and instal plugins`
    and entering "Boundless" in the filter field in the top of the *Plugin Manager*
-   dialog. Alternatively, you can start *Boundless Connect Login* tool again from
-   menu :menuselection:`Plugins --> Boundless Connect Login` and press
-   :guilabel:`Login` button to open *Boundless plugins* dialog again.
+   dialog.
 
 Beside the plugins installed by the user, if previously configured by the system
 administrator, |connect_plugin| will install additional predefined plugins (see
@@ -109,7 +131,7 @@ Updating plugins
 
 By default |connect_plugin| configure QGIS to check plugin updates every month.
 This check performed on QGIS start, and if updates found, you will see
-corresponding message in QGIS statusbar
+corresponding message in QGIS status bar
 
 .. figure:: img/update-available.png
    :align: center
@@ -153,8 +175,7 @@ From a remote plugin repository
 
 This is the most common way to install plugins, whether from QGIS Official
 Plugins Repository, Boundless QGIS Plugins Repository or any other remote
-repository that you may have configured, using the *Plugin Manager* directly
-or through the *Boundless Connect* tool.
+repository that you may have configured, using the *Plugin Manager* directly.
 
 .. note::
 
@@ -199,12 +220,12 @@ From a plugin ZIP package
 
 If you have a plugin package (e.g. previously downloaded from any repository or
 GitHub) you can easily install it using the |connect_plugin|, without the need
-to unpackage it. Go to :menuselection:`Plugins --> Install plugin from ZIP`,
+to unpack it. Go to :menuselection:`Plugins --> Install plugin from ZIP`,
 browse to the directory with plugin zip package and select the corresponding
 file. If the zip file is a valid QGIS plugin package it will be installed and
 activated.
 
-To deactivate or remove plugins installed whis way, like before, one can use
+To deactivate or remove plugins installed this way, like before, one can use
 QGIS *Plugin Manager* from :menuselection:`Plugins --> Manage and Install Plugins...`
 menu item.
 
