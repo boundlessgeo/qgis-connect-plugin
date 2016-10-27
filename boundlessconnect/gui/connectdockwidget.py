@@ -67,6 +67,7 @@ class ConnectDockWidget(BASE, WIDGET):
     def __init__(self, parent=None, visible=False):
         super(ConnectDockWidget, self).__init__(parent)
         self.setupUi(self)
+        self.loggedIn = False
 
         self.setVisible(visible)
 
@@ -109,7 +110,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.stackedWidget.setCurrentIndex(0)
 
     def showEvent(self, event):
-        if self.authId != '':
+        if self.authId != '' and not self.loggedIn:
             authConfig = QgsAuthMethodConfig()
             QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
             username = authConfig.config('username')
@@ -137,15 +138,16 @@ class ConnectDockWidget(BASE, WIDGET):
             self.search(self.searchPage - 1)
         else:
             content = self.searchResults[name]
-            content.open(self.level)
+            content.open(self.roles)
 
     def logIn(self):
         utils.addBoundlessRepository()
         if self.leLogin.text() == '' or self.lePassword.text() == '':
             execute(connect.loadPlugins)
-            self.stackedWidget.setCurrentIndex(0)
+            self.stackedWidget.setCurrentIndex(1)
             self.labelLevel.setText("Subscription Level: <b>Open</b>")
-            self.level = ["open"]
+            self.roles = ["open"]
+            self.loggedIn = True
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
@@ -167,7 +169,7 @@ class ConnectDockWidget(BASE, WIDGET):
                     self.searchResults = {r.url:r for r in results}
                     html = "<ul>"
                     for r in results:
-                        html += "<li>%s</li>" % r.asHtmlEntry(self.level)
+                        html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     html += "</ul>"
                     if len(results) == connect.RESULTS_PER_PAGE:
                         if self.searchPage == 0:
@@ -197,15 +199,20 @@ class ConnectDockWidget(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
-            self.level = ["open"]
+            self.roles = ["open"]
         else:
             self.saveOrUpdateAuthId()
             roles = json.loads(str(reply.readAll()))
-            self.level = [role.replace(' ', '').lower().strip() for role in roles]
+            self.roles = [role.replace(' ', '').lower().strip() for role in roles]
 
         execute(connect.loadPlugins)
         self.stackedWidget.setCurrentIndex(1)
-        self.labelLevel.setText("Subscription Level: <b>%s</b>" % connect.LEVELS[connect._LEVELS.index(self.level[0])])
+        roles = []
+        for role in self.roles:
+            if role in connect._ROLES:
+                roles.append[connect.ROLES[role]]
+        self.labelLevel.setText("Subscription Level: <b>%s</b>" % ",".join(roles))
+        self.loggedIn = True
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':

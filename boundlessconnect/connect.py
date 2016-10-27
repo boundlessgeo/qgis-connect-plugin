@@ -15,17 +15,17 @@ from qgis.utils import iface
 
 pluginPath = os.path.dirname(__file__)
 
-LEVELS = ["Open", "Registered Users", "Desktop Basic", "Desktop standard", "Desktop enterprise", "Student", "Boundless", "Desktop Developer", "Subscribers"]
-_LEVELS = [p.replace(" ", "").lower().strip() for p in LEVELS]
+_ROLES = ["Open", "Registered Users", "Desktop Basic", "Desktop standard", "Desktop enterprise", "Student", "Boundless", "Desktop Developer", "Subscribers"]
+ROLES = {r.replace(" ", "").lower().strip(): r for r in _ROLES}
 
 SUBSCRIBE_URL = ""
 
 class ConnectContent():
-    def __init__(self, url, name, description, level = ["open"]):
+    def __init__(self, url, name, description, roles = ["open"]):
         self.url = url
         self.name = name
         self.description = description
-        self.level = level
+        self.roles = roles
 
     def icon(self):
         return QIcon(os.path.join(pluginPath, "icons", "%s.png" % self.typeName().lower()))
@@ -35,20 +35,21 @@ class ConnectContent():
         with open(path) as f:
             return f.read()
 
-    def canOpen(self, level):
-        return level in self.level or _LEVELS[0] in self.level
+    def canOpen(self, roles):
+        matches = [role for role in roles if role in self.roles]
+        return bool(matches) or ROLES.keys()[0] in self.roles
 
-    def open(self, level):
-        if self.canOpen(level):
+    def open(self, roles):
+        if self.canOpen(roles):
             self._open()
         else:
             webbrowser.open_new(SUBSCRIBE_URL)
 
-    def asHtmlEntry(self, level):
-        levelClass = 'canInstall' if self.canOpen(level) else 'cannotInstall'
-        levels = ", ".join([LEVELS[_LEVELS.index(lev)] for lev in level])
+    def asHtmlEntry(self, roles):
+        installClass = 'canInstall' if self.canOpen(roles) else 'cannotInstall'
+        elementRoles = ", ".join([ROLES[role] for role in self.roles])
         s = ("<div class='outer'><a class='title' href='%s'>%s</a><div class='inner'><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div></div></div>"
-            % (self.url, self.name, self.typeName(), levelClass, levels, self.description))
+            % (self.url, self.name, self.typeName(), installClass, elementRoles, self.description))
         return s
 
 LESSONS_PLUGIN_NAME = ""
@@ -72,12 +73,12 @@ class ConnectWebAdress(ConnectContent):
 
 class ConnectPlugin(ConnectContent):
 
-    def __init__(self, plugin, level):
+    def __init__(self, plugin, roles):
         self.plugin = plugin
         self.name = plugin["name"]
         self.description = plugin["description"]
         self.url = plugin["download_url"]
-        self.level = level
+        self.roles = roles
 
     def typeName(self):
         return "Plugin"
@@ -139,9 +140,10 @@ def loadPlugins():
     _plugins = {}
     installer = pyplugin_installer.instance()
     installer.fetchAvailablePlugins(True)
-    for plugin in plugins.all():
-        if utils.isBoundlessPlugin(plugins.all()[plugin]) and plugin not in ['boundlessconnect']:
-            _plugins[plugin["name"]] = copy(plugins.all()[plugin])
+    for name in plugins.all():
+        plugin = plugins.all()[name]
+        if utils.isBoundlessPlugin(plugin) and name not in ['boundlessconnect']:
+            _plugins[plugin["name"]] = copy(plugin)
 
 
 categories = {"LC": ConnectLearning,
@@ -161,15 +163,15 @@ def search(text, page):
     results = []
     for element in jsonText["features"]:
         props = element["properties"]
-        level = [p.replace(" ", "").lower().strip() for p in props["role"].split(",")]
+        roles = [p.replace(" ", "").lower().strip() for p in props["role"].split(",")]
         if props["category"] != "PLUG":
             title = props["title"] or props["description"].split(".")[0]
             results.append(categories[props["category"]](props["url"],
-                                    title, props["description"], level))
+                                    title, props["description"], roles))
         else:
             plugin = _plugins.get(props["title"], None)
             if plugin:
-                results.append(ConnectPlugin(plugin, level))
+                results.append(ConnectPlugin(plugin, roles))
     return results
 
 class OpenContentException(Exception):
