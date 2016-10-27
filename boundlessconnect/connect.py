@@ -133,21 +133,16 @@ class ConnectOther(ConnectWebAdress):
 
 BASE_URL = "http://api.dev.boundlessgeo.com/v1/search/"
 
-_plugins = []
+_plugins = {}
 def loadPlugins():
     global _plugins
-    _plugins = []
+    _plugins = {}
     installer = pyplugin_installer.instance()
     installer.fetchAvailablePlugins(True)
     for plugin in plugins.all():
         if utils.isBoundlessPlugin(plugins.all()[plugin]) and plugin not in ['boundlessconnect']:
-            _plugins.append(copy(plugins.all()[plugin]))
+            _plugins[plugin["name"]] = copy(plugins.all()[plugin])
 
-def getPlugins(text):
-    if text:
-        return [p for p in _plugins if text.lower() in p['name'].lower() or text in p['description'].lower()]
-    else:
-        return []
 
 categories = {"LC": ConnectLearning,
               "DOC": ConnectDocumentation,
@@ -161,7 +156,7 @@ RESULTS_PER_PAGE = 20
 
 def search(text, page):
     nam = NetworkAccessManager()
-    res, resText = nam.request(BASE_URL + "?q=%s&p=%s&c=%i" % (text, page, RESULTS_PER_PAGE))
+    res, resText = nam.request(BASE_URL + "?q=%s&si=%s&c=%i" % (text, page, RESULTS_PER_PAGE))
     jsonText = json.loads(resText)
     results = []
     for element in jsonText["features"]:
@@ -171,7 +166,10 @@ def search(text, page):
             title = props["title"] or props["description"].split(".")[0]
             results.append(categories[props["category"]](props["url"],
                                     title, props["description"], level))
-    results.extend([ConnectPlugin(p, level) for p in getPlugins(text)])
+        else:
+            plugin = _plugins.get(props["title"], None)
+            if plugin:
+                results.append(ConnectPlugin(plugin, level))
     return results
 
 class OpenContentException(Exception):
