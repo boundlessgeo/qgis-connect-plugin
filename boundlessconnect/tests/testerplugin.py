@@ -38,7 +38,6 @@ from qgis.utils import active_plugins, home_plugin_path, unloadPlugin, iface
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
-#from boundlessconnect.gui.connectdialog import ConnectDialog
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect.connect import search, ConnectPlugin, loadPlugins
 
@@ -130,7 +129,6 @@ class SearchApiTests(unittest.TestCase):
         self.assertEqual(20, len(results))
         self.assertNotEqual(results, results2)
 
-
     def testEmptySearch(self):
         results = search("")
         self.assertEqual(0, len(results))
@@ -197,8 +195,6 @@ class BoundlessConnectTests(unittest.TestCase):
                 continue
             if utils.isBoundlessPlugin(plugins.all()[key]) and key not in installedPlugins:
                 installer.uninstallPlugin(key, quiet=True)
-
-
 
 
 def unitTests():
