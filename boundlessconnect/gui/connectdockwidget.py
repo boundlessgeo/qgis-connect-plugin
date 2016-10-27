@@ -68,6 +68,7 @@ class ConnectDockWidget(BASE, WIDGET):
         super(ConnectDockWidget, self).__init__(parent)
         self.setupUi(self)
         self.loggedIn = False
+        self.askForAuth = False
 
         self.setVisible(visible)
 
@@ -99,18 +100,10 @@ class ConnectDockWidget(BASE, WIDGET):
         self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
         settings.endGroup()
 
-        if self.isVisible() and self.authId != '':
-            authConfig = QgsAuthMethodConfig()
-            QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
-            username = authConfig.config('username')
-            password = authConfig.config('password')
-            self.leLogin.setText(username)
-            self.lePassword.setText(password)
-
         self.stackedWidget.setCurrentIndex(0)
 
     def showEvent(self, event):
-        if self.authId != '' and not self.loggedIn:
+        if self.authId != '' and self.askForAuth and not self.loggedIn:
             authConfig = QgsAuthMethodConfig()
             QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
             username = authConfig.config('username')

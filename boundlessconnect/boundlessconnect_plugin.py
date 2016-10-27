@@ -79,7 +79,7 @@ class BoundlessConnectPlugin:
         self.dockWidget = getConnectDockWidget()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
         self.dockWidget.hide()
-        
+
         self.actionRunWizard = self.dockWidget.toggleViewAction()
         self.actionRunWizard.setText(self.tr('Boundless Connect'))
         self.actionRunWizard.setIcon(
@@ -136,7 +136,7 @@ class BoundlessConnectPlugin:
                 menuPlugin.removeAction(self.actionPluginFromZip)
                 if utils.isRepositoryInDirectory():
                     menuPlugin.removeAction(self.actionPluginManager)
-        self.dock.hide()
+        self.dockWidget.hide()
         try:
             from boundlessconnect.tests import testerplugin
             from qgistester.tests import removeTestModule
@@ -151,6 +151,8 @@ class BoundlessConnectPlugin:
 
         if firstRun:
             self.dockWidget.show()
+
+        self.dockWidget.askForAuth = True
 
     def installPlugin(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
