@@ -1,0 +1,120 @@
+* {margin: 0; padding: 0;}
+
+div {
+  margin: 20px;
+}
+
+ul {
+  list-style-type: none;
+}
+
+.title {
+  font: bold 15px Helvetica, Verdana, sans-serif;
+  margin: 0 0 10px 0px;
+  display: block;
+  color:#4f90c5;
+}
+
+.description {
+  font: Helvetica, Verdana, sans-serif;
+  margin: 0 0 10px 0px;
+  display: block;
+}
+
+h2 {
+  font: bold 20px Helvetica, Verdana, sans-serif;
+  margin: 0 0 15px 15px;
+}
+
+li {
+    margin: 0 0 10px 0;
+    font: 12px Helvetica, Verdana, sans-serif;
+}
+
+a {
+    text-decoration: none;
+}
+
+.inner {
+    margin-left:20px;
+    margin-right:20px;
+}
+
+.outer {
+    margin-left:10px;
+    margin-right:10px;
+}
+
+.canInstall{
+    background-color:#79ae5e;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:4px 4px;
+    text-decoration:none;
+    float: left;
+    margin: 0 4px 0 0;
+    text-align: center;
+    top:1px;
+    font-weight: bold;
+}
+
+.cannotInstall{
+    background-color:#c75f59;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:4px 4px;
+    text-decoration:none;
+    float: left;
+    margin: 0 4px 0 0;
+    text-align: center;
+    top:1px;
+    font-weight: bold;
+}
+
+.category{
+    background-color:#4f90c5;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:4px 4px;
+    text-decoration:none;
+    float: left;
+    margin: 0 4px 0 0;
+    text-align: center;
+    top:1px;
+    font-weight: bold;
+}
+
+.pagination{
+    background-color:#999999;
+    -moz-border-radius:6px;
+    -webkit-border-radius:6px;
+    border-radius:6px;
+    display:inline-block;
+    color:#ffffff;
+    font-family:arial;
+    font-size:12px;
+    padding:3px 3px;
+    text-decoration:none;
+    float: center;
+    margin: 0 3px 0 0;
+    position:relative;
+    top:1px;
+    font-weight: bold;
+}
+
+

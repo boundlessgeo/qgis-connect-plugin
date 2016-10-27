@@ -25,17 +25,29 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 __revision__ = '$Format:%H$'
 
 import os
+import json
 import base64
+import webbrowser
 
-from PyQt4 import uic
-from PyQt4.QtCore import QUrl, QSettings
-from PyQt4.QtGui import (QDialog,
-                         QIcon,
-                         QDesktopServices,
+from qgis.utils import iface
+
+from boundlessconnect import connect
+from boundlessconnect.connect import ConnectContent
+from boundlessconnect.gui.executor import execute
+
+from PyQt4 import uic, QtWebKit
+from PyQt4.QtCore import QUrl, QSettings, Qt
+from PyQt4.QtGui import (QIcon,
+                         QCursor,
+                         QApplication,
                          QDialogButtonBox,
-                         QMessageBox
-                        )
-from PyQt4.QtNetwork import QNetworkRequest, QNetworkReply, QNetworkAccessManager
+                         QMessageBox)
+from PyQt4.QtNetwork import (QNetworkRequest,
+                             QNetworkReply,
+                             QNetworkAccessManager,
+                             QNetworkProxyFactory,
+                             QNetworkProxy)
+from PyQt4.QtWebKit import QWebPage
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
 
@@ -46,12 +58,18 @@ from boundlessconnect.plugins import boundlessRepoName, authEndpointUrl
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
-    os.path.join(pluginPath, 'ui', 'connectdialogbase.ui'))
+    os.path.join(pluginPath, 'ui', 'connectdockwidget.ui'))
 
-class ConnectDialog(BASE, WIDGET):
-    def __init__(self, parent=None):
-        super(ConnectDialog, self).__init__(parent)
+HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html#first-run-wizard"
+
+class ConnectDockWidget(BASE, WIDGET):
+
+    def __init__(self, parent=None, visible=False):
+        super(ConnectDockWidget, self).__init__(parent)
         self.setupUi(self)
+        self.loggedIn = False
+
+        self.setVisible(visible)
 
         self.setWindowIcon(QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.svgLogo.load(os.path.join(pluginPath, 'icons', 'connect-logo.svg'))
@@ -59,12 +77,29 @@ class ConnectDialog(BASE, WIDGET):
         btnOk = self.buttonBox.button(QDialogButtonBox.Ok)
         btnOk.setText(self.tr('Login'))
 
+        self.buttonBox.helpRequested.connect(self.showHelp)
+        self.buttonBox.accepted.connect(self.logIn)
+        self.btnSignOut.clicked.connect(self.showLogin)
+
+        self.labelLevel.linkActivated.connect(self.showLogin)
+        self.leSearch.returnPressed.connect(self.search)
+        self.leSearch.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'search.svg')))
+        self.leSearch.setPlaceholderText("Search text string")
+
+        self.leLogin.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'envelope.svg')))
+        self.leLogin.setPlaceholderText("Email")
+
+        self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
+        self.webView.settings().setUserStyleSheetUrl(QUrl("file://" +
+            os.path.join(os.path.dirname(__file__), "search.css").replace("\\", "/")))
+        self.webView.linkClicked.connect(self.linkClicked)
+
         settings = QSettings()
         settings.beginGroup(reposGroup)
         self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
         settings.endGroup()
 
-        if self.authId != '':
+        if self.isVisible() and self.authId != '':
             authConfig = QgsAuthMethodConfig()
             QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
             username = authConfig.config('username')
@@ -72,18 +107,47 @@ class ConnectDialog(BASE, WIDGET):
             self.leLogin.setText(username)
             self.lePassword.setText(password)
 
-        self.buttonBox.helpRequested.connect(self.showHelp)
+        self.stackedWidget.setCurrentIndex(0)
+
+    def showEvent(self, event):
+        if self.authId != '' and not self.loggedIn:
+            authConfig = QgsAuthMethodConfig()
+            QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
+            username = authConfig.config('username')
+            password = authConfig.config('password')
+            self.leLogin.setText(username)
+            self.lePassword.setText(password)
+
+        BASE.showEvent(self, event)
+
+    def showLogin(self):
+        self.stackedWidget.setCurrentIndex(0)
+        self.webView.setHtml("")
+        self.leSearch.setText("")
+        self.leLogin.setText("")
+        self.lePassword.setText("")
 
     def showHelp(self):
-        #if not QDesktopServices.openUrl(QUrl(HELP_URL)):
-        if not QDesktopServices.openUrl(
-                QUrl('file://{}'.format(os.path.join(pluginPath, 'docs', 'html', 'index.html')))):
-            QMessageBox.warning(self, self.tr('Error'), self.tr('Can not open help URL in browser'))
+        webbrowser.open(HELP_URL)
 
-    def accept(self):
+    def linkClicked(self, url):
+        name = url.toString()
+        if name == "next":
+            self.search(self.searchPage + 1)
+        elif name == "previous":
+            self.search(self.searchPage - 1)
+        else:
+            content = self.searchResults[name]
+            content.open(self.roles)
+
+    def logIn(self):
         utils.addBoundlessRepository()
         if self.leLogin.text() == '' or self.lePassword.text() == '':
-            QDialog.accept(self)
+            execute(connect.loadPlugins)
+            self.stackedWidget.setCurrentIndex(1)
+            self.labelLevel.setText("Subscription Level: <b>Open</b>")
+            self.roles = ["open"]
+            self.loggedIn = True
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
@@ -91,10 +155,36 @@ class ConnectDialog(BASE, WIDGET):
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         self.manager = QNetworkAccessManager()
         self.setProxy()
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.reply = self.manager.get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
+    def search(self, page=0):
+        text = self.leSearch.text().strip()
+        if text:
+            self.searchPage = page
+            try:
+                results = execute(lambda: connect.search(text, self.searchPage))
+                if results:
+                    self.searchResults = {r.url:r for r in results}
+                    html = "<ul>"
+                    for r in results:
+                        html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                    html += "</ul>"
+                    if len(results) == connect.RESULTS_PER_PAGE:
+                        if self.searchPage == 0:
+                            html += "<a class='pagination' href='next'>Next</a>"
+                        else:
+                            html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
+                    self.webView.setHtml(html)
+                    self.webView.setVisible(True)
+            except Exception, e:
+                QMessageBox.warning(self, "Search",
+                    u"There has been a problem performing the search:\n" + unicode(e.args[0]),
+                    QMessageBox.Ok)
+
     def requestFinished(self):
+        QApplication.restoreOverrideCursor()
         reply = self.sender()
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
@@ -109,14 +199,26 @@ class ConnectDialog(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
+            self.roles = ["open"]
         else:
             self.saveOrUpdateAuthId()
+            roles = json.loads(str(reply.readAll()))
+            self.roles = [role.replace(' ', '').lower().strip() for role in roles]
+
+        execute(connect.loadPlugins)
+        self.stackedWidget.setCurrentIndex(1)
+        roles = []
+        for role in self.roles:
+            if role in connect._ROLES:
+                roles.append[connect.ROLES[role]]
+        self.labelLevel.setText("Subscription Level: <b>%s</b>" % ",".join(roles))
+        self.loggedIn = True
 
     def saveOrUpdateAuthId(self):
         if self.authId == '':
             authConfig = QgsAuthMethodConfig('Basic')
-            authId = QgsAuthManager.instance().uniqueConfigId()
-            authConfig.setId(authId)
+            self.authId = QgsAuthManager.instance().uniqueConfigId()
+            authConfig.setId(self.authId)
             authConfig.setConfig('username', self.leLogin.text())
             authConfig.setConfig('password', self.lePassword.text())
             authConfig.setName('Boundless Connect Portal')
@@ -125,7 +227,7 @@ class ConnectDialog(BASE, WIDGET):
             authConfig.setUri(settings.value('repoUrl', '', unicode))
 
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
-                utils.setRepositoryAuth(authId)
+                utils.setRepositoryAuth(self.authId)
             else:
                 QMessageBox.information(self, self.tr('Error!'), self.tr('Unable to save credentials'))
         else:
@@ -135,14 +237,15 @@ class ConnectDialog(BASE, WIDGET):
             authConfig.setConfig('password', self.lePassword.text())
             QgsAuthManager.instance().updateAuthenticationConfig(authConfig)
 
-        QDialog.accept(self)
-
     def setProxy(self):
         proxy = None
         settings = QSettings()
         if settings.value('proxy/proxyEnabled', False):
             proxyHost = settings.value('proxy/proxyHost', '')
-            proxyPort = int(settings.value('proxy/proxyPort', '0'))
+            try:
+                proxyPort = int(settings.value('proxy/proxyPort', '0'))
+            except:
+                proxyPort = 0
             proxyUser = settings.value('proxy/proxyUser', '')
             proxyPassword = settings.value('proxy/proxyPassword', '')
             proxyTypeString = settings.value('proxy/proxyType', '')
@@ -167,5 +270,11 @@ class ConnectDialog(BASE, WIDGET):
                                       proxyUser, proxyPassword)
             self.manager.setProxy(proxy)
 
-    def reject(self):
-        QDialog.reject(self)
+
+_widget = None
+
+def getConnectDockWidget():
+    global _widget
+    if _widget is None:
+        _widget = ConnectDockWidget()
+    return _widget

@@ -31,22 +31,18 @@ from PyQt4.QtCore import (QCoreApplication,
                           QLocale,
                           QTranslator,
                           QFileInfo,
-                          QUrl)
-from PyQt4.QtGui import (QMessageBox,
-                         QAction,
+                          Qt)
+from PyQt4.QtGui import (QAction,
                          QIcon,
                          QFileDialog,
-                         QPushButton,
-                         QDesktopServices)
+                         QPushButton)
 
-from qgis.core import QgsApplication
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 
-from boundlessconnect.gui.connectdialog import ConnectDialog
-from boundlessconnect.gui.pluginsdialog import PluginsDialog
+from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
 
 pluginPath = os.path.dirname(__file__)
@@ -55,6 +51,7 @@ pluginPath = os.path.dirname(__file__)
 class BoundlessConnectPlugin:
     def __init__(self, iface):
         self.iface = iface
+        self.dockWidget = None
 
         try:
             from boundlessconnect.tests import testerplugin
@@ -76,15 +73,19 @@ class BoundlessConnectPlugin:
             self.translator.load(qmPath)
             QCoreApplication.installTranslator(self.translator)
 
-        self.iface.initializationCompleted.connect(self.startFirstRunWizard)
+        self.iface.initializationCompleted.connect(self.checkFirstRun)
 
     def initGui(self):
-        self.actionRunWizard = QAction(
-            self.tr('Boundless Connect Login'), self.iface.mainWindow())
+        self.dockWidget = getConnectDockWidget()
+        self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
+        self.dockWidget.hide()
+        
+        self.actionRunWizard = self.dockWidget.toggleViewAction()
+        self.actionRunWizard.setText(self.tr('Boundless Connect'))
         self.actionRunWizard.setIcon(
             QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.actionRunWizard.setWhatsThis(
-            self.tr('Login to Boundless Connect'))
+            self.tr('Boundless Connect'))
         self.actionRunWizard.setObjectName('actionRunWizard')
 
         self.actionPluginFromZip = QAction(
@@ -95,17 +96,7 @@ class BoundlessConnectPlugin:
             self.tr('Install plugin from ZIP file stored on disk'))
         self.actionPluginFromZip.setObjectName('actionPluginFromZip')
 
-        self.actionHelp = QAction(
-            self.tr('Help'), self.iface.mainWindow())
-        self.actionHelp.setIcon(
-            QgsApplication.getThemeIcon('/mActionHelpContents.svg'))
-        self.actionHelp.setWhatsThis(
-            self.tr('Boundless Connect documentation'))
-        self.actionHelp.setObjectName('actionConnectHelp')
-
-        self.actionRunWizard.triggered.connect(self.runWizardAndProcessResults)
         self.actionPluginFromZip.triggered.connect(self.installPlugin)
-        self.actionHelp.triggered.connect(self.showHelp)
 
         # If Boundless repository is a directory, add menu entry
         # to start modified Plugin Manager which works with local repositories
@@ -133,12 +124,6 @@ class BoundlessConnectPlugin:
                 if utils.isRepositoryInDirectory():
                     menuPlugin.insertAction(separator, self.actionPluginManager)
 
-        self.iface.addPluginToMenu(self.tr('Boundless Connect'), self.actionHelp)
-
-        # Add Boundless plugin repository to list of the available
-        # plugin repositories if it is not presented here
-        #utils.addBoundlessRepository()
-
         # Enable check for updates if it is not enabled
         utils.addCheckForUpdates()
 
@@ -151,8 +136,7 @@ class BoundlessConnectPlugin:
                 menuPlugin.removeAction(self.actionPluginFromZip)
                 if utils.isRepositoryInDirectory():
                     menuPlugin.removeAction(self.actionPluginManager)
-
-
+        self.dock.hide()
         try:
             from boundlessconnect.tests import testerplugin
             from qgistester.tests import removeTestModule
@@ -160,13 +144,13 @@ class BoundlessConnectPlugin:
         except Exception as e:
             pass
 
-    def startFirstRunWizard(self):
+    def checkFirstRun(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
         firstRun = settings.value('firstRun', True, bool)
         settings.setValue('firstRun', False)
 
         if firstRun:
-            self.runWizardAndProcessResults()
+            self.dockWidget.show()
 
     def installPlugin(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
@@ -192,51 +176,6 @@ class BoundlessConnectPlugin:
 
     def pluginManagerLocal(self):
         utils.showPluginManager(False)
-
-    def runWizardAndProcessResults(self):
-        dlg = ConnectDialog()
-        if dlg.exec_():
-            #utils.showPluginManager(True)
-            d = PluginsDialog()
-            d.exec_()
-
-            utils.installFromStandardPath()
-
-            self._showMessage(
-                self.tr('Boundless Connect is done configuring your QGIS.'),
-                QgsMessageBar.SUCCESS)
-
-    def checkingDone(self):
-        updateNeeded, allInstalled = utils.checkPluginsStatus()
-
-        res = utils.upgradeConnect()
-        if res != '':
-            self._showMessage(res)
-            return
-
-        if allInstalled and not updateNeeded:
-            self._showMessage(self.tr('You are up to date with Boundless plugins'))
-        elif updateNeeded:
-            self.btnUpdate = QPushButton(self.tr('Update'))
-            self.btnUpdate.clicked.connect(utils.upgradeInstalledPlugins)
-            self.btnUpdate.clicked.connect(self.iface.messageBar().popWidget)
-
-            updateMsg = QgsMessageBarItem(self.tr('Update plugins'),
-                                          self.tr('Some Boundless plugins need '
-                                                  'to be updated. Update them now?'),
-                                          self.btnUpdate,
-                                          QgsMessageBar.INFO,
-                                          0,
-                                          self.iface.messageBar()
-                                          )
-            self.iface.messageBar().pushItem(updateMsg)
-
-    def showHelp(self):
-        if not QDesktopServices.openUrl(
-                QUrl('file://{}'.format(os.path.join(pluginPath, 'docs', 'html', 'index.html')))):
-            QMessageBox.warning(None,
-                                self.tr('Error'),
-                                self.tr('Can not open help URL in browser'))
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         self.iface.messageBar().pushMessage(

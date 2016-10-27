@@ -30,20 +30,24 @@ import json
 import unittest
 import ConfigParser
 
-from PyQt4.QtCore import QSettings
+from PyQt4.QtCore import Qt, QSettings
 
 from qgis.core import QgsApplication
 
-from qgis.utils import active_plugins, home_plugin_path, unloadPlugin
+from qgis.utils import active_plugins, home_plugin_path, unloadPlugin, iface
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
-from boundlessconnect.gui.connectdialog import ConnectDialog
+#from boundlessconnect.gui.connectdialog import ConnectDialog
+from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
+from boundlessconnect.connect import search, ConnectPlugin, loadPlugins
+
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils
 
 testPath = os.path.dirname(__file__)
 
+dock = None
 originalVersion = None
 installedPlugins = []
 
@@ -53,29 +57,64 @@ def functionalTests():
     except:
         return []
 
-    openPluginManagerBoundlessOnlyTest = Test('Verify that Boundless Connect can start Plugin Manager only with Boundless plugins')
-    openPluginManagerBoundlessOnlyTest.addStep('Check that Plugin manager is open and contains only Boundless plugins',
-                                prestep=lambda: _openPluginManager(True), isVerifyStep=True)
-
     invalidCredentialsTest = Test('Check Connect plugin recognize invalid credentials')
     invalidCredentialsTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button. '
                                    'Check that Connect shows error message complaining about invalid credentials.'
                                    'Close error message by pressing "No" button.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-    invalidCredentialsTest.addStep('Check that Boundless repo added to Plugin Manager and has no auth config associated with it',
-                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
 
-    connectTest = Test('Check Connect plugin write repo URL and authid')
-    connectTest.addStep('Accept dialog by pressing "Login" button',
+    repeatedLoginTest = Test("Check repeated logging")
+    repeatedLoginTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
-    connectTest.addStep('Check that Boundless repo added to Plugin Manager and has no auth config associated with it',
-                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
-    connectTest.addStep('Enter valid Connect credentials and accept dialog by pressing "Login" button',
-                        prestep=lambda: _startConectPlugin())
-    connectTest.addStep('Check that Boundless repo added to Plugin Manager and has associated auth config',
-                        prestep=lambda: _openPluginManager(False), isVerifyStep=True)
+    repeatedLoginTest.addStep('Check that your subscription level is "Open"',
+                        isVerifyStep=True)
+    repeatedLoginTest.addStep('Click on the "log out" button')
+    repeatedLoginTest.addStep('Login with valid credentials"')
+    repeatedLoginTest.addStep('Check that your subscription level corresponds to the used credentials')
 
-    return [connectTest, invalidCredentialsTest, openPluginManagerBoundlessOnlyTest]
+    emptySearchTest = Test("Check empty search")
+    emptySearchTest.addStep('Accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin())
+    emptySearchTest.addStep('Click the "Search" button leaving the search text box empty. Verify that no results are shown and no error is thrown')
+
+    searchTest = Test("Check normal search")
+    searchTest.addStep('Accept dialog by pressing "Login" button',
+                        prestep=lambda: _startConectPlugin())
+    searchTest.addStep('Type "MIL-STD-2525" in the search box and click the "Search" button. Verify that one plugin result is shown',
+                       isVerifyStep=True)
+    searchTest.addStep('Type "geoserver" in the search box and click the "Search" button. Verify that a list of results is shown and pagination links ("next") are shown as well.',
+                       isVerifyStep=True)
+    searchTest.addStep('Verify that pagination links work')
+
+
+    helpTest = Test("Help test")
+    helpTest.addStep('Click on "Help" button and verify help is correctly open in a browser.',
+                        prestep=lambda: _startConectPlugin())
+    return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest]
+
+
+class SearchApiTests(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        loadPlugins()
+
+    def testPluginsSearchResultsCorrectlyRetrieved(self):
+        results = search("MIL-STD-2525")
+        self.assertEqual(1, len(results))
+        self.assertTrue(isinstance(results[0], ConnectPlugin))
+
+    def testNonPluginsSearchResultsCorrectlyRetrieved(self):
+        results = search("geoserver")
+        self.assertEqual(20, len(results))
+        results2 = search("geoserver", 1)
+        self.assertEqual(20, len(results))
+        self.assertNotEqual(results, results2)
+
+
+    def testEmptySearch(self):
+        results = search("")
+        self.assertEqual(0, len(results))
 
 
 class BoundlessConnectTests(unittest.TestCase):
@@ -141,10 +180,14 @@ class BoundlessConnectTests(unittest.TestCase):
                 installer.uninstallPlugin(key, quiet=True)
 
 
+
+
 def unitTests():
     connectSuite = unittest.makeSuite(BoundlessConnectTests, 'test')
+    apiSuite = unittest.makeSuite(SearchApiTests, 'test')
     _tests = []
     _tests.extend(connectSuite)
+    _tests.extend(apiSuite)
 
     return _tests
 
@@ -185,8 +228,10 @@ def _restoreVersion(pluginName, corePlugin=True):
 
 
 def _startConectPlugin():
-    dlg = ConnectDialog()
-    dlg.exec_()
+    dock = getConnectDockWidget()
+    iface.addDockWidget(Qt.RightDockWidgetArea, dock)
+    dock.show()
+    dock.showLogin()
 
 
 def suite():
