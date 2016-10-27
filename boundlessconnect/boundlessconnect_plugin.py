@@ -80,6 +80,8 @@ class BoundlessConnectPlugin:
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
         self.dockWidget.hide()
 
+        utils.setRepositoryUrl()
+
         self.actionRunWizard = self.dockWidget.toggleViewAction()
         self.actionRunWizard.setText(self.tr('Boundless Connect'))
         self.actionRunWizard.setIcon(
