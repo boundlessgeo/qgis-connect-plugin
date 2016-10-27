@@ -24,12 +24,12 @@ install:
 - sleep 10
 - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh $PLUGIN_NAME"
 - docker exec -it qgis-testing-environment sh -c "pip install paver"
-- docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup && paver package --tests"
 - docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.qgis2/python/plugins/"
 - PLUGIN_VERSION=`grep version $PLUGIN_NAME/metadata.txt | perl -npe 's/[^\d-]//g'`
 - docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.config/Boundless; printf \"[General]\n\" >> /root/.config/Boundless/BoundlessConnect.conf"
 - docker exec -it qgis-testing-environment sh -c "printf  \"firstRun${PLUGIN_VERSION}=false\nfirstRun=false\n\n\" >> /root/.config/Boundless/BoundlessConnect.conf"
 script:
+- docker exec -it qgis-testing-environment sh -c "cd /tests_directory && paver setup && paver package --tests"
 - docker exec -it qgis-testing-environment sh -c "qgis_testrunner.sh ${PLUGIN_NAME}.tests.testerplugin.run_tests"
 notifications:
   slack:
