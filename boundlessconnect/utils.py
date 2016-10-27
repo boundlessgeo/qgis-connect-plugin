@@ -84,6 +84,7 @@ def addBoundlessRepository():
         url = settings.value(repo + '/url', '', unicode)
         if url == repoUrl:
             hasBoundlessRepository = True
+
     # Boundless repository not found, so we add it to the list
     if not hasBoundlessRepository:
         settings.setValue(boundlessRepoName + '/url', repoUrl)
@@ -322,40 +323,6 @@ def deprecatedPlugins():
     return deprecated
 
 
-def checkPluginsStatus():
-    """Check if all Boundless plugins are installed and up-to-date
-    """
-    plugins.rebuild()
-    plugins.markNews()
-
-    availablePlugins = []
-    installedPlugins = []
-    updateNeeded = False
-    for plugin in plugins.all():
-        if isBoundlessPlugin(plugins.all()[plugin]):
-            if plugins.all()[plugin]['installed']:
-                if compareVersions(plugins.all()[plugin]["version_available"],
-                                   plugins.all()[plugin]["version_installed"]) == 1:
-                    updateNeeded = True
-                installedPlugins.append(plugin)
-            else:
-                if not plugins.all()[plugin]['deprecated'] and not plugin in oldPlugins:
-                    availablePlugins.append(plugin)
-
-    allInstalled = len(availablePlugins) == 0
-
-    return (updateNeeded, allInstalled)
-
-
-def connectVersion():
-    """Returns Connect plugin version"""
-    cfg = ConfigParser.SafeConfigParser()
-    cfg.read(os.path.join(pluginPath, 'metadata.txt'))
-    version = cfg.get('general', 'version').split('.')
-    version = ''.join(version)
-    return version
-
-
 def setRepositoryUrl():
     """Adds Boundless repository URL to Connect settings"""
     fName = os.path.join(QgsApplication.qgisSettingsDirPath(), repoUrlFile)
@@ -370,21 +337,6 @@ def setRepositoryUrl():
     settings = QSettings('Boundless', 'BoundlessConnect')
     settings.setValue('repoUrl', url)
     return url
-
-
-def upgradeConnect():
-    plugin = plugins.all()['boundlessconnect']
-    if plugin['status'] == 'upgradeable':
-        dlg = QgsPluginInstallerInstallingDialog(iface.mainWindow(), plugin)
-        dlg.exec_()
-        if dlg.result():
-            return QCoreApplication.translate('BoundlessConnect',
-                'Failed to update Connect plugin\n{}'.format(dlg.result()))
-
-        return QCoreApplication.translate('BoundlessConnect',
-            'Boundless Connect was updated. You need to restart QGIS in order to reload it.')
-
-    return ''
 
 
 def upgradeInstalledPlugins():
@@ -412,16 +364,6 @@ def upgradeInstalledPlugins():
 
     installer.exportPluginsToManager()
     return errors
-
-
-def internetAvailable():
-    try:
-        host = socket.gethostbyname('google.com')
-        s = socket.create_connection((host, 80), 2)
-        return True
-    except:
-        pass
-    return False
 
 
 def addCheckForUpdates():
