@@ -15,6 +15,7 @@ from qgis.utils import iface
 
 pluginPath = os.path.dirname(__file__)
 
+OPEN_ROLE = "open"
 _ROLES = ["Open", "Registered Users", "Desktop Basic", "Desktop standard", "Desktop enterprise", "Student", "Boundless", "Desktop Developer", "Subscribers"]
 ROLES = {r.replace(" ", "").lower().strip(): r for r in _ROLES}
 
@@ -37,7 +38,7 @@ class ConnectContent():
 
     def canOpen(self, roles):
         matches = [role for role in roles if role in self.roles]
-        return bool(matches) or ROLES.keys()[0] in self.roles
+        return bool(matches) or OPEN_ROLE in self.roles
 
     def open(self, roles):
         if self.canOpen(roles):
