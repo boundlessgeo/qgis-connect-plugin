@@ -8,15 +8,30 @@ ul {
   list-style-type: none;
 }
 
-.title {
+.titleCanInstall {
   font: bold 15px Helvetica, Verdana, sans-serif;
   margin: 0 0 10px 0px;
   display: block;
-  color:#4f90c5;
+  color:#156794;
 }
 
-.description {
+.titleCannotInstall {
+  font: bold 15px Helvetica, Verdana, sans-serif;
+  margin: 0 0 10px 0px;
+  display: block;
+  color:#aaaaaa;
+}
+
+
+.descriptionCanInstall {
   font: Helvetica, Verdana, sans-serif;
+  margin: 0 0 10px 0px;
+  display: block;
+}
+
+.descriptionCannotInstall {
+  font: Helvetica, Verdana, sans-serif;
+  color: #aaaaaa;
   margin: 0 0 10px 0px;
   display: block;
 }
@@ -45,8 +60,8 @@ a {
     margin-right:10px;
 }
 
-.canInstall{
-    background-color:#79ae5e;
+.categoryCanInstall{
+    background-color:#156794;
     -moz-border-radius:6px;
     -webkit-border-radius:6px;
     border-radius:6px;
@@ -63,7 +78,7 @@ a {
     font-weight: bold;
 }
 
-.cannotInstall{
+.categoryCannotInstall{
     background-color:#c75f59;
     -moz-border-radius:6px;
     -webkit-border-radius:6px;
@@ -81,23 +96,6 @@ a {
     font-weight: bold;
 }
 
-.category{
-    background-color:#4f90c5;
-    -moz-border-radius:6px;
-    -webkit-border-radius:6px;
-    border-radius:6px;
-    display:inline-block;
-    color:#ffffff;
-    font-family:arial;
-    font-size:12px;
-    padding:4px 4px;
-    text-decoration:none;
-    float: left;
-    margin: 0 4px 0 0;
-    text-align: center;
-    top:1px;
-    font-weight: bold;
-}
 
 .pagination{
     background-color:#999999;

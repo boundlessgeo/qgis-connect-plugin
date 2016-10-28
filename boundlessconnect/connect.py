@@ -46,10 +46,9 @@ class ConnectContent():
             webbrowser.open_new(SUBSCRIBE_URL)
 
     def asHtmlEntry(self, roles):
-        installClass = 'canInstall' if self.canOpen(roles) else 'cannotInstall'
-        elementRoles = ", ".join([ROLES[role] for role in self.roles])
-        s = ("<div class='outer'><a class='title' href='%s'>%s</a><div class='inner'><div class='category'>%s</div><div class='%s'>%s</div><div class='description'>%s</div></div></div>"
-            % (self.url, self.name, self.typeName(), installClass, elementRoles, self.description))
+        canInstall = 'CanInstall' if self.canOpen(roles) else 'CannotInstall'
+        s = ("<div class='outer'><a class='title%s' href='%s'>%s</a><div class='inner'><div class='category%s'>%s</div><div class='description%s'>%s</div></div></div>"
+            % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
         return s
 
 LESSONS_PLUGIN_NAME = ""

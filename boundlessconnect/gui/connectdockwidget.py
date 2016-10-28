@@ -85,7 +85,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.labelLevel.linkActivated.connect(self.showLogin)
         self.leSearch.returnPressed.connect(self.search)
         self.leSearch.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'search.svg')))
-        self.leSearch.setPlaceholderText("Search text string")
+        self.leSearch.setPlaceholderText("Search text")
 
         self.leLogin.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'envelope.svg')))
         self.leLogin.setPlaceholderText("Email")
@@ -100,7 +100,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
         settings.endGroup()
 
-        self.stackedWidget.setCurrentIndex(0)
+        self.showLogin()
 
     def showEvent(self, event):
         if self.authId != '' and self.askForAuth and not self.loggedIn:
@@ -139,8 +139,8 @@ class ConnectDockWidget(BASE, WIDGET):
         if self.leLogin.text() == '' or self.lePassword.text() == '':
             execute(connect.loadPlugins)
             self.stackedWidget.setCurrentIndex(1)
-            self.labelLevel.setText("Subscription Level: <b>Open</b>")
             self.roles = ["open"]
+            self.labelLevel.setVisible(False)
             self.loggedIn = True
             return
 
@@ -193,6 +193,7 @@ class ConnectDockWidget(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
+            self.labelLevel.setVisible(False)
             self.roles = ["open"]
         else:
             self.saveOrUpdateAuthId()
@@ -205,7 +206,8 @@ class ConnectDockWidget(BASE, WIDGET):
         for role in self.roles:
             if role in connect._ROLES:
                 roles.append[connect.ROLES[role]]
-        self.labelLevel.setText("Subscription Level: <b>%s</b>" % ",".join(roles))
+        self.labelLevel.setVisible(True)
+        self.labelLevel.setText("Logged in as: <b>%s</b>" % self.leLogin.text())
         self.loggedIn = True
 
     def saveOrUpdateAuthId(self):
