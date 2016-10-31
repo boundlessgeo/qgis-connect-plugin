@@ -86,6 +86,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.leSearch.returnPressed.connect(self.search)
         self.leSearch.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'search.svg')))
         self.leSearch.setPlaceholderText("Search text")
+        self.btnSearch.clicked.connect(self.search)
 
         self.leLogin.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'envelope.svg')))
         self.leLogin.setPlaceholderText("Email")
