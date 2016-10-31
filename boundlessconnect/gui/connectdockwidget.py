@@ -60,7 +60,7 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'connectdockwidget.ui'))
 
-HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html#first-run-wizard"
+HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html"
 
 class ConnectDockWidget(BASE, WIDGET):
 
