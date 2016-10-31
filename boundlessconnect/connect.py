@@ -17,7 +17,7 @@ pluginPath = os.path.dirname(__file__)
 
 OPEN_ROLE = "open"
 
-SUBSCRIBE_URL = ""
+SUBSCRIBE_URL = "https://connect.boundlessgeo.com/Upgrade-Subscription"
 
 class ConnectContent():
     def __init__(self, url, name, description, roles = ["open"]):
