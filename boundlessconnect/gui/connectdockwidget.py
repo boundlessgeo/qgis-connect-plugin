@@ -174,6 +174,7 @@ class ConnectDockWidget(BASE, WIDGET):
                     self.webView.setVisible(True)
                 else:
                     QMessageBox.warning(iface.mainWindow(), "Search", "No search matching the entered text was found.")
+                    self.webView.setVisible(False)
             except Exception, e:
                 QMessageBox.warning(self, "Search",
                     u"There has been a problem performing the search:\n" + unicode(e.args[0]),
