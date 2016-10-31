@@ -202,10 +202,6 @@ class ConnectDockWidget(BASE, WIDGET):
 
         execute(connect.loadPlugins)
         self.stackedWidget.setCurrentIndex(1)
-        roles = []
-        for role in self.roles:
-            if role in connect._ROLES:
-                roles.append[connect.ROLES[role]]
         self.labelLevel.setVisible(True)
         self.labelLevel.setText("Logged in as: <b>%s</b>" % self.leLogin.text())
         self.loggedIn = True
