@@ -64,21 +64,21 @@ def functionalTests():
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
-    repeatedLoginTest.addStep('Accept dialog by pressing "Login" button',
+    repeatedLoginTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
                         prestep=lambda: _startConectPlugin())
     repeatedLoginTest.addStep('Check that your subscription level is "Open"',
                         isVerifyStep=True)
-    repeatedLoginTest.addStep('Click on the "log out" button')
+    repeatedLoginTest.addStep('Click on the "Log out" button')
     repeatedLoginTest.addStep('Login with valid credentials"')
     repeatedLoginTest.addStep('Check that your subscription level corresponds to the used credentials')
 
     emptySearchTest = Test("Check empty search")
-    emptySearchTest.addStep('Accept dialog by pressing "Login" button',
+    emptySearchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
                         prestep=lambda: _startConectPlugin())
     emptySearchTest.addStep('Leave search box empty and press Enter. Verify that no results are shown and no error is thrown')
 
     searchTest = Test("Check normal search")
-    searchTest.addStep('Accept dialog by pressing "Login" button',
+    searchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
                         prestep=lambda: _startConectPlugin())
     searchTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown',
                        isVerifyStep=True)
@@ -87,13 +87,13 @@ def functionalTests():
     searchTest.addStep('Verify that pagination links work')
 
     rolesDisplayTest = Test("Check roles display")
-    rolesDisplayTest.addStep('Accept dialog by pressing "Login" button',
+    rolesDisplayTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
                         prestep=lambda: _startConectPlugin())
     rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is not available (red)',
                        isVerifyStep=True)
     rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it opens a browser where the user can subscribe to Boundless Connect',
                        isVerifyStep=True)
-    rolesDisplayTest.addStep('Click on the "log out" button')
+    rolesDisplayTest.addStep('Click on the "Log out" button')
     rolesDisplayTest.addStep('Login with credentials for Desktop Enterprise"')
     rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is available (green)',
                        isVerifyStep=True)
@@ -101,7 +101,7 @@ def functionalTests():
                        isVerifyStep=True)
 
     wrongSearchTest = Test("Check wrong search")
-    wrongSearchTest.addStep('Accept dialog by pressing "Login" button',
+    wrongSearchTest.addStep('Accept dialog by pressing "Login" button ',
                         prestep=lambda: _startConectPlugin())
     wrongSearchTest.addStep('Type "wrongsearch" in the search box and press Enter. Verify that a warning is displayed.',
                        isVerifyStep=True)
@@ -111,14 +111,14 @@ def functionalTests():
                         prestep=lambda: _startConectPlugin())
 
     toggleVisibilityTest = Test("Check visibility toggling")
-    toggleVisibilityTest.addStep('Close dock.',
+    toggleVisibilityTest.addStep('Close Connect dock.',
                                  prestep=lambda: _startConectPlugin())
     toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless Connect". Verify that dock opened with active login screen.',
                                  isVerifyStep=True)
-    toggleVisibilityTest.addStep('Close dock.')
+    toggleVisibilityTest.addStep('Close Connect dock.')
     toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check "Boundless Connect" panel. Verify that dock opened with active login screen.',
                                  isVerifyStep=True)
-    toggleVisibilityTest.addStep('Login by pressing "Login" button and then close dock.')
+    toggleVisibilityTest.addStep('Login by pressing "Login" (without entering credentials) button and then close dock.')
     toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless Connect". Verify that dock opened with active search screen.',
                                  isVerifyStep=True)
     toggleVisibilityTest.addStep('Close dock.')
