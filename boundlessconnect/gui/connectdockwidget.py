@@ -136,7 +136,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def logIn(self):
         utils.addBoundlessRepository()
-        if self.leLogin.text() == '' or self.lePassword.text() == '':
+        if self.leLogin.text().strip() == '' or self.lePassword.text().strip() == '':
             execute(connect.loadPlugins)
             self.stackedWidget.setCurrentIndex(1)
             self.roles = ["open"]
@@ -145,7 +145,7 @@ class ConnectDockWidget(BASE, WIDGET):
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
-        httpAuth = base64.encodestring('{}:{}'.format(self.leLogin.text(), self.lePassword.text()))[:-1]
+        httpAuth = base64.encodestring('{}:{}'.format(self.leLogin.text().strip(), self.lePassword.text().strip()))[:-1]
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         self.manager = QNetworkAccessManager()
         self.setProxy()
@@ -214,8 +214,8 @@ class ConnectDockWidget(BASE, WIDGET):
             authConfig = QgsAuthMethodConfig('Basic')
             self.authId = QgsAuthManager.instance().uniqueConfigId()
             authConfig.setId(self.authId)
-            authConfig.setConfig('username', self.leLogin.text())
-            authConfig.setConfig('password', self.lePassword.text())
+            authConfig.setConfig('username', self.leLogin.text().strip())
+            authConfig.setConfig('password', self.lePassword.text().strip())
             authConfig.setName('Boundless Connect Portal')
 
             settings = QSettings('Boundless', 'BoundlessConnect')
@@ -228,8 +228,8 @@ class ConnectDockWidget(BASE, WIDGET):
         else:
             authConfig = QgsAuthMethodConfig()
             QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
-            authConfig.setConfig('username', self.leLogin.text())
-            authConfig.setConfig('password', self.lePassword.text())
+            authConfig.setConfig('username', self.leLogin.text().strip())
+            authConfig.setConfig('password', self.lePassword.text().strip())
             QgsAuthManager.instance().updateAuthenticationConfig(authConfig)
 
     def setProxy(self):
