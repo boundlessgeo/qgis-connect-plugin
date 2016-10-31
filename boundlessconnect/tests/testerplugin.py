@@ -75,7 +75,7 @@ def functionalTests():
     emptySearchTest = Test("Check empty search")
     emptySearchTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
-    emptySearchTest.addStep('Click the "Search" button leaving the search text box empty. Verify that no results are shown and no error is thrown')
+    emptySearchTest.addStep('Leave search box empty and press Enter. Verify that no results are shown and no error is thrown')
 
     searchTest = Test("Check normal search")
     searchTest.addStep('Accept dialog by pressing "Login" button',
