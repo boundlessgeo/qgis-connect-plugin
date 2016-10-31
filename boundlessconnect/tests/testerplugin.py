@@ -60,7 +60,7 @@ def functionalTests():
     invalidCredentialsTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button. '
                                    'Check that Connect shows error message complaining about invalid credentials.'
                                    'Close error message by pressing "No" button.'
-                                   'Check that the "logged in as:" label is not found at the bottom of the Connect panel.',
+                                   'Check that the "Level:" label is not found at the bottom of the Connect panel.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
@@ -68,7 +68,7 @@ def functionalTests():
                         prestep=lambda: _startConectPlugin())
     repeatedLoginTest.addStep('Check that your subscription level is "Open"',
                         isVerifyStep=True)
-    repeatedLoginTest.addStep('Click on the "Log out" button')
+    repeatedLoginTest.addStep('Click on the "Sign out" button')
     repeatedLoginTest.addStep('Login with valid credentials"')
     repeatedLoginTest.addStep('Check that your subscription level corresponds to the used credentials')
 
@@ -93,7 +93,7 @@ def functionalTests():
                        isVerifyStep=True)
     rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it opens a browser where the user can subscribe to Boundless Connect',
                        isVerifyStep=True)
-    rolesDisplayTest.addStep('Click on the "Log out" button')
+    rolesDisplayTest.addStep('Click on the "Sign out" button')
     rolesDisplayTest.addStep('Login with credentials for Desktop Enterprise"')
     rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is available (green)',
                        isVerifyStep=True)
@@ -101,7 +101,7 @@ def functionalTests():
                        isVerifyStep=True)
 
     wrongSearchTest = Test("Check wrong search")
-    wrongSearchTest.addStep('Accept dialog by pressing "Login" button ',
+    wrongSearchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
                         prestep=lambda: _startConectPlugin())
     wrongSearchTest.addStep('Type "wrongsearch" in the search box and press Enter. Verify that a warning is displayed.',
                        isVerifyStep=True)
