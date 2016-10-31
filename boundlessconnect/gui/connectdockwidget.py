@@ -35,7 +35,7 @@ from boundlessconnect import connect
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
 
-from PyQt4 import uic, QtWebKit
+from PyQt4 import uic
 from PyQt4.QtCore import QUrl, QSettings, Qt
 from PyQt4.QtGui import (QIcon,
                          QCursor,
@@ -112,6 +112,13 @@ class ConnectDockWidget(BASE, WIDGET):
             self.lePassword.setText(password)
 
         BASE.showEvent(self, event)
+
+    def keyPressEvent(self, event):
+        if self.stackedWidget.currentIndex() == 0:
+            if event.key() in [Qt.Key_Return, Qt.Key_Enter]:
+                self.logIn()
+
+        BASE.keyPressEvent(self, event)
 
     def showLogin(self):
         self.stackedWidget.setCurrentIndex(0)
