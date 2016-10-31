@@ -12,6 +12,7 @@ import json
 from boundlessconnect.gui.executor import execute
 from PyQt4.QtGui import QMessageBox
 from qgis.utils import iface
+import re
 
 pluginPath = os.path.dirname(__file__)
 
@@ -74,7 +75,7 @@ class ConnectPlugin(ConnectContent):
     def __init__(self, plugin, roles):
         self.plugin = plugin
         self.name = plugin["name"]
-        self.description = plugin["description"]
+        self.description = re.sub('<p>This plugin is available.*?access</a></p>', '', plugin["description"])
         self.url = plugin["download_url"]
         self.roles = roles
 
