@@ -161,7 +161,7 @@ def search(text, page):
     results = []
     for element in jsonText["features"]:
         props = element["properties"]
-        roles = [p.replace(" ", "").lower().strip() for p in props["role"].split(",")]
+        roles = props["role"].split(",")
         if props["category"] != "PLUG":
             title = props["title"] or props["description"].split(".")[0]
             results.append(categories[props["category"]](props["url"],

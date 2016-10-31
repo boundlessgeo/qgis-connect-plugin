@@ -59,7 +59,8 @@ def functionalTests():
     invalidCredentialsTest = Test('Check Connect plugin recognize invalid credentials')
     invalidCredentialsTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button. '
                                    'Check that Connect shows error message complaining about invalid credentials.'
-                                   'Close error message by pressing "No" button.',
+                                   'Close error message by pressing "No" button.'
+                                   'Check that the "logged in as:" label is not found at the bottom of the Connect panel.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
@@ -93,7 +94,7 @@ def functionalTests():
     rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it opens a browser where the user can subscribe to Boundless Connect',
                        isVerifyStep=True)
     rolesDisplayTest.addStep('Click on the "log out" button')
-    rolesDisplayTest.addStep('Login with credentials for Desktop enterprise"')
+    rolesDisplayTest.addStep('Login with credentials for Desktop Enterprise"')
     rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is available (green)',
                        isVerifyStep=True)
     rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it install the plugins or tells you that it is already installed',
@@ -102,7 +103,7 @@ def functionalTests():
     wrongSearchTest = Test("Check wrong search")
     wrongSearchTest.addStep('Accept dialog by pressing "Login" button',
                         prestep=lambda: _startConectPlugin())
-    wrongSearchTest.addStep('Type "wrongsearch" in the search box and press Enter. Verify that no result is shown.',
+    wrongSearchTest.addStep('Type "wrongsearch" in the search box and press Enter. Verify that a warning is displayed.',
                        isVerifyStep=True)
 
     helpTest = Test("Help test")
@@ -123,7 +124,7 @@ def functionalTests():
     toggleVisibilityTest.addStep('Close dock.')
     toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check "Boundless Connect" panel. Verify that dock opened with active search screen.',
                                  isVerifyStep=True)
-    
+
     return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest, wrongSearchTest, rolesDisplayTest, toggleVisibilityTest]
 
 

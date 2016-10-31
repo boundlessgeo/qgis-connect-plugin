@@ -172,6 +172,8 @@ class ConnectDockWidget(BASE, WIDGET):
                             html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
+                else:
+                    QMessageBox.warning(iface.mainWindow(), "Search", "No search matching the entered text was found.")
             except Exception, e:
                 QMessageBox.warning(self, "Search",
                     u"There has been a problem performing the search:\n" + unicode(e.args[0]),
@@ -180,6 +182,7 @@ class ConnectDockWidget(BASE, WIDGET):
     def requestFinished(self):
         QApplication.restoreOverrideCursor()
         reply = self.sender()
+        visible = True
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
                 msg = self.tr('Your credentials seem invalid. Do you want '
@@ -193,16 +196,15 @@ class ConnectDockWidget(BASE, WIDGET):
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
-            self.labelLevel.setVisible(False)
+            visible = False
             self.roles = ["open"]
         else:
             self.saveOrUpdateAuthId()
-            roles = json.loads(str(reply.readAll()))
-            self.roles = [role.replace(' ', '').lower().strip() for role in roles]
+            self.roles = json.loads(str(reply.readAll()))
 
         execute(connect.loadPlugins)
         self.stackedWidget.setCurrentIndex(1)
-        self.labelLevel.setVisible(True)
+        self.labelLevel.setVisible(visible)
         self.labelLevel.setText("Logged in as: <b>%s</b>" % self.leLogin.text())
         self.loggedIn = True
 
