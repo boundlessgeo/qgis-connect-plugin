@@ -194,12 +194,14 @@ class ConnectDockWidget(BASE, WIDGET):
         visible = True
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
-                msg = self.tr('Your credentials seem invalid. Do you want '
-                              'to save them anyway?')
+                msg = self.tr('Your credentials seem invalid. \n'
+                              'You will be able to access only open content.\n'
+                              'Do you want to save credentials anyway?')
             else:
                 msg = self.tr('An error occured when validating your '
                               'credentials. Server responded:\n{}.\n'
-                              'Do you want to save them anyway?'.format(reply.errorString()))
+                              'You will be able to access only open content.\n'
+                              'Do you want to save credentials anyway?'.format(reply.errorString()))
             ret = QMessageBox.warning(self, self.tr('Error!'), msg,
                                       QMessageBox.Yes | QMessageBox.No,
                                       QMessageBox.No)
