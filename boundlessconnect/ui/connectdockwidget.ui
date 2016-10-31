@@ -194,6 +194,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>leLogin</tabstop>
+  <tabstop>lePassword</tabstop>
+  <tabstop>leSearch</tabstop>
+  <tabstop>btnSearch</tabstop>
+  <tabstop>webView</tabstop>
+  <tabstop>btnSignOut</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
