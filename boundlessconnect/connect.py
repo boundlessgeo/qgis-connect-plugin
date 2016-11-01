@@ -157,7 +157,7 @@ RESULTS_PER_PAGE = 20
 
 def search(text, page=0):
     nam = NetworkAccessManager()
-    res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, page, RESULTS_PER_PAGE))
+    res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
     jsonText = json.loads(resText)
     results = []
     for element in jsonText["features"]:
