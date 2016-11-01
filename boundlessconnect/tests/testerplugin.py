@@ -142,9 +142,9 @@ class SearchApiTests(unittest.TestCase):
 
     def testNonPluginsSearchResultsCorrectlyRetrieved(self):
         """Check that non-plugins search results correctly retrieved"""
-        results = search("geoserver")
+        results = search("gdal")
         self.assertEqual(20, len(results))
-        results2 = search("geoserver", 1)
+        results2 = search("gdal", 1)
         self.assertEqual(20, len(results))
         self.assertNotEqual(results, results2)
 
