@@ -155,7 +155,7 @@ categories = {"LC": ConnectLearning,
 
 RESULTS_PER_PAGE = 20
 
-def search(text, page):
+def search(text, page=0):
     nam = NetworkAccessManager()
     res, resText = nam.request(BASE_URL + "?q=%s&si=%s&c=%i" % (text, page, RESULTS_PER_PAGE))
     jsonText = json.loads(resText)

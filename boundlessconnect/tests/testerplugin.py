@@ -135,11 +135,13 @@ class SearchApiTests(unittest.TestCase):
         loadPlugins()
 
     def testPluginsSearchResultsCorrectlyRetrieved(self):
+        """Check that plugins search results correctly retrieved"""
         results = search("MIL-STD-2525")
         self.assertEqual(1, len(results))
         self.assertTrue(isinstance(results[0], ConnectPlugin))
 
     def testNonPluginsSearchResultsCorrectlyRetrieved(self):
+        """Check that non-plugins search results correctly retrieved"""
         results = search("geoserver")
         self.assertEqual(20, len(results))
         results2 = search("geoserver", 1)
@@ -147,6 +149,7 @@ class SearchApiTests(unittest.TestCase):
         self.assertNotEqual(results, results2)
 
     def testEmptySearch(self):
+        "Check that empty search string returns empty results"
         results = search("")
         self.assertEqual(0, len(results))
 
