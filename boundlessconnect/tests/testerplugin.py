@@ -66,11 +66,11 @@ def functionalTests():
     repeatedLoginTest = Test("Check repeated logging")
     repeatedLoginTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
                         prestep=lambda: _startConectPlugin())
-    repeatedLoginTest.addStep('Check that your subscription level is "Open"',
+    repeatedLoginTest.addStep('Check that no label with you login info is shown in the lower part of the connect panel.',
                         isVerifyStep=True)
     repeatedLoginTest.addStep('Click on the "Sign out" button')
     repeatedLoginTest.addStep('Login with valid credentials"')
-    repeatedLoginTest.addStep('Check that your subscription level corresponds to the used credentials')
+    repeatedLoginTest.addStep('Check that in the lower part of Connect plugin, your login name is displayed.')
 
     emptySearchTest = Test("Check empty search")
     emptySearchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
