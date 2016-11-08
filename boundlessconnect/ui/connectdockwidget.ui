@@ -16,7 +16,14 @@
   <widget class="QWidget" name="dockWidgetContents">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <widget class="FixedAspectSvgWidget" name="svgLogo" native="true"/>
+     <widget class="FixedAspectSvgWidget" name="svgLogo" native="true">
+       <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>100</height>
+         </size>
+        </property>
+      </widget>
     </item>
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
