@@ -149,6 +149,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.stackedWidget.setCurrentIndex(1)
             self.roles = ["open"]
             self.labelLevel.setVisible(False)
+            self.btnSignOut.setText(self.tr("Go to login"))
             self.loggedIn = True
             return
 
@@ -198,7 +199,7 @@ class ConnectDockWidget(BASE, WIDGET):
                               'You will be able to access only open content.\n'
                               'Do you want to save credentials anyway?')
             else:
-                msg = self.tr('An error occured when validating your '
+                msg = self.tr('An error occurred when validating your '
                               'credentials. Server responded:\n{}.\n'
                               'You will be able to access only open content.\n'
                               'Do you want to save credentials anyway?'.format(reply.errorString()))
@@ -209,7 +210,9 @@ class ConnectDockWidget(BASE, WIDGET):
                 self.saveOrUpdateAuthId()
             visible = False
             self.roles = ["open"]
+            self.btnSignOut.setText(self.tr("Go to login"))
         else:
+            self.btnSignOut.setText(self.tr("Logout"))
             self.saveOrUpdateAuthId()
             self.roles = json.loads(str(reply.readAll()))
 
@@ -217,6 +220,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.stackedWidget.setCurrentIndex(1)
         self.labelLevel.setVisible(visible)
         self.labelLevel.setText("Logged in as: <b>%s</b>" % self.leLogin.text())
+
         self.loggedIn = True
 
     def saveOrUpdateAuthId(self):
