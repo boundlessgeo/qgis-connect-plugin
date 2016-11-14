@@ -155,9 +155,13 @@ categories = {"LC": ConnectLearning,
 
 RESULTS_PER_PAGE = 20
 
-def search(text, page=0):
+def search(text, categories=None, page=0):
     nam = NetworkAccessManager()
-    res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
+    if category is None:
+        res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
+    else:
+        cat = ",".join(categories)
+        res, resText = nam.request("{}?q={}&si={}&c={}cat={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE, cat))
     jsonText = json.loads(resText)
     results = []
     for element in jsonText["features"]:
