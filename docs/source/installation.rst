@@ -1,11 +1,10 @@
 Installation
 ============
 
-If you are using |BLQGIS|, the |connect_plugin| should be installed in its QGIS
-by default.
+The |connect_plugin| is a core plugin in |BLQGIS|'s QGIS and does not need to be installed. If, at some point, you can't see either the |connect_plugin|'s panel or it's menu entries, make sure it's activated.
 
-If instead you are using QGIS from one of the community's installers, you can
-install the |connect_plugin| from the *Boundless QGIS Plugin Repository*. For
-instructions on how to setup up Boundless repository, please refer to the
-following `link <http://qgis.boundlessgeo.com/#using-the-repository-in-qgis>`_.
+Go to :menuselection:`Plugins --> Manage and Install Plugins`, and in the :guilabel:`Installed` tab make sure the plugin's checkbox is enabled.
+
+.. figure:: img/connect-active.png
+
 
