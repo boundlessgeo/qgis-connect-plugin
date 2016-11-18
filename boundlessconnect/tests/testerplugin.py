@@ -153,6 +153,11 @@ class SearchApiTests(unittest.TestCase):
         results = search("")
         self.assertEqual(0, len(results))
 
+    def testSearchByCategory(self):
+        "Check that search by categories works"
+        results = search("")
+        self.assertEqual(0, len(results))
+
 
 class BoundlessConnectTests(unittest.TestCase):
 
