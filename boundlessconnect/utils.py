@@ -32,7 +32,11 @@ import glob
 import shutil
 import zipfile
 import socket
-import configparser
+
+try:
+    from configparser import ConfigParser
+except:
+    from ConfigParser import ConfigParser
 
 from qgis.PyQt.QtCore import QSettings, QDir, QFile, QCoreApplication
 
@@ -327,7 +331,7 @@ def setRepositoryUrl():
     """Adds Boundless repository URL to Connect settings"""
     fName = os.path.join(QgsApplication.qgisSettingsDirPath(), repoUrlFile)
     if os.path.exists(fName):
-        cfg = configparser.SafeConfigParser()
+        cfg = ConfigParser()
         cfg.read(fName)
         url = cfg.get('general', 'repoUrl')
         os.remove(fName)

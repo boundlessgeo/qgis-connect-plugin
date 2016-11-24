@@ -30,7 +30,10 @@ import os
 import sys
 import json
 import unittest
-import configparser
+try:
+    from configparser import ConfigParser
+except:
+    from ConfigParser import ConfigParser
 
 from qgis.PyQt.QtCore import Qt, QSettings
 
@@ -246,7 +249,7 @@ def _downgradePlugin(pluginName, corePlugin=True):
     else:
         metadataPath = os.path.join(QgsApplication.qgisSettingsDirPath()(), 'python', 'plugins', pluginName, 'metadata.txt')
 
-    cfg = configparser.SafeConfigParser()
+    cfg = ConfigParser()
     cfg.read(metadataPath)
     global originalVersion
     originalVersion = cfg.get('general', 'version')
@@ -261,7 +264,7 @@ def _restoreVersion(pluginName, corePlugin=True):
     else:
         metadataPath = os.path.join(QgsApplication.qgisSettingsDirPath()(), 'python', 'plugins', pluginName, 'metadata.txt')
 
-    cfg = configparser.SafeConfigParser()
+    cfg = ConfigParser()
     cfg.read(metadataPath)
     global originalVersion
     cfg.set('general', 'version', originalVersion)
