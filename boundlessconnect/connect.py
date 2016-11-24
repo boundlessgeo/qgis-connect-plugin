@@ -1,18 +1,22 @@
+from builtins import object
 # -*- coding: cp1252 -*-
 
+import os
+import re
+import json
+from copy import copy
 import webbrowser
+
+from qgis.PyQt.QtGui import QIcon
+from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.utils import iface
+
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
+
+from boundlessconnect.gui.executor import execute
 from boundlessconnect.networkaccessmanager import NetworkAccessManager
 from boundlessconnect import utils
-from copy import copy
-import os
-from PyQt4.Qt import QIcon
-import json
-from boundlessconnect.gui.executor import execute
-from PyQt4.QtGui import QMessageBox
-from qgis.utils import iface
-import re
 
 pluginPath = os.path.dirname(__file__)
 
@@ -20,7 +24,7 @@ OPEN_ROLE = "open"
 
 SUBSCRIBE_URL = "https://connect.boundlessgeo.com/Upgrade-Subscription"
 
-class ConnectContent():
+class ConnectContent(object):
     def __init__(self, url, name, description, roles = ["open"]):
         self.url = url
         self.name = name

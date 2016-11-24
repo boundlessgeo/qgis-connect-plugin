@@ -15,6 +15,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
@@ -26,16 +27,9 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import (QCoreApplication,
-                          QSettings,
-                          QLocale,
-                          QTranslator,
-                          QFileInfo,
-                          Qt)
-from PyQt4.QtGui import (QAction,
-                         QIcon,
-                         QFileDialog,
-                         QPushButton)
+from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QTranslator, QFileInfo, Qt
+from qgis.PyQt.QtWidgets import QAction, QFileDialog, QPushButton
+from qgis.PyQt.QtGui import QIcon
 
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
@@ -48,7 +42,7 @@ from boundlessconnect import utils
 pluginPath = os.path.dirname(__file__)
 
 
-class BoundlessConnectPlugin:
+class BoundlessConnectPlugin(object):
     def __init__(self, iface):
         self.iface = iface
         self.dockWidget = None
@@ -163,7 +157,7 @@ class BoundlessConnectPlugin:
         settings = QSettings('Boundless', 'BoundlessConnect')
         lastDirectory = settings.value('lastPluginDirectory', '.')
 
-        fileName = QFileDialog.getOpenFileName(self.iface.mainWindow(),
+        fileName, __, __ = QFileDialog.getOpenFileName(self.iface.mainWindow(),
                                                self.tr('Open file'),
                                                lastDirectory,
                                                self.tr('Plugin packages (*.zip *.ZIP)'))

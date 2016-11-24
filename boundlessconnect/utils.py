@@ -15,6 +15,9 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
@@ -29,12 +32,9 @@ import glob
 import shutil
 import zipfile
 import socket
-import ConfigParser
+import configparser
 
-from PyQt4.QtCore import (QSettings,
-                          QDir,
-                          QFile,
-                          QCoreApplication)
+from qgis.PyQt.QtCore import QSettings, QDir, QFile, QCoreApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import (iface,
@@ -69,7 +69,7 @@ def addBoundlessRepository():
        plugin repositories if it is not presented here
     """
     settings = QSettings('Boundless', 'BoundlessConnect')
-    repoUrl = settings.value('repoUrl', '', unicode)
+    repoUrl = settings.value('repoUrl', '')
 
     if repoUrl == '':
         repoUrl = setRepositoryUrl()
@@ -81,7 +81,7 @@ def addBoundlessRepository():
     settings.beginGroup(reposGroup)
     hasBoundlessRepository = False
     for repo in settings.childGroups():
-        url = settings.value(repo + '/url', '', unicode)
+        url = settings.value(repo + '/url', '')
         if url == repoUrl:
             hasBoundlessRepository = True
 
@@ -96,12 +96,12 @@ def setRepositoryAuth(authConfigId):
     """Add auth to the repository
     """
     settings = QSettings('Boundless', 'BoundlessConnect')
-    repoUrl = settings.value('repoUrl', '', unicode)
+    repoUrl = settings.value('repoUrl', '')
 
     settings = QSettings()
     settings.beginGroup(reposGroup)
     for repo in settings.childGroups():
-        url = settings.value(repo + '/url', '', unicode)
+        url = settings.value(repo + '/url', '')
         if url == repoUrl:
             settings.setValue(repo + '/authcfg', authConfigId)
     settings.endGroup()
@@ -127,7 +127,7 @@ def initPluginManager(installer, boundlessOnly=False):
     """Prepare plugin manager content
     """
     settings = QSettings('Boundless', 'BoundlessConnect')
-    repoUrl = settings.value('repoUrl', '', unicode)
+    repoUrl = settings.value('repoUrl', '')
 
     repositories.load()
 
@@ -154,7 +154,7 @@ def initPluginManager(installer, boundlessOnly=False):
         plugins.mPlugins.update(localPlugins.all())
 
     if boundlessOnly:
-        for pluginName, pluginDesc in plugins.mPlugins.items():
+        for pluginName, pluginDesc in list(plugins.mPlugins.items()):
             if not isBoundlessPlugin(pluginDesc):
                 del plugins.mPlugins[pluginName]
 
@@ -168,7 +168,7 @@ def installAllPlugins():
     """Install all available plugins from Boundless plugins repository
     """
     settings = QSettings('Boundless', 'BoundlessConnect')
-    repoUrl = settings.value('repoUrl', '', unicode)
+    repoUrl = settings.value('repoUrl', '')
 
     if isRepositoryInDirectory():
         pluginsDirectory = os.path.abspath(repoUrl)
@@ -256,11 +256,11 @@ def installFromZipFile(pluginPath):
     try:
         # Test extraction. If fails, then exception will be raised
         # and no removing occurs
-        unzip(unicode(pluginPath), unicode(pluginsDirectory))
+        unzip(str(pluginPath), str(pluginsDirectory))
         # Removing old plugin files if exist
         removeDir(QDir.cleanPath(os.path.join(pluginsDirectory, pluginFileName)))
         # Extract new files
-        unzip(unicode(pluginPath), unicode(pluginsDirectory))
+        unzip(str(pluginPath), str(pluginsDirectory))
     except:
         result = QCoreApplication.translate('BoundlessConnect',
             'Failed to unzip the plugin package\n{}.\nProbably it is broken'.format(pluginPath))
@@ -291,7 +291,7 @@ def isRepositoryInDirectory():
     """Return True if plugin repository is a plain directory
     """
     settings = QSettings('Boundless', 'BoundlessConnect')
-    repoUrl = settings.value('repoUrl', '', unicode)
+    repoUrl = settings.value('repoUrl', '')
 
     return repoUrl != '' and os.path.isdir(os.path.abspath(repoUrl))
 
@@ -327,7 +327,7 @@ def setRepositoryUrl():
     """Adds Boundless repository URL to Connect settings"""
     fName = os.path.join(QgsApplication.qgisSettingsDirPath(), repoUrlFile)
     if os.path.exists(fName):
-        cfg = ConfigParser.SafeConfigParser()
+        cfg = configparser.SafeConfigParser()
         cfg.read(fName)
         url = cfg.get('general', 'repoUrl')
         os.remove(fName)

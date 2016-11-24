@@ -24,16 +24,16 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
+from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtGui import QCursor
+from qgis.PyQt.QtWidgets import QApplication
 
-
-from qgis.core import *
-from PyQt4 import QtGui, QtCore
 
 def execute(func):
     try:
-        QtCore.QCoreApplication.processEvents()
-        QtGui.QApplication.setOverrideCursor(QtGui.QCursor(QtCore.Qt.WaitCursor))
+        QCoreApplication.processEvents()
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         return func()
     finally:
-        QtGui.QApplication.restoreOverrideCursor()
-        QtCore.QCoreApplication.processEvents()
+        QApplication.restoreOverrideCursor()
+        QCoreApplication.processEvents()

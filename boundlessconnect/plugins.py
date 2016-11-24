@@ -15,6 +15,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
 
 __author__ = 'Alexander Bruy'
 __date__ = 'March 2016'
@@ -28,11 +29,8 @@ import os
 import sys
 import codecs
 
-from PyQt4.QtCore import (QCoreApplication,
-                          QFileInfo,
-                          QObject,
-                          QSettings)
-from PyQt4.QtXml import QDomDocument
+from qgis.PyQt.QtCore import QCoreApplication, QFileInfo, QObject, QSettings
+from qgis.PyQt.QtXml import QDomDocument
 
 try:
     from qgis.core import QGis
@@ -100,7 +98,7 @@ class LocalPlugins(QObject):
 
     def load(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
-        repoUrl = settings.value('repoUrl', '', unicode)
+        repoUrl = settings.value('repoUrl', '', str)
 
         repoPath = os.path.abspath(repoUrl)
         repoFile = os.path.join(repoPath, 'plugins.xml')
@@ -112,7 +110,7 @@ class LocalPlugins(QObject):
 
         pluginNodes = repoXML.elementsByTagName('pyqgis_plugin')
         if pluginNodes.size():
-            for i in xrange(pluginNodes.size()):
+            for i in range(pluginNodes.size()):
                 fileName = pluginNodes.item(i).firstChildElement('file_name').text().strip()
                 if not fileName:
                     fileName = QFileInfo(pluginNodes.item(i).firstChildElement('download_url').text().strip().split('?')[0]).fileName()
@@ -209,7 +207,7 @@ class LocalPlugins(QObject):
                         testLoadThis = testLoad and key not in qgis.utils.plugins
                         plugin = self.getInstalledPlugin(key, path=path, readOnly=readOnly, testLoad=testLoadThis)
                         self.localCache[key] = plugin
-                        if key in self.localCache.keys() and compareVersions(self.localCache[key]['version_installed'], plugin['version_installed']) == 1:
+                        if key in list(self.localCache.keys()) and compareVersions(self.localCache[key]['version_installed'], plugin['version_installed']) == 1:
                             # An obsolete plugin in the "user" location is
                             # masking a newer one in the "system" location!
                             self.obsoletePlugins += [key]
@@ -227,7 +225,7 @@ class LocalPlugins(QObject):
         settings = QSettings()
         allowExperimental = settings.value(settingsGroup + '/allowExperimental', False, bool)
         allowDeprecated = settings.value(settingsGroup + '/allowDeprecated', False, bool)
-        for repo in self.repoCache.values():
+        for repo in list(self.repoCache.values()):
             for plugin in repo:
                 # Don't update original elements
                 newPlugin = plugin.copy()
@@ -301,22 +299,22 @@ class LocalPlugins(QObject):
 
     def markNews(self):
         settings = QSettings()
-        seenPlugins = settings.value(seenPluginGroup, self.plugins.keys(), unicode)
+        seenPlugins = settings.value(seenPluginGroup, list(self.plugins.keys()), str)
         if len(seenPlugins) > 0:
-            for i in self.plugins.keys():
+            for i in list(self.plugins.keys()):
                 if seenPlugins.count(i) == 0 and self.plugins[i]['status'] == 'not installed':
                     self.plugins[i]['status'] = 'new'
 
     def updateSeenPluginsList(self):
         settings = QSettings()
-        seenPlugins = settings.value(seenPluginGroup, self.plugins.keys(), unicode)
-        for i in self.plugins.keys():
+        seenPlugins = settings.value(seenPluginGroup, list(self.plugins.keys()), str)
+        for i in list(self.plugins.keys()):
             if seenPlugins.count(i) == 0:
                 seenPlugins += [i]
         settings.setValue(seenPluginGroup, seenPlugins)
 
     def isThereAnythingNew(self):
-        for i in self.plugins.values():
+        for i in list(self.plugins.values()):
             if i['status'] in ['upgradeable', 'new']:
                 return True
         return False

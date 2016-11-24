@@ -24,9 +24,9 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import QRect
-from PyQt4.QtGui import QPainter
-from PyQt4.QtSvg import QSvgWidget
+from qgis.PyQt.QtCore import QRect
+from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtSvg import QSvgWidget
 
 
 class FixedAspectSvgWidget(QSvgWidget):

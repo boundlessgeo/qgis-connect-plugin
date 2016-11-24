@@ -15,6 +15,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
@@ -35,19 +36,12 @@ from boundlessconnect import connect
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
 
-from PyQt4 import uic
-from PyQt4.QtCore import QUrl, QSettings, Qt
-from PyQt4.QtGui import (QIcon,
-                         QCursor,
-                         QApplication,
-                         QDialogButtonBox,
-                         QMessageBox)
-from PyQt4.QtNetwork import (QNetworkRequest,
-                             QNetworkReply,
-                             QNetworkAccessManager,
-                             QNetworkProxyFactory,
-                             QNetworkProxy)
-from PyQt4.QtWebKit import QWebPage
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import QUrl, QSettings, Qt
+from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtWebKitWidgets import QWebPage
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
 
@@ -98,7 +92,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         settings = QSettings()
         settings.beginGroup(reposGroup)
-        self.authId = settings.value(boundlessRepoName + '/authcfg', '', unicode)
+        self.authId = settings.value(boundlessRepoName + '/authcfg', '')
         settings.endGroup()
 
         self.showLogin()
@@ -184,9 +178,9 @@ class ConnectDockWidget(BASE, WIDGET):
                 else:
                     QMessageBox.warning(iface.mainWindow(), "Search", "No search matching the entered text was found.")
                     self.webView.setVisible(False)
-            except Exception, e:
+            except Exception as e:
                 QMessageBox.warning(self, "Search",
-                    u"There has been a problem performing the search:\n" + unicode(e.args[0]),
+                    u"There has been a problem performing the search:\n" + str(e.args[0]),
                     QMessageBox.Ok)
 
     def requestFinished(self):
@@ -233,7 +227,7 @@ class ConnectDockWidget(BASE, WIDGET):
             authConfig.setName('Boundless Connect Portal')
 
             settings = QSettings('Boundless', 'BoundlessConnect')
-            authConfig.setUri(settings.value('repoUrl', '', unicode))
+            authConfig.setUri(settings.value('repoUrl', ''))
 
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
                 utils.setRepositoryAuth(self.authId)

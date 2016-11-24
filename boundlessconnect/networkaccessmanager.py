@@ -16,15 +16,20 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import object
 
 __author__ = 'Alessandro Pasotti'
 __date__ = 'August 2016'
 
-from PyQt4.QtCore import QUrl
-from PyQt4.QtCore import pyqtSlot, QEventLoop
-from PyQt4.QtNetwork import *
+import urllib.request, urllib.error, urllib.parse
+
+from qgis.PyQt.QtCore import pyqtSlot, QUrl, QEventLoop
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+
 from qgis.core import QgsNetworkAccessManager, QgsAuthManager, QgsMessageLog
-import urllib2
 
 # FIXME: ignored
 DEFAULT_MAX_REDIRECTS = 4
@@ -47,11 +52,11 @@ class Map(dict):
         super(Map, self).__init__(*args, **kwargs)
         for arg in args:
             if isinstance(arg, dict):
-                for k, v in arg.iteritems():
+                for k, v in arg.items():
                     self[k] = v
 
         if kwargs:
-            for k, v in kwargs.iteritems():
+            for k, v in kwargs.items():
                 self[k] = v
 
     def __getattr__(self, attr):
@@ -75,7 +80,7 @@ class Map(dict):
 class Response(Map):
     pass
 
-class NetworkAccessManager():
+class NetworkAccessManager(object):
     """
     This class mimicks httplib2 by using QgsNetworkAccessManager for all
     network calls.
@@ -133,7 +138,7 @@ class NetworkAccessManager():
         })
         req = QNetworkRequest()
         # Avoid double quoting form QUrl
-        url = urllib2.unquote(url)
+        url = urllib.parse.unquote(url)
         req.setUrl(QUrl(url))
         if headers is not None:
             # This fixes a wierd error with compressed content not being correctly
@@ -146,7 +151,7 @@ class NetworkAccessManager():
                 del headers['Accept-Encoding']
             except KeyError:
                 pass
-            for k, v in headers.items():
+            for k, v in list(headers.items()):
                 self.msg_log("Setting header %s to %s" % (k, v))
                 req.setRawHeader(k, v)
         if self.authid:
@@ -162,7 +167,7 @@ class NetworkAccessManager():
         # Let's log the whole call for debugging purposes:
         self.msg_log("Sending %s request to %s" % (method.upper(), req.url().toString()))
         headers = {str(h): str(req.rawHeader(h)) for h in req.rawHeaderList()}
-        for k, v in headers.items():
+        for k, v in list(headers.items()):
             self.msg_log("%s: %s" % (k, v))
         if method.lower() in ['post', 'put']:
             if isinstance(body, file):
@@ -190,13 +195,13 @@ class NetworkAccessManager():
                         (self.http_call_result.status_code,
                          self.http_call_result.status_message,
                          req.url().toString()))
-            for k, v in self.http_call_result.headers.items():
+            for k, v in list(self.http_call_result.headers.items()):
                 self.msg_log("%s: %s" % (k, v))
             if len(self.http_call_result.text) < 1024:
                 self.msg_log("Payload :\n%s" % self.http_call_result.text)
             else:
                 self.msg_log("Payload is > 1 KB ...")
-        except Exception, e:
+        except Exception as e:
             raise e
         finally:
             if self.reply is not None:

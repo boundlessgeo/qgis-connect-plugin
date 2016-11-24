@@ -15,6 +15,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from future import standard_library
+standard_library.install_aliases()
 
 __author__ = 'Alexander Bruy'
 __date__ = 'March 2016'
@@ -28,9 +30,9 @@ import os
 import sys
 import json
 import unittest
-import ConfigParser
+import configparser
 
-from PyQt4.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt, QSettings
 
 from qgis.core import QgsApplication
 
@@ -195,7 +197,7 @@ class BoundlessConnectTests(unittest.TestCase):
     def testCustomRepoUrl(self):
         """Test that Connect read custom repository URL and apply it"""
         settings = QSettings('Boundless', 'BoundlessConnect')
-        oldRepoUrl = settings.value('repoUrl', '', unicode)
+        oldRepoUrl = settings.value('repoUrl', '', str)
 
         settings.setValue('repoUrl', 'test')
         self.assertEqual('test', settings.value('repoUrl'))
@@ -205,7 +207,7 @@ class BoundlessConnectTests(unittest.TestCase):
             f.write('[general]\nrepoUrl=http://dummyurl.com')
         utils.setRepositoryUrl()
 
-        self.assertTrue('http://dummyurl.com', settings.value('repoUrl', '', unicode))
+        self.assertTrue('http://dummyurl.com', settings.value('repoUrl', '', str))
         settings.setValue('repoUrl', oldRepoUrl)
 
     @classmethod
@@ -244,7 +246,7 @@ def _downgradePlugin(pluginName, corePlugin=True):
     else:
         metadataPath = os.path.join(QgsApplication.qgisSettingsDirPath()(), 'python', 'plugins', pluginName, 'metadata.txt')
 
-    cfg = ConfigParser.SafeConfigParser()
+    cfg = configparser.SafeConfigParser()
     cfg.read(metadataPath)
     global originalVersion
     originalVersion = cfg.get('general', 'version')
@@ -259,7 +261,7 @@ def _restoreVersion(pluginName, corePlugin=True):
     else:
         metadataPath = os.path.join(QgsApplication.qgisSettingsDirPath()(), 'python', 'plugins', pluginName, 'metadata.txt')
 
-    cfg = ConfigParser.SafeConfigParser()
+    cfg = configparser.SafeConfigParser()
     cfg.read(metadataPath)
     global originalVersion
     cfg.set('general', 'version', originalVersion)

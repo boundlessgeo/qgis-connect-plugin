@@ -26,8 +26,8 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import QLineEdit, QToolButton, QStyle
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QLineEdit, QToolButton, QStyle
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 

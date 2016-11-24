@@ -26,20 +26,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4 import uic
-from PyQt4.QtCore import Qt
-from PyQt4.QtGui import (QIcon,
-                         QPushButton,
-                         QListWidgetItem,
-                         QDialogButtonBox,
-                         QDialog,
-                         QDesktopServices
-                        )
-from PyQt4.QtNetwork import (QNetworkRequest,
-                             QNetworkReply,
-                             QNetworkAccessManager
-                            )
-from PyQt4.QtWebKit import QWebPage
+from PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QIcon, QDesktopServices
+from qgis.PyQt.QtWidgets import QPushButton, QListWidgetItem, QDialogButtonBox, QDialog
+from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtWebKitWidgets import QWebPage
 
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
