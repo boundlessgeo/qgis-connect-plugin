@@ -10,10 +10,9 @@ env:
   - secure: fVPxU/ZYbJsgbiJxfk5epE+NXlhuo3zS+nY3IOBQhbpGT3UdoxvwGrsvH3M2WaJxP9t2Ijk0vHNA6GYKsj5JZfGDseCV6uMH8Dr2SLiy9oDC9KLYMEYVSvyIcufZzDbpe603VnaW08BjJic76jwd4tDANmEvllpzfo3G7KXajr8jyMk4d6urZmGk+0EXk+e2eBKa2VOjdyk5vadYH98PgVC2xI2QZHx6HhSj/qczJQzZpKHNyK1IesD/1pAk99fjKywMcw8G/htycwOE93SXkmCqvMZ3HlADOSMox1DY1BTN3Du0HGV5byG76yWVVC6xRahcyxLMykyuAgZrYEdMjYq+fsCDkSqVj40bZyPeBCbUSXHahekWguKaSWVjmzyS6pvOpkzXRlRfKI+9FbJX0nsh+yzb6D+tZdmUvQUUOqAMrUCUQ4z+n7fLTeEVLATPTgDRnvqxWj0Oc5nBgsDsqRnr4Q8E8bSApyh44pMXyM9aqrYtrFofFvQZbkRbu2SZeWkZqVZecuJdBxlA6p0TOVbYlsovzOhEZXNUKtDxqsc7CGsGS6Pm0GfgXS4D0SGpcoi4Zut/fQ3i8QOjNsnnBs3wKnM3xVGFwa5MM5w950WpM/NYCDZiC28eDLblyc0yW5ElQkJjs0vch5RhRW0Xi3QpIF+uitT3TmSkLQIjrH4=
   - secure: J1X++ZYY5xDSe6a+oYQTNWhjmSKh0K0GakLzFFlvox+GtCc5HXU2fkwOL/EtJAhEy655T9keC8pccmRk7Vp0b1hO7fhq/hvPYgXNjgoBeNSryMbm0qFD4vbrC3lqJzIghsCvV64vJoQFa+YbXsnhh2iKCYVioGn+kRkPw/rrl2HEphT4Dv2fYsqMveRt6o27ZVxsiT1fM6j5aJgWavp7Qh6MWn2BudOBL0fEAeDJd8rfFJjYvyvYPLSiFHjBNjHTlZXiHCo6/BTM+u5/qxFV9R+zLki/D0K3SgXmsXgi4btnJeFUCuFytwgyndqVe/OdLB6KkGfaOjraNwvjfCEkModoTFnT9BVkAPdsxOipfFTbmmj85h09zZGavUc13tkS4rW9YiDZlPw4w0rD37dreTn1I75c+pE7m+Hzu+o+f5YrBpi5w+EsfP1pmbQtKszqUagkKxVxgW4ijfsHGjDJIWXJWhP6Iw4KcNBF21zXhKmHxZu7/C0JXyz5kqtiPsrpvAOBJECEWQgZC410cUgZnkiTsfFT92O9+nK1Fgw0Fr8T9ivd6wwscrrxdXTd25B4gv1uJjSWNxTYucQPvmmhWycfpqlUpspaBxukU75ynIOG/hkQlM/W2HsuuoOvei3eHCzPtQihnri3X4Upq+nwrv6lHri1DHa4InVsNuzenXA=
   matrix:
-  - QGIS_VERSION_TAG=release PYTHON_EXECUTABLE=python PIP_EXECUTABLE=pip USERHOME=.qgis2
-  - QGIS_VERSION_TAG=master_2 PYTHON_EXECUTABLE=python PIP_EXECUTABLE=pip USERHOME=.qgis2
-  - QGIS_VERSION_TAG=master PYTHON_EXECUTABLE=python3 PIP_EXECUTABLE=pip3 USERHOME=.qgis3
-matrix:
+  - QGIS_VERSION_TAG=release PYTHON_EXECUTABLE=python PIP_EXECUTABLE=pip
+  - QGIS_VERSION_TAG=master_2 PYTHON_EXECUTABLE=python PIP_EXECUTABLE=pip
+  - QGIS_VERSION_TAG=master PYTHON_EXECUTABLE=python3 PIP_EXECUTABLE=pip3
   allow_failures:
   - env: QGIS_VERSION_TAG=master
 before_install:
@@ -24,7 +23,6 @@ install:
 - sleep 10
 - docker exec -it qgis-testing-environment sh -c "qgis_setup.sh $PLUGIN_NAME"
 - docker exec -it qgis-testing-environment sh -c "$PIP_EXECUTABLE install paver"
-- docker exec -it qgis-testing-environment sh -c "mkdir -p /root/$USERHOME/python/plugins/"
 - PLUGIN_VERSION=`grep version $PLUGIN_NAME/metadata.txt | perl -npe 's/[^\d-]//g'`
 - docker exec -it qgis-testing-environment sh -c "mkdir -p /root/.config/Boundless; printf \"[General]\n\" >> /root/.config/Boundless/BoundlessConnect.conf"
 - docker exec -it qgis-testing-environment sh -c "printf  \"firstRun${PLUGIN_VERSION}=false\nfirstRun=false\n\n\" >> /root/.config/Boundless/BoundlessConnect.conf"
