@@ -78,7 +78,6 @@ def install_devtools():
 
 
 @task
-#@needs(['createhelp'])
 @cmdopts([
     ('tests', 't', 'Package tests with plugin'),
 ])
