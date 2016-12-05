@@ -40,7 +40,12 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl, QSettings, Qt
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
-from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
+from qgis.PyQt.QtNetwork import (QNetworkRequest,
+                                 QNetworkReply,
+                                 QNetworkAccessManager,
+                                 QNetworkProxyFactory,
+                                 QNetworkProxy
+                                )
 from qgis.PyQt.QtWebKitWidgets import QWebPage
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
