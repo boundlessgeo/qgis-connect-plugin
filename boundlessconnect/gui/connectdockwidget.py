@@ -95,6 +95,12 @@ class ConnectDockWidget(BASE, WIDGET):
             os.path.join(os.path.dirname(__file__), "search.css").replace("\\", "/")))
         self.webView.linkClicked.connect(self.linkClicked)
 
+        content = {}
+        for cat, cls in connect.categories.items():
+            self.cmbContentType.addItem(cls[1], cat)
+        self.cmbContentType.insertItem(0, "All", None)
+        self.cmbContentType.setCurrentIndex(0)
+
         settings = QSettings()
         settings.beginGroup(reposGroup)
         self.authId = settings.value(boundlessRepoName + '/authcfg', '')
@@ -163,10 +169,11 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def search(self, page=0):
         text = self.leSearch.text().strip()
+        cat = self.cmbContentType.itemData(self.cmbContentType.currentIndex())
         if text:
             self.searchPage = page
             try:
-                results = execute(lambda: connect.search(text, page=self.searchPage))
+                results = execute(lambda: connect.search(text, cat, self.searchPage))
                 if results:
                     self.searchResults = {r.url:r for r in results}
                     html = "<ul>"
