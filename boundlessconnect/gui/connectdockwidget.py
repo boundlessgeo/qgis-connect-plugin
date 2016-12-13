@@ -166,7 +166,7 @@ class ConnectDockWidget(BASE, WIDGET):
         if text:
             self.searchPage = page
             try:
-                results = execute(lambda: connect.search(text, self.searchPage))
+                results = execute(lambda: connect.search(text, page=self.searchPage))
                 if results:
                     self.searchResults = {r.url:r for r in results}
                     html = "<ul>"
