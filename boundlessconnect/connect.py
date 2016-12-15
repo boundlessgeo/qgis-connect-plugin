@@ -1,5 +1,6 @@
-from builtins import object
 # -*- coding: cp1252 -*-
+
+from builtins import object
 
 import os
 import re
@@ -149,13 +150,13 @@ def loadPlugins():
             _plugins[plugin["name"]] = copy(plugin)
 
 
-categories = {"LC": ConnectLearning,
-              "DOC": ConnectDocumentation,
-              "VID": ConnectVideo,
-              "BLOG": ConnectBlog,
-              "QA": ConnectQA,
-              "DIS": ConnectDiscussion,
-              "PLUG": ConnectPlugin}
+categories = {"LC": (ConnectLearning, "Learning"),
+              "DOC": (ConnectDocumentation, "Documentation"),
+              "VID": (ConnectVideo, "Video"),
+              "BLOG": (ConnectBlog, "Blog"),
+              "QA": (ConnectQA, "Q & A"),
+              "DIS": (ConnectDiscussion, "Discussion"),
+              "PLUG": (ConnectPlugin, "Plugin")}
 
 RESULTS_PER_PAGE = 20
 
@@ -164,7 +165,7 @@ def search(text, category=None, page=0):
     if category is None:
         res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
     else:
-        res, resText = nam.request("{}/categories/{}/?q={}&si={}&c={}".format(BASE_URL, category, text, int(page), RESULTS_PER_PAGE))
+        res, resText = nam.request("{}categories/{}/?q={}&si={}&c={}".format(BASE_URL, category, text, int(page), RESULTS_PER_PAGE))
     jsonText = json.loads(resText)
     results = []
     for element in jsonText["features"]:
@@ -172,7 +173,7 @@ def search(text, category=None, page=0):
         roles = props["role"].split(",")
         if props["category"] != "PLUG":
             title = props["title"] or props["description"].split(".")[0]
-            results.append(categories[props["category"]](props["url"],
+            results.append(categories[props["category"]][0](props["url"],
                                     title, props["description"], roles))
         else:
             plugin = _plugins.get(props["title"], None)
