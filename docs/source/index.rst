@@ -8,7 +8,7 @@ Boundless Connect Plugin Documentation
 
 |connect_plugin| is the only "core" plugin shipped with |BLQGIS|, and will act as a single entry point to Boundless technology and content for QGIS.
 
-The main goal of |connect_plugin| is to provide |BLQGIS| integration with `Boundless Connect <https://connect.boundlessgeo.com/>`_ portal, making it easier to install boundless plugins and also access additional resources like training materials, documentation, lessons, profiles, styles, etc.
+The main goal of |connect_plugin| is to provide |BLQGIS| integration with `Boundless Connect <https://connect.boundlessgeo.com/>`_ portal, making it easier to install Boundless plugins and also access additional resources like training materials, documentation, lessons, profiles, styles, etc.
 
 The current version provides:
 
