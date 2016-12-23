@@ -59,7 +59,9 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'connectdockwidget.ui'))
 
-HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html"
+# Not used anymore. I will eventually become configurable
+# ONLINE_HELP_URL = "https://connect.boundlessgeo.com/docs/desktop/plugins/connect/usage.html"
+OFFLINE_HELP_URL = os.path.join(pluginPath, 'docs', 'html', 'index.html')
 
 class ConnectDockWidget(BASE, WIDGET):
 
@@ -135,7 +137,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.lePassword.setText("")
 
     def showHelp(self):
-        webbrowser.open(HELP_URL)
+        webbrowser.open(OFFLINE_HELP_URL)
 
     def linkClicked(self, url):
         name = url.toString()
