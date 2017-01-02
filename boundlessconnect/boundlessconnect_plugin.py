@@ -15,6 +15,12 @@
 *                                                                         *
 ***************************************************************************
 """
+
+import site
+import os
+
+site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/ext-libs'))
+
 from builtins import object
 
 __author__ = 'Alexander Bruy'
@@ -25,7 +31,6 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
-import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QTranslator, QFileInfo, Qt
 from qgis.PyQt.QtWidgets import QAction, QFileDialog, QPushButton
