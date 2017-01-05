@@ -163,7 +163,7 @@ class BoundlessConnectPlugin(object):
         lastDirectory = settings.value('lastPluginDirectory', '.')
 
         if PYQT_VERSION_STR.startswith('5'):
-            fileName, __, __ = QFileDialog.getOpenFileName(self.iface.mainWindow(),
+            fileName, _ = QFileDialog.getOpenFileName(self.iface.mainWindow(),
                                                    self.tr('Open file'),
                                                    lastDirectory,
                                                    self.tr('Plugin packages (*.zip *.ZIP)'))
