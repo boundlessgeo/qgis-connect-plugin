@@ -31,7 +31,7 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
-
+from qgis.PyQt.Qt import PYQT_VERSION_STR
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QTranslator, QFileInfo, Qt
 from qgis.PyQt.QtWidgets import QAction, QFileDialog, QPushButton
 from qgis.PyQt.QtGui import QIcon
@@ -162,10 +162,16 @@ class BoundlessConnectPlugin(object):
         settings = QSettings('Boundless', 'BoundlessConnect')
         lastDirectory = settings.value('lastPluginDirectory', '.')
 
-        fileName, __, __ = QFileDialog.getOpenFileName(self.iface.mainWindow(),
-                                               self.tr('Open file'),
-                                               lastDirectory,
-                                               self.tr('Plugin packages (*.zip *.ZIP)'))
+        if PYQT_VERSION_STR.startswith('5'):
+            fileName, __, __ = QFileDialog.getOpenFileName(self.iface.mainWindow(),
+                                                   self.tr('Open file'),
+                                                   lastDirectory,
+                                                   self.tr('Plugin packages (*.zip *.ZIP)'))
+        else:
+            fileName = QFileDialog.getOpenFileName(self.iface.mainWindow(),
+                                                   self.tr('Open file'),
+                                                   lastDirectory,
+                                                   self.tr('Plugin packages (*.zip *.ZIP)'))
 
         if fileName == '':
             return
