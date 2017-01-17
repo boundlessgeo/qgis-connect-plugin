@@ -7,17 +7,23 @@ import re
 import json
 from copy import copy
 import webbrowser
-
 from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QMessageBox
-from qgis.utils import iface
-
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
-
 from boundlessconnect.gui.executor import execute
 from boundlessconnect.networkaccessmanager import NetworkAccessManager
 from boundlessconnect import utils
+from PyQt4.Qt import QNetworkRequest, QCursor, Qt
+from PyQt4.QtGui import QApplication
+from qgis.utils import iface
+from qgis.gui import QgsMessageBar
+from qgis.core import QgsNetworkAccessManager
+
+from PyQt4.QtCore import QUrl, QFile
+from utils import tempFilename
+from PyQt4.QtNetwork import QNetworkReply
+from qgis.utils import available_plugins, active_plugins
 
 pluginPath = os.path.dirname(__file__)
 
@@ -45,28 +51,52 @@ class ConnectContent(object):
         return bool(matches) or OPEN_ROLE in self.roles
 
     def open(self, roles):
+        self._open()
+        return
         if self.canOpen(roles):
             self._open()
         else:
             webbrowser.open_new(SUBSCRIBE_URL)
 
     def asHtmlEntry(self, roles):
-        canInstall = 'CanInstall' if self.canOpen(roles) else 'CannotInstall'
+        canInstall = 'CanInstall'# if self.canOpen(roles) else 'CannotInstall'
         s = ("<div class='outer'><a class='title%s' href='%s'>%s</a><div class='inner'><div class='category%s'>%s</div><div class='description%s'>%s</div></div></div>"
             % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
         return s
 
-LESSONS_PLUGIN_NAME = ""
+LESSONS_PLUGIN_NAME = "lessons"
+
 class ConnectLesson(ConnectContent):
     def _open(self):
         if LESSONS_PLUGIN_NAME not in available_plugins:
-            raise OpenContentException("Lessons plugin is not installed")
+            iface.messageBar.pushMessage("Cannot install lessons", "Lessons plugin is not installed", QgsMessageBar.WARNING)
         elif LESSONS_PLUGIN_NAME not in active_plugins:
-            raise OpenContentException("Lessons plugin is not active")
-        self.downloadAndInstall()
+            iface.messageBar.pushMessage("Cannot install lessosn", "Lessons plugin is not active", QgsMessageBar.WARNING)
+        else:
+            self.downloadAndInstall()
 
     def downloadAndInstall(self):
-        pass
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        url = QUrl(self.url)
+        self.request = QNetworkRequest(url)
+        self.reply = QgsNetworkAccessManager.instance().get(self.request)
+        self.reply.finished.connect(self.requestFinished)
+
+    def requestFinished(self):
+        if self.reply.error() != QNetworkReply.NoError:
+            QApplication.restoreOverrideCursor()
+            iface.messageBar().pushMessage("Lessons could not be installed", self.reply.errorString(), QgsMessageBar.WARNING)
+            self.reply.deleteLater()
+            return
+        f = QFile(tempFilename("zip"))
+        f.open(QFile.WriteOnly)
+        f.write(self.reply.readAll())
+        f.close()
+        self.reply.deleteLater()
+        from lessons import installLessonsFromZipFile
+        installLessonsFromZipFile(f.fileName())
+        QApplication.restoreOverrideCursor()
+        iface.messageBar().pushMessage("", "Lessons were correctly installed", QgsMessageBar.INFO)
 
     def typeName(self):
         return "Lesson"
@@ -156,7 +186,8 @@ categories = {"LC": (ConnectLearning, "Learning"),
               "BLOG": (ConnectBlog, "Blog"),
               "QA": (ConnectQA, "Q & A"),
               "DIS": (ConnectDiscussion, "Discussion"),
-              "PLUG": (ConnectPlugin, "Plugin")}
+              "PLUG": (ConnectPlugin, "Plugin"),
+              "LESSON": (ConnectLesson, "Lesson")}
 
 RESULTS_PER_PAGE = 20
 

@@ -18,6 +18,8 @@
 from future import standard_library
 standard_library.install_aliases()
 from builtins import str
+import tempfile
+import time
 
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
@@ -375,3 +377,20 @@ def addCheckForUpdates():
         repositories.setCheckingOnStart(True)
         repositories.setCheckingOnStartInterval(30)
         repositories.saveCheckingOnStartLastDate()
+
+_tempFolder = None
+def tempFolder():
+    global _tempFolder
+    if _tempFolder is None:
+        _tempFolder = tempfile.mkdtemp()
+    return _tempFolder
+
+def deleteTempFolder():
+    if _tempFolder is not None:
+        shutil.rmtree(_tempFolder, True)
+
+def tempFilename(ext):
+    path = tempFolder()
+    ext = "" if ext is None else ext
+    filename = path + os.sep + str(time.time()) + "." + ext
+    return filename
