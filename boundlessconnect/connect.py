@@ -51,15 +51,13 @@ class ConnectContent(object):
         return bool(matches) or OPEN_ROLE in self.roles
 
     def open(self, roles):
-        self._open()
-        return
         if self.canOpen(roles):
             self._open()
         else:
             webbrowser.open_new(SUBSCRIBE_URL)
 
     def asHtmlEntry(self, roles):
-        canInstall = 'CanInstall'# if self.canOpen(roles) else 'CannotInstall'
+        canInstall = 'CanInstall' if self.canOpen(roles) else 'CannotInstall'
         s = ("<div class='outer'><a class='title%s' href='%s'>%s</a><div class='inner'><div class='category%s'>%s</div><div class='description%s'>%s</div></div></div>"
             % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
         return s
