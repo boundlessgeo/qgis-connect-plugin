@@ -40,7 +40,6 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
-
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
 

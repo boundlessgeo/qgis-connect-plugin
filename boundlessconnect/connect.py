@@ -28,6 +28,7 @@ from qgis.utils import available_plugins, active_plugins
 pluginPath = os.path.dirname(__file__)
 
 OPEN_ROLE = "open"
+PUBLIC_ROLE = "public"
 
 SUBSCRIBE_URL = "https://connect.boundlessgeo.com/Upgrade-Subscription"
 
@@ -48,7 +49,7 @@ class ConnectContent(object):
 
     def canOpen(self, roles):
         matches = [role for role in roles if role in self.roles]
-        return bool(matches) or OPEN_ROLE in self.roles
+        return bool(matches) or (OPEN_ROLE in self.roles) or (PUBLIC_ROLE in self.roles)
 
     def open(self, roles):
         if self.canOpen(roles):
