@@ -87,7 +87,7 @@ class ConnectLesson(ConnectContent):
             iface.messageBar().pushMessage("Lessons could not be installed", self.reply.errorString(), QgsMessageBar.WARNING)
             self.reply.deleteLater()
             return
-        f = QFile(tempFilename("zip"))
+        f = QFile(tempFilename(os.path.basename(self.url).split(".")[0]))
         f.open(QFile.WriteOnly)
         f.write(self.reply.readAll())
         f.close()

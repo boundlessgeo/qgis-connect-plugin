@@ -389,8 +389,7 @@ def deleteTempFolder():
     if _tempFolder is not None:
         shutil.rmtree(_tempFolder, True)
 
-def tempFilename(ext):
-    path = tempFolder()
-    ext = "" if ext is None else ext
-    filename = path + os.sep + str(time.time()) + "." + ext
-    return filename
+def tempFilename(basename):
+    folder = os.path.join(tempFolder(), str(time.time()))
+    os.mkdir(folder)
+    return os.path.join(folder, basename)
