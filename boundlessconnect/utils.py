@@ -31,6 +31,7 @@ __revision__ = '$Format:%H$'
 
 import os
 import glob
+import base64
 import shutil
 import zipfile
 import socket
@@ -60,6 +61,7 @@ from pyplugin_installer.installer_data import (reposGroup,
 from pyplugin_installer.version_compare import compareVersions
 from pyplugin_installer.unzip import unzip
 
+from boundlessconnect.networkaccessmanager import NetworkAccessManager
 from boundlessconnect.plugins import (boundlessRepoName,
                                       defaultRepoUrl,
                                       repoUrlFile,
@@ -378,12 +380,14 @@ def addCheckForUpdates():
         repositories.setCheckingOnStartInterval(30)
         repositories.saveCheckingOnStartLastDate()
 
+
 _tempFolder = None
 def tempFolder():
     global _tempFolder
     if _tempFolder is None:
         _tempFolder = tempfile.mkdtemp()
     return _tempFolder
+
 
 def deleteTempFolder():
     if _tempFolder is not None:
@@ -393,3 +397,54 @@ def tempFilename(basename):
     folder = os.path.join(tempFolder(), str(time.time()))
     os.mkdir(folder)
     return os.path.join(folder, basename)
+
+
+def getCredentialsFromAuthDb(authId):
+    credentials = (None, None)
+
+    authConfig = QgsAuthMethodConfig()
+    QgsAuthManager.instance().loadAuthenticationConfig(authId, authConfig, True)
+    credentials = (authConfig.config('username'), authConfig.config('password'))
+
+    return credentials
+
+def getToken():
+    """
+    Function to get a access token from endpoint sending "custom"
+    basic auth.
+
+    The return value is a token string or Exception
+    """
+    token = None
+
+    # authId of the Boundless repository contains Connect credentials
+    authId = settings.value(boundlessRepoName + '/authcfg', '')
+    usr, pwd = getCredentialsFromAuthDb(authId)
+
+    # prepare data for the token request
+    httpAuth = base64.encodestring('{}:{}'.format(usr, pwd))[:-1]
+
+    headers = {}
+    headers['Authorization'] = 'Basic {}'.format(httpAuth)
+    headers['Content-Type'] = 'application/json'
+
+    # request token
+    nam = NetworkAccessManager()
+    try:
+        # TODO: fix endpoint URL
+        res, resText = nam.request(authEndpointUrl, method='GET', headers=headers)
+    except RequestsException, e:
+        raise e
+
+    # TODO: check res code in case not authorization
+    if not res.ok:
+        raise Exception('Cannot get token: {}'.format(res.reason))
+
+    # parse token from resText
+    resDict = json.loads(resText)
+    try:
+        token = resDict['token']
+    except:
+        pass
+
+    return token
