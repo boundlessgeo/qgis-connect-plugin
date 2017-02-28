@@ -432,6 +432,7 @@ def getToken():
     nam = NetworkAccessManager()
     try:
         # TODO: fix endpoint URL
+        # https://api.dev.boundlessgeo.io/v1/token/?
         res, resText = nam.request(authEndpointUrl, method='GET', headers=headers)
     except RequestsException, e:
         raise e
