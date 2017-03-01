@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    connectdialog.py
+    connectsearch.py
     ---------------------
     Date                 : October 2016
     Copyright            : (C) 2016 Boundless, http://boundlessgeo.com
