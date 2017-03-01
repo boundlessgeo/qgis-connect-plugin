@@ -1,6 +1,30 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 
+"""
+***************************************************************************
+    connectdialog.py
+    ---------------------
+    Date                 : October 2016
+    Copyright            : (C) 2016 Boundless, http://boundlessgeo.com
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
 from builtins import object
+
+__author__ = 'Victor Olaya'
+__date__ = 'October 2016'
+__copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
+
+# This will get replaced with a git SHA1 when you do a git archive
+
+__revision__ = '$Format:%H$'
+
 
 import os
 import re
@@ -9,8 +33,8 @@ from copy import copy
 import webbrowser
 
 from qgis.PyQt.QtGui import QIcon, QCursor
-from qgis.PyQt.QtCore import Qt, QUrl, QFile
-from qgis.PyQt.QtWidgets import QMessageBox, QApplication
+from qgis.PyQt.QtCore import Qt, QFile, QUrl
+from qgis.PyQt.QtWidgets import QApplication, QMessageBox
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.gui import QgsMessageBar
@@ -202,6 +226,7 @@ categories = {"LC": (ConnectLearning, "Learning"),
               "QA": (ConnectQA, "Q & A"),
               "PLUG": (ConnectPlugin, "Plugin"),
               "LESSON": (ConnectLesson, "Lesson")}
+
 
 RESULTS_PER_PAGE = 20
 
