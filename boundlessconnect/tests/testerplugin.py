@@ -44,7 +44,7 @@ from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
-from boundlessconnect.connect import search, ConnectPlugin, loadPlugins
+from boundlessconnect.connectsearch import search, ConnectPlugin, loadPlugins
 
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils

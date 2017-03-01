@@ -33,7 +33,7 @@ import webbrowser
 from qgis.utils import iface
 
 from boundlessconnect import connect
-from boundlessconnect.connect import ConnectContent
+from boundlessconnect.connectsearch import ConnectContent
 from boundlessconnect.gui.executor import execute
 
 from qgis.PyQt import uic
