@@ -32,14 +32,25 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QTranslator, QFileInfo, Qt, QT_VERSION_STR
+from qgis.PyQt.QtCore import (QCoreApplication,
+                              QSettings,
+                              QLocale,
+                              QTranslator,
+                              QFileInfo,
+                              Qt)
 from qgis.PyQt.QtWidgets import QAction, QFileDialog, QPushButton
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
+from qgis.core import from QgsMapLayerRegistry
 
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
+from boundlessconnect.connectlayeractions import (addLayerActions,
+                                                  removeLayerActions,
+                                                  isConnectLayer
+                                                 )
 from boundlessconnect import utils
 
 pluginPath = os.path.dirname(__file__)
@@ -70,9 +81,18 @@ class BoundlessConnectPlugin(object):
             self.translator.load(qmPath)
             QCoreApplication.installTranslator(self.translator)
 
+        # add Connect menu for all loaded layer
+        layers = list(QgsMapLayerRegistry.instance().mapLayers().values())
+        for layer in layers:
+            addLayerActions(layer)
+
         self.iface.initializationCompleted.connect(self.checkFirstRun)
 
     def initGui(self):
+        # track layer addition/removal to add/remove Connect menu
+        QgsMapLayerRegistry.instance().layersAdded.connect(self.layersAdded)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved[list].connect(self.layersRemoved)
+
         self.dockWidget = getConnectDockWidget()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
         self.dockWidget.hide()
@@ -127,6 +147,12 @@ class BoundlessConnectPlugin(object):
         utils.addCheckForUpdates()
 
     def unload(self):
+        try:
+            QgsMapLayerRegistry.instance().layersAdded.disconnect(self.layerAdded)
+            QgsMapLayerRegistry.instance().layersWillBeRemoved[list].disconnect(self.layerRemoved)
+        except:
+            pass
+
         actions = self.iface.mainWindow().menuBar().actions()
         for action in actions:
             if action.menu().objectName() == 'mPluginMenu':
@@ -144,6 +170,11 @@ class BoundlessConnectPlugin(object):
             removeTestModule(testerplugin, 'Boundless Connect')
         except Exception as e:
             pass
+
+        # remove Connect menu from layers
+        layers = list(QgsMapLayerRegistry.instance().mapLayers().values())
+        for layer in layers:
+            removeLayerActions(layer)
 
     def checkFirstRun(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
@@ -186,6 +217,16 @@ class BoundlessConnectPlugin(object):
 
     def pluginManagerLocal(self):
         utils.showPluginManager(False)
+
+    def layerAdded(self, layers):
+        for layer in layers:
+            addLayerActions(layer)
+
+    def layerRemoved(self, layerIds):
+        if QgsMapLayerRegistry is not None:
+            for layerId in layerIds:
+                layer = QgsMapLayerRegistry.instance().mapLayer(layer)
+                removeLayerActions(layer)
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         self.iface.messageBar().pushMessage(

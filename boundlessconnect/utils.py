@@ -43,7 +43,7 @@ except:
 
 from qgis.PyQt.QtCore import QSettings, QDir, QFile, QCoreApplication
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QDir
 from qgis.utils import (iface,
                         loadPlugin,
                         startPlugin,
@@ -447,3 +447,12 @@ def getToken(endPointUrl):
         pass
 
     return token
+
+
+def userFolder():
+    path = os.path.join(QgsApplication.qgisSettingsDirPath(), 'boundlessconnect')
+    if not QDir(path).exists():
+        QDir().mkpath(path)
+
+    return path
+
