@@ -61,7 +61,7 @@ from pyplugin_installer.installer_data import (reposGroup,
 from pyplugin_installer.version_compare import compareVersions
 from pyplugin_installer.unzip import unzip
 
-from boundlessconnect.networkaccessmanager import NetworkAccessManager
+from boundlessconnect.networkaccessmanager import NetworkAccessManager, RequestsException
 from boundlessconnect.plugins import (boundlessRepoName,
                                       defaultRepoUrl,
                                       repoUrlFile,
@@ -408,7 +408,7 @@ def getCredentialsFromAuthDb(authId):
 
     return credentials
 
-def getToken():
+def getToken(endPointUrl):
     """
     Function to get a access token from endpoint sending "custom"
     basic auth.
@@ -431,9 +431,7 @@ def getToken():
     # request token
     nam = NetworkAccessManager()
     try:
-        # TODO: fix endpoint URL
-        # https://api.dev.boundlessgeo.io/v1/token/?
-        res, resText = nam.request(authEndpointUrl, method='GET', headers=headers)
+        res, resText = nam.request(endPointUrl, method='GET', headers=headers)
     except RequestsException, e:
         raise e
 
