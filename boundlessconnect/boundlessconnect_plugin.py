@@ -47,7 +47,7 @@ from qgis.core import QgsMapLayerRegistry
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
-from boundlessconnect.connectlayeractions import (addLayerActions,
+from boundlessconnect.connectlayeractions import (updateLayerActions,
                                                   removeLayerActions,
                                                   isConnectLayer
                                                  )
@@ -84,7 +84,7 @@ class BoundlessConnectPlugin(object):
         # add Connect menu for all loaded layer
         layers = list(QgsMapLayerRegistry.instance().mapLayers().values())
         for layer in layers:
-            addLayerActions(layer)
+            updateLayerActions(layer)
 
         self.iface.initializationCompleted.connect(self.checkFirstRun)
 
@@ -220,7 +220,7 @@ class BoundlessConnectPlugin(object):
 
     def layersAdded(self, layers):
         for layer in layers:
-            addLayerActions(layer)
+            updateLayerActions(layer)
 
     def layersRemoved(self, layerIds):
         if QgsMapLayerRegistry is not None:

@@ -67,7 +67,7 @@ def isConnectLayer(layer):
     return False
 
 
-def addLayerActions(layer):
+def updateLayerActions(layer):
     removeLayerActions(layer)
 
     if isConnectLayer(layer):
@@ -115,6 +115,28 @@ def readConnectLayers():
         pass
 
 
+def addConnectLayer(layer, connectLayerId):
+    global connectLayers
+
+    layer = ConnectLayer(layer.source(), connectLayerId)
+    if layer not in connectLayers:
+        for lay in connectLayers:
+            if lay.source == layer.source():
+                connectLayers.remove(lay)
+        connectLayers.append(layer)
+
+    saveConnectLayers()
+
+
+def removeConnectLayer(layer):
+    global connectLayers
+
+    for i, obj in enumerate(connectLayers):
+        if obj.source == layer.source():
+            del connectLayers[i]
+            saveConnectLayers()
+
+
 def saveConnectLayers():
     fileName = os.path.join(utils.userFolder(), 'connectlayers')
     with open(fileName, 'w') as f:
@@ -122,8 +144,10 @@ def saveConnectLayers():
 
 
 def uploadLayerToConnect(layer):
-    pass
+    addConnectLayer()
+    updateLayerActions(layer)
 
 
 def removeLayerFromConnect(layer):
-    pass
+    removeConnectLayer()
+    updateLayerActions(layer)
