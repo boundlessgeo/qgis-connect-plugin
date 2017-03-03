@@ -42,7 +42,7 @@ from qgis.PyQt.QtWidgets import QAction, QFileDialog, QPushButton
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
-from qgis.core import from QgsMapLayerRegistry
+from qgis.core import QgsMapLayerRegistry
 
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
@@ -91,7 +91,7 @@ class BoundlessConnectPlugin(object):
     def initGui(self):
         # track layer addition/removal to add/remove Connect menu
         QgsMapLayerRegistry.instance().layersAdded.connect(self.layersAdded)
-        QgsMapLayerRegistry.instance().layersWillBeRemoved[list].connect(self.layersRemoved)
+        QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.layersRemoved)
 
         self.dockWidget = getConnectDockWidget()
         self.iface.addDockWidget(Qt.RightDockWidgetArea, self.dockWidget)
@@ -148,8 +148,8 @@ class BoundlessConnectPlugin(object):
 
     def unload(self):
         try:
-            QgsMapLayerRegistry.instance().layersAdded.disconnect(self.layerAdded)
-            QgsMapLayerRegistry.instance().layersWillBeRemoved[list].disconnect(self.layerRemoved)
+            QgsMapLayerRegistry.instance().layersAdded.disconnect(self.layersAdded)
+            QgsMapLayerRegistry.instance().layersWillBeRemoved.disconnect(self.layersRemoved)
         except:
             pass
 
@@ -218,11 +218,11 @@ class BoundlessConnectPlugin(object):
     def pluginManagerLocal(self):
         utils.showPluginManager(False)
 
-    def layerAdded(self, layers):
+    def layersAdded(self, layers):
         for layer in layers:
             addLayerActions(layer)
 
-    def layerRemoved(self, layerIds):
+    def layersRemoved(self, layerIds):
         if QgsMapLayerRegistry is not None:
             for layerId in layerIds:
                 layer = QgsMapLayerRegistry.instance().mapLayer(layer)

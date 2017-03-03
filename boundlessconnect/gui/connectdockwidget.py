@@ -32,7 +32,7 @@ import webbrowser
 
 from qgis.utils import iface
 
-from boundlessconnect import connect
+from boundlessconnect import connectsearch
 from boundlessconnect.connectsearch import ConnectContent
 from boundlessconnect.gui.executor import execute
 
@@ -100,7 +100,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         content = {}
         self.cmbContentType.addItem("All", "ALL")
-        for cat, cls in connect.categories.items():
+        for cat, cls in connectsearch.categories.items():
             self.cmbContentType.addItem(cls[1], cat)
         self.cmbContentType.setCheckedItems(["All"])
 
@@ -165,7 +165,7 @@ class ConnectDockWidget(BASE, WIDGET):
     def logIn(self):
         utils.addBoundlessRepository()
         if self.leLogin.text().strip() == '' or self.lePassword.text().strip() == '':
-            execute(connect.loadPlugins)
+            execute(connectsearch.loadPlugins)
             self.stackedWidget.setCurrentIndex(1)
             self.roles = ["open"]
             self.labelLevel.setVisible(False)
@@ -189,14 +189,14 @@ class ConnectDockWidget(BASE, WIDGET):
         if text:
             self.searchPage = page
             try:
-                results = execute(lambda: connect.search(text, cat, self.searchPage))
+                results = execute(lambda: connectsearch.search(text, cat, self.searchPage))
                 if results:
                     self.searchResults = {r.url:r for r in results}
                     html = "<ul>"
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     html += "</ul>"
-                    if len(results) == connect.RESULTS_PER_PAGE:
+                    if len(results) == connectsearch.RESULTS_PER_PAGE:
                         if self.searchPage == 0:
                             html += "<a class='pagination' href='next'>Next</a>"
                         else:
@@ -238,7 +238,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.saveOrUpdateAuthId()
             self.roles = json.loads(str(reply.readAll()))
 
-        execute(connect.loadPlugins)
+        execute(connectsearch.loadPlugins)
         self.stackedWidget.setCurrentIndex(1)
         self.labelLevel.setVisible(visible)
         self.labelLevel.setText("Logged in as: <b>%s</b>" % self.leLogin.text())

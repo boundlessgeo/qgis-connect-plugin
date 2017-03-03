@@ -43,7 +43,7 @@ except:
 
 from qgis.PyQt.QtCore import QSettings, QDir, QFile, QCoreApplication
 
-from qgis.core import QgsApplication, QDir
+from qgis.core import QgsApplication
 from qgis.utils import (iface,
                         loadPlugin,
                         startPlugin,
