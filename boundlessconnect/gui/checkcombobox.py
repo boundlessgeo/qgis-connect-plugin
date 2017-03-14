@@ -98,6 +98,16 @@ class CheckComboBox(QComboBox):
 
         return items
 
+    def selectedData(self, role):
+        items = list()
+        if self.model():
+            index = self.model().index(0, self.modelColumn(), self.rootModelIndex())
+            indexes = self.model().match(index, Qt.CheckStateRole, Qt.Checked, -1, Qt.MatchExactly)
+            for i in indexes:
+                items.append(i.data(role))
+
+        return items
+
     def setCheckedItems(self, items):
         for i in items:
             index = self.findText(i)

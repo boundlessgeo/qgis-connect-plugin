@@ -171,7 +171,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def search(self, page=0):
         text = self.leSearch.text().strip()
-        cat = self.cmbContentType.itemData(self.cmbContentType.currentIndex())
+        cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
         if text:
             self.searchPage = page
             try:
