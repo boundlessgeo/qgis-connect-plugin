@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtGui import QStandardItemModel
-from qgis.PyQt.QtWidgets import QComboBox
+from qgis.PyQt.QtWidgets import QComboBox, QStyledItemDelegate, QStyleOptionViewItem
 
 
 class CheckableItemsModel(QStandardItemModel):
@@ -62,15 +62,15 @@ class CheckComboBox(QComboBox):
     def __init__(self, parent=None):
         super(CheckComboBox, self).__init__(parent)
 
-        # workaround for Mac and GTK to show checkboxes
-        self.setStyleSheet('QComboBox { combobox-popup: 1px }')
-
         self.defaultText = ''
         self.separator = ','
         self.containerMousePress = False
 
         self.checkableModel = CheckableItemsModel(self)
         self.setModel(self.checkableModel)
+
+        self.delegate = CheckBoxDelegate(self)
+        self.setItemDelegate(self.delegate)
 
         self.model().checkStateChanged.connect(self.updateCheckedItems)
         self.model().rowsInserted.connect(self.updateCheckedItems)
@@ -133,3 +133,14 @@ class CheckComboBox(QComboBox):
     def hidePopup(self):
         if self.containerMousePress:
             super(CheckComboBox, self).hidePopup()
+
+
+class CheckBoxDelegate(QStyledItemDelegate):
+
+    def __init__(self, parent):
+        super(CheckBoxDelegate, self).__init__(parent)
+
+    def paint(self, painter, option, index):
+        opts = QStyleOptionViewItem(option)
+        opts.showDecorationSelected = False
+        super(CheckBoxDelegate, self).paint(painter, opts, index)
