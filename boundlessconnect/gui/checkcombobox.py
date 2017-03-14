@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
 from qgis.PyQt.QtGui import QStandardItemModel
-from qgis.PyQt.QtWidgets import QComboBox, QStyledItemDelegate, QStyleOptionViewItem
+from qgis.PyQt.QtWidgets import QComboBox, QStyledItemDelegate, QStyleOptionViewItem, QLineEdit
 
 
 class CheckableItemsModel(QStandardItemModel):
@@ -69,8 +69,13 @@ class CheckComboBox(QComboBox):
         self.checkableModel = CheckableItemsModel(self)
         self.setModel(self.checkableModel)
 
-        self.delegate = CheckBoxDelegate(self)
-        self.setItemDelegate(self.delegate)
+        delegate = CheckBoxDelegate(self)
+        self.setItemDelegate(delegate)
+
+        lineEdit = QLineEdit(self)
+        lineEdit.setReadOnly(True)
+        self.setLineEdit(lineEdit)
+        self.setInsertPolicy(QComboBox.NoInsert)
 
         self.model().checkStateChanged.connect(self.updateCheckedItems)
         self.model().rowsInserted.connect(self.updateCheckedItems)
@@ -90,7 +95,7 @@ class CheckComboBox(QComboBox):
             index = self.model().index(0, self.modelColumn(), self.rootModelIndex())
             indexes = self.model().match(index, Qt.CheckStateRole, Qt.Checked, -1, Qt.MatchExactly)
             for i in indexes:
-                items.append(index.data())
+                items.append(i.data())
 
         return items
 
