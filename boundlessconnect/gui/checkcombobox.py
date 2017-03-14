@@ -64,7 +64,6 @@ class CheckComboBox(QComboBox):
 
         self.defaultText = ''
         self.separator = ','
-        self.containerMousePress = False
 
         self.checkableModel = CheckableItemsModel(self)
         self.setModel(self.checkableModel)
@@ -117,27 +116,6 @@ class CheckComboBox(QComboBox):
         value = self.itemData(index, Qt.CheckStateRole)
         if value is not None:
             self.setItemData(index, Qt.Checked if value == Qt.Unchecked else Qt.Unchecked, Qt.CheckStateRole)
-
-    def eventFilter(self, receiver, event):
-        eventType = event.type()
-        if eventType in [QEvent.KeyPress, QEvent.KeyRelease]:
-            if receiver == self and event.key() in [Qt.Key_Up, Qt.Key_Down]:
-                self.showPopup()
-                return True
-            elif event.key() in [Qt.Key_Enter, Qt.Key_Return, Qt.Key_Escape]:
-                self.hidePopup()
-                if event.key() != Qt.Key_Escape:
-                    return True
-        elif eventType == QEvent.MouseButtonPress:
-            self.containerMousePress = receiver == self.view().window()
-        elif eventType == QEvent.MouseButtonRelease:
-            self.containerMousePress = False
-
-        return False
-
-    def hidePopup(self):
-        if self.containerMousePress:
-            super(CheckComboBox, self).hidePopup()
 
 
 class CheckBoxDelegate(QStyledItemDelegate):
