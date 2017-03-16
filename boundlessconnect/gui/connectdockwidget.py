@@ -119,6 +119,8 @@ class ConnectDockWidget(BASE, WIDGET):
                 username = authConfig.config('username')
                 password = authConfig.config('password')
             else:
+                self.authId = ''
+                utils.setRepositoryAuth(self.authId)
                 self._showMessage(self.tr('Could not find Connect '
                                           'credentials in the database.'),
                                   QgsMessageBar.WARNING)
