@@ -69,17 +69,21 @@ def functionalTests():
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
-    repeatedLoginTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
-                        prestep=lambda: _startConectPlugin())
-    repeatedLoginTest.addStep('Check that no label with you login info is shown in the lower part of the connect panel.',
-                        isVerifyStep=True)
+    repeatedLoginTest.addStep('Accept dialog by pressing "Login" button '
+                              'without entering any credentials',
+                              prestep=lambda: _startConectPlugin())
+    repeatedLoginTest.addStep('Check that no label with you login info '
+                              'is shown in the lower part of the connect panel.',
+                              isVerifyStep=True)
     repeatedLoginTest.addStep('Click on the "Sign out" button')
     repeatedLoginTest.addStep('Login with valid credentials"')
-    repeatedLoginTest.addStep('Check that in the lower part of Connect plugin, your login name is displayed.')
+    repeatedLoginTest.addStep('Check that in the lower part of Connect '
+                              'plugin, your login name is displayed.')
 
     emptySearchTest = Test("Check empty search")
-    emptySearchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
-                        prestep=lambda: _startConectPlugin())
+    emptySearchTest.addStep('Accept dialog by pressing "Login" button '
+                            'without entering any credentials',
+                            prestep=lambda: _startConectPlugin())
     emptySearchTest.addStep('Leave search box empty and press Enter. Verify that no results are shown and no error is thrown')
 
     searchTest = Test("Check normal search")
@@ -92,55 +96,89 @@ def functionalTests():
     searchTest.addStep('Verify that pagination links work')
 
     categorySearchTest = Test("Check search by categories")
-    categorySearchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
-                        prestep=lambda: _startConectPlugin())
-    categorySearchTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that multiple results are shown.',
-                       isVerifyStep=True)
-    categorySearchTest.addStep('In the "Search for" combobox select "Plugin" and deselect any other items. Click on the "Search" button again and check that only plugin result is shown',
-                       isVerifyStep=True)
-    categorySearchTest.addStep('In the "Search for" combobox additionaly select "Learning". Click on the "Search" button again and check that two results are shown: plugin and learning center content.',
-                       isVerifyStep=True)
-    categorySearchTest.addStep('Type "gdal" in the search box and press Enter. Verify that a list of results is shown and pagination links ("next") are shown as well.',
-                       isVerifyStep=True)
+    categorySearchTest.addStep('Accept dialog by pressing "Login" '
+                               'button without entering any credentials',
+                               prestep=lambda: _startConectPlugin())
+    categorySearchTest.addStep('Type "MIL-STD-2525" in the search box '
+                               'and press Enter. Verify that multiple '
+                               'results are shown.',
+                               isVerifyStep=True)
+    categorySearchTest.addStep('In the "Search for" combobox select '
+                               '"Plugin" and deselect any other items. '
+                               'Click on the "Search" button again and '
+                               'check that only plugin result is shown',
+                               isVerifyStep=True)
+    categorySearchTest.addStep('In the "Search for" combobox additionaly '
+                               'select "Learning". Click on the "Search" '
+                               'button again and check that two results '
+                               'are shown: plugin and learning center content.',
+                               isVerifyStep=True)
+    categorySearchTest.addStep('Type "gdal" in the search box and press '
+                               'Enter. Verify that a list of results is '
+                               'shown and pagination links ("next") are '
+                               'shown as well.',
+                               isVerifyStep=True)
     categorySearchTest.addStep('Verify that pagination links work')
 
     rolesDisplayTest = Test("Check roles display")
-    rolesDisplayTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
-                        prestep=lambda: _startConectPlugin())
-    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is not available (red)',
-                       isVerifyStep=True)
-    rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it opens a browser where the user can subscribe to Boundless Connect',
-                       isVerifyStep=True)
+    rolesDisplayTest.addStep('Accept dialog by pressing "Login" button '
+                             'without entering any credentials',
+                             prestep=lambda: _startConectPlugin())
+    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and '
+                             'press Enter. Verify that one plugin result '
+                             'is shown and is not available (red)',
+                             isVerifyStep=True)
+    rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it '
+                             'opens a browser where the user can '
+                             'subscribe to Boundless Connect',
+                             isVerifyStep=True)
     rolesDisplayTest.addStep('Click on the "Sign out" button')
     rolesDisplayTest.addStep('Login with credentials for Desktop Enterprise"')
-    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown and is available (green)',
-                       isVerifyStep=True)
-    rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it install the plugins or tells you that it is already installed',
-                       isVerifyStep=True)
+    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and '
+                             'press Enter. Verify that one plugin result '
+                             'is shown and is available (green)',
+                             isVerifyStep=True)
+    rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it '
+                             'install the plugins or tells you that it '
+                             'is already installed',
+                             isVerifyStep=True)
 
     wrongSearchTest = Test("Check wrong search")
-    wrongSearchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
-                        prestep=lambda: _startConectPlugin())
-    wrongSearchTest.addStep('Type "wrongsearch" in the search box and press Enter. Verify that a warning is displayed.',
-                       isVerifyStep=True)
+    wrongSearchTest.addStep('Accept dialog by pressing "Login" button '
+                            'without entering any credentials',
+                            prestep=lambda: _startConectPlugin())
+    wrongSearchTest.addStep('Type "wrongsearch" in the search box and '
+                            'press Enter. Verify that a warning is displayed.',
+                            isVerifyStep=True)
 
     helpTest = Test("Help test")
-    helpTest.addStep('Click on "Help" button and verify help is correctly open in a browser.',
-                        prestep=lambda: _startConectPlugin())
+    helpTest.addStep('Click on "Help" button and verify help is '
+                     'correctly open in a browser.',
+                     prestep=lambda: _startConectPlugin())
 
     toggleVisibilityTest = Test("Check visibility toggling")
     toggleVisibilityTest.addStep('Close Connect dock.',
                                  prestep=lambda: _startConectPlugin())
-    toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless Connect". Verify that dock opened with active login screen.',
+    toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless '
+                                 'Connect". Verify that dock opened with '
+                                 'active login screen.',
                                  isVerifyStep=True)
     toggleVisibilityTest.addStep('Close Connect dock.')
-    toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check "Boundless Connect" panel. Verify that dock opened with active login screen.',
+    toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check '
+                                 '"Boundless Connect" panel. Verify that '
+                                 'dock opened with active login screen.',
                                  isVerifyStep=True)
-    toggleVisibilityTest.addStep('Login by pressing "Login" (without entering credentials) button and then close dock.')
-    toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless Connect". Verify that dock opened with active search screen.',
+    toggleVisibilityTest.addStep('Login by pressing "Login" (without '
+                                 'entering credentials) button and then '
+                                 'close dock.')
+    toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless '
+                                 'Connect". Verify that dock opened with '
+                                 'active search screen.',
                                  isVerifyStep=True)
     toggleVisibilityTest.addStep('Close dock.')
-    toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check "Boundless Connect" panel. Verify that dock opened with active search screen.',
+    toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check '
+                                '"Boundless Connect" panel. Verify that '
+                                'dock opened with active search screen.',
                                  isVerifyStep=True)
 
     return [invalidCredentialsTest, searchTest, emptySearchTest,
