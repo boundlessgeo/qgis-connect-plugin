@@ -99,10 +99,10 @@ class ConnectDockWidget(BASE, WIDGET):
         self.webView.linkClicked.connect(self.linkClicked)
 
         content = {}
+        self.cmbContentType.addItem("All", "ALL")
         for cat, cls in connect.categories.items():
             self.cmbContentType.addItem(cls[1], cat)
-        self.cmbContentType.insertItem(0, "All", None)
-        self.cmbContentType.setCurrentIndex(0)
+        self.cmbContentType.setCheckedItems(["All"])
 
         settings = QSettings()
         settings.beginGroup(reposGroup)
@@ -181,7 +181,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def search(self, page=0):
         text = self.leSearch.text().strip()
-        cat = self.cmbContentType.itemData(self.cmbContentType.currentIndex())
+        cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
         if text:
             self.searchPage = page
             try:

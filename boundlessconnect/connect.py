@@ -165,7 +165,7 @@ class ConnectOther(ConnectWebAdress):
     def typeName(self):
         return "Other"
 
-BASE_URL = "http://api.boundlessgeo.com/v1/search/"
+BASE_URL = "http://api.dev.boundlessgeo.io/v1/search/"
 
 _plugins = {}
 def loadPlugins():
@@ -190,9 +190,9 @@ categories = {"LC": (ConnectLearning, "Learning"),
 
 RESULTS_PER_PAGE = 20
 
-def search(text, category=None, page=0):
+def search(text, category='', page=0):
     nam = NetworkAccessManager()
-    if category is None:
+    if category == '':
         res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
     else:
         res, resText = nam.request("{}categories/{}/?q={}&si={}&c={}".format(BASE_URL, category, text, int(page), RESULTS_PER_PAGE))
