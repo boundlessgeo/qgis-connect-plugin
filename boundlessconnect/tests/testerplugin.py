@@ -91,6 +91,19 @@ def functionalTests():
                        isVerifyStep=True)
     searchTest.addStep('Verify that pagination links work')
 
+    categorySearchTest = Test("Check search by categories")
+    categorySearchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
+                        prestep=lambda: _startConectPlugin())
+    categorySearchTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that multiple results are shown.',
+                       isVerifyStep=True)
+    categorySearchTest.addStep('In the "Search for" combobox select "Plugin" and deselect any other items. Click on the "Search" button again and check that only plugin result is shown',
+                       isVerifyStep=True)
+    categorySearchTest.addStep('In the "Search for" combobox additionaly select "Learning". Click on the "Search" button again and check that two results are shown: plugin and learning center content.',
+                       isVerifyStep=True)
+    categorySearchTest.addStep('Type "gdal" in the search box and press Enter. Verify that a list of results is shown and pagination links ("next") are shown as well.',
+                       isVerifyStep=True)
+    categorySearchTest.addStep('Verify that pagination links work')
+
     rolesDisplayTest = Test("Check roles display")
     rolesDisplayTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
                         prestep=lambda: _startConectPlugin())
@@ -130,7 +143,9 @@ def functionalTests():
     toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check "Boundless Connect" panel. Verify that dock opened with active search screen.',
                                  isVerifyStep=True)
 
-    return [invalidCredentialsTest, searchTest, emptySearchTest, repeatedLoginTest, wrongSearchTest, rolesDisplayTest, toggleVisibilityTest]
+    return [invalidCredentialsTest, searchTest, emptySearchTest,
+            repeatedLoginTest, wrongSearchTest, rolesDisplayTest,
+            toggleVisibilityTest, categorySearchTest]
 
 
 class SearchApiTests(unittest.TestCase):
