@@ -165,7 +165,7 @@ class ConnectOther(ConnectWebAdress):
     def typeName(self):
         return "Other"
 
-BASE_URL = "htttp://api.dev.boundlessgeo.io/v1/search/"
+BASE_URL = "http://api.dev.boundlessgeo.io/v1/search/"
 
 _plugins = {}
 def loadPlugins():
