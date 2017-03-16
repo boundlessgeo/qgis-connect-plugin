@@ -49,6 +49,7 @@ from qgis.PyQt.QtNetwork import (QNetworkRequest,
 from qgis.PyQt.QtWebKitWidgets import QWebPage
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig
+from qgis.gui import QgsMessageBar
 
 from pyplugin_installer.installer_data import reposGroup
 
@@ -113,9 +114,16 @@ class ConnectDockWidget(BASE, WIDGET):
     def showEvent(self, event):
         if self.authId != '' and self.askForAuth and not self.loggedIn:
             authConfig = QgsAuthMethodConfig()
-            QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
-            username = authConfig.config('username')
-            password = authConfig.config('password')
+            if self.authId in QgsAuthManager.instance().configIds():
+                QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
+                username = authConfig.config('username')
+                password = authConfig.config('password')
+            else:
+                self._showMessage(self.tr('Could not find Connect '
+                                          'credentials in the database.'),
+                                  QgsMessageBar.WARNING)
+                username = ''
+                password = ''
             self.leLogin.setText(username)
             self.lePassword.setText(password)
 
@@ -286,6 +294,10 @@ class ConnectDockWidget(BASE, WIDGET):
                 proxy = QNetworkProxy(proxyType, proxyHost, proxyPort,
                                       proxyUser, proxyPassword)
             self.manager.setProxy(proxy)
+
+    def _showMessage(self, message, level=QgsMessageBar.INFO):
+        self.iface.messageBar().pushMessage(
+            message, level, self.iface.messageTimeout())
 
 
 _widget = None
