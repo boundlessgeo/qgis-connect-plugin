@@ -195,7 +195,7 @@ def search(text, category='', page=0):
     if category == '':
         res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
     else:
-        res, resText = nam.request("{}categories/{}/?q={}&si={}&c={}".format(BASE_URL, category, text, int(page), RESULTS_PER_PAGE))
+        res, resText = nam.request("{}?q={}&cat={}&si={}&c={}".format(BASE_URL, text, category, int(page), RESULTS_PER_PAGE))
     jsonText = json.loads(resText)
     results = []
     for element in jsonText["features"]:
