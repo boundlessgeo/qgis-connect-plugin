@@ -239,6 +239,7 @@
   <tabstop>lePassword</tabstop>
   <tabstop>leSearch</tabstop>
   <tabstop>btnSearch</tabstop>
+  <tabstop>cmbContentType</tabstop>
   <tabstop>webView</tabstop>
   <tabstop>btnSignOut</tabstop>
  </tabstops>
