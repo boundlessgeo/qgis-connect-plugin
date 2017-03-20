@@ -81,6 +81,8 @@ After the login (either by entering your credentials or skipping it), the :guila
 
    Boundless Connect Search
 
+Under the search field there is a dropdown list with all available content categories where you can select content categories in which you are interested. Note that "All" category includes all other categories, so if you select it, there is no need in selecting anything else.
+
 At the bottom of the search panel, you can find the user's email you have logged with and a :guilabel:`Logout` button (clicking the :guilabel:`Logout` button will return you to the login page where you can enter new credentials).
 
 To search for plugins or other resources, type some text in the field and click :guilabel:`Search` (or press :kbd:`Enter` on your keyboard).
