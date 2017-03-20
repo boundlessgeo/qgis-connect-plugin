@@ -116,15 +116,9 @@ class CheckComboBox(QComboBox):
 
     def updateCheckedItems(self):
         items = self.checkedItems()
-        if len(items) == 0:
-            text = self.defaultText
-        else:
-            text = self.separator.join(items)
 
-        rect = self.lineEdit().rect()
-        fontMetrics = QFontMetrics(self.font())
-        text = fontMetrics.elidedText(text, Qt.ElideRight, rect.width())
-        self.setEditText(text)
+        self.updateDisplayText(items)
+
         self.checkedItemsChanged.emit(items)
 
     def toggleCheckState(self, index):
@@ -135,6 +129,17 @@ class CheckComboBox(QComboBox):
     def hidePopup(self):
         if not self.view().underMouse():
             super(CheckComboBox, self).hidePopup()
+
+    def updateDisplayText(self, items):
+        if len(items) == 0:
+            text = self.defaultText
+        else:
+            text = self.separator.join(items)
+
+        rect = self.lineEdit().rect()
+        fontMetrics = QFontMetrics(self.font())
+        text = fontMetrics.elidedText(text, Qt.ElideRight, rect.width())
+        self.setEditText(text)
 
 
 class CheckBoxDelegate(QStyledItemDelegate):
