@@ -130,7 +130,12 @@ class CheckComboBox(QComboBox):
         if not self.view().underMouse():
             super(CheckComboBox, self).hidePopup()
 
-    def updateDisplayText(self, items):
+    def resizeEvent(self, event):
+        super(CheckComboBox, self).resizeEvent(event)
+        self.updateDisplayText()
+
+    def updateDisplayText(self, items=None):
+        items = self.checkedItems() if items is None else items
         if len(items) == 0:
             text = self.defaultText
         else:
