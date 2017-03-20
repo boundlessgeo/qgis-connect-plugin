@@ -27,7 +27,7 @@ __revision__ = '$Format:%H$'
 
 
 from qgis.PyQt.QtCore import Qt, pyqtSignal
-from qgis.PyQt.QtGui import QStandardItemModel
+from qgis.PyQt.QtGui import QStandardItemModel, QFontMetrics
 from qgis.PyQt.QtWidgets import QComboBox, QStyledItemDelegate, QStyleOptionViewItem, QLineEdit
 
 
@@ -117,10 +117,14 @@ class CheckComboBox(QComboBox):
     def updateCheckedItems(self):
         items = self.checkedItems()
         if len(items) == 0:
-            self.setEditText(self.defaultText)
+            text = self.defaultText
         else:
-            self.setEditText(self.separator.join(items))
+            text = self.separator.join(items)
 
+        rect = self.lineEdit().rect()
+        fontMetrics = QFontMetrics(self.font())
+        text = fontMetrics.elidedText(text, Qt.ElideRight, rect.width())
+        self.setEditText(text)
         self.checkedItemsChanged.emit(items)
 
     def toggleCheckState(self, index):
