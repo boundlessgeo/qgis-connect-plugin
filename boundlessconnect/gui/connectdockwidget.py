@@ -172,7 +172,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
         #httpAuth = base64.encodestring('{}:{}'.format(self.leLogin.text().strip(), self.lePassword.text().strip()))[:-1]
-        httpAuth = b64encode(b"%s:%s" % (self.leLogin.text().strip(), self.lePassword.text().strip())).decode("ascii")
+        httpAuth = base64.b64encode(b"%s:%s" % (self.leLogin.text().strip(), self.lePassword.text().strip())).decode("ascii")
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         self.manager = QNetworkAccessManager()
         self.setProxy()
