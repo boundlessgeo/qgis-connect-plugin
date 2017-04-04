@@ -7,30 +7,34 @@ import re
 import json
 from copy import copy
 import webbrowser
-from qgis.PyQt.QtGui import QIcon
+
+from qgis.PyQt.Qt import QNetworkRequest, QCursor, Qt
+from qgis.PyQt.QtGui import QIcon, QApplication
+from qgis.PyQt.QtCore import QUrl, QFile
 from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtNetwork import QNetworkReply
+
+from qgis.gui import QgsMessageBar
+from qgis.core import QgsNetworkAccessManager
+from qgis.utils import iface, available_plugins, active_plugins
+
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
+
 from boundlessconnect.gui.executor import execute
 from boundlessconnect.networkaccessmanager import NetworkAccessManager
 from boundlessconnect import utils
-from PyQt4.Qt import QNetworkRequest, QCursor, Qt
-from PyQt4.QtGui import QApplication
-from qgis.utils import iface
-from qgis.gui import QgsMessageBar
-from qgis.core import QgsNetworkAccessManager
-
-from PyQt4.QtCore import QUrl, QFile
-from utils import tempFilename
-from PyQt4.QtNetwork import QNetworkReply
-from qgis.utils import available_plugins, active_plugins
 
 pluginPath = os.path.dirname(__file__)
 
 OPEN_ROLE = "open"
 PUBLIC_ROLE = "public"
-
 SUBSCRIBE_URL = "https://connect.boundlessgeo.com/Upgrade-Subscription"
+
+
+class OpenContentException(Exception):
+    pass
+
 
 class ConnectContent(object):
     def __init__(self, url, name, description, roles = ["open"]):
@@ -63,7 +67,9 @@ class ConnectContent(object):
             % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
         return s
 
+
 LESSONS_PLUGIN_NAME = "lessons"
+
 
 class ConnectLesson(ConnectContent):
     def _open(self):
@@ -87,7 +93,7 @@ class ConnectLesson(ConnectContent):
             iface.messageBar().pushMessage("Lessons could not be installed", self.reply.errorString(), QgsMessageBar.WARNING)
             self.reply.deleteLater()
             return
-        f = QFile(tempFilename(os.path.basename(self.url).split(".")[0]))
+        f = QFile(utils.tempFilename(os.path.basename(self.url).split(".")[0]))
         f.open(QFile.WriteOnly)
         f.write(self.reply.readAll())
         f.close()
@@ -100,9 +106,11 @@ class ConnectLesson(ConnectContent):
     def typeName(self):
         return "Lesson"
 
+
 class ConnectWebAdress(ConnectContent):
     def _open(self):
         webbrowser.open_new(self.url)
+
 
 class ConnectPlugin(ConnectContent):
 
@@ -137,35 +145,44 @@ class ConnectPlugin(ConnectContent):
             installer.installPlugin(self.plugin["id"])
         execute(_install)
 
+
 class ConnectVideo(ConnectWebAdress):
     def typeName(self):
         return "Video"
+
 
 class ConnectLearning(ConnectWebAdress):
     def typeName(self):
         return "Learning"
 
+
 class ConnectQA(ConnectWebAdress):
     def typeName(self):
         return "Q & A"
+
 
 class ConnectBlog(ConnectWebAdress):
     def typeName(self):
         return "Blog"
 
+
 class ConnectDocumentation(ConnectWebAdress):
     def typeName(self):
         return "Documentation"
+
 
 class ConnectDiscussion(ConnectWebAdress):
     def typeName(self):
         return "Discussion"
 
+
 class ConnectOther(ConnectWebAdress):
     def typeName(self):
         return "Other"
 
+
 BASE_URL = "http://api.dev.boundlessgeo.io/v1/search/"
+
 
 _plugins = {}
 def loadPlugins():
@@ -190,6 +207,7 @@ categories = {"LC": (ConnectLearning, "Learning"),
 
 RESULTS_PER_PAGE = 20
 
+
 def search(text, category='', page=0):
     nam = NetworkAccessManager()
     if category == '':
@@ -210,6 +228,3 @@ def search(text, category='', page=0):
             if plugin:
                 results.append(ConnectPlugin(plugin, roles))
     return results
-
-class OpenContentException(Exception):
-    pass
