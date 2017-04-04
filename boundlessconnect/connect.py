@@ -8,11 +8,10 @@ import json
 from copy import copy
 import webbrowser
 
-from qgis.PyQt.Qt import QNetworkRequest, QCursor, Qt
-from qgis.PyQt.QtGui import QIcon
-from qgis.PyQt.QtCore import QUrl, QFile
+from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtCore import Qt, QUrl, QFile
 from qgis.PyQt.QtWidgets import QMessageBox, QApplication
-from qgis.PyQt.QtNetwork import QNetworkReply
+from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.gui import QgsMessageBar
 from qgis.core import QgsNetworkAccessManager
