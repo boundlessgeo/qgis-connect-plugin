@@ -9,9 +9,9 @@ from copy import copy
 import webbrowser
 
 from qgis.PyQt.Qt import QNetworkRequest, QCursor, Qt
-from qgis.PyQt.QtGui import QIcon, QApplication
+from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtCore import QUrl, QFile
-from qgis.PyQt.QtWidgets import QMessageBox
+from qgis.PyQt.QtWidgets import QMessageBox, QApplication
 from qgis.PyQt.QtNetwork import QNetworkReply
 
 from qgis.gui import QgsMessageBar
