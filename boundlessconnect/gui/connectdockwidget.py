@@ -299,8 +299,8 @@ class ConnectDockWidget(BASE, WIDGET):
             self.manager.setProxy(proxy)
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
-        self.iface.messageBar().pushMessage(
-            message, level, self.iface.messageTimeout())
+        iface.messageBar().pushMessage(
+            message, level, iface.messageTimeout())
 
 
 _widget = None
