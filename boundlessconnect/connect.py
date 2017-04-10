@@ -200,7 +200,6 @@ categories = {"LC": (ConnectLearning, "Learning"),
               "VID": (ConnectVideo, "Video"),
               "BLOG": (ConnectBlog, "Blog"),
               "QA": (ConnectQA, "Q & A"),
-              "DIS": (ConnectDiscussion, "Discussion"),
               "PLUG": (ConnectPlugin, "Plugin"),
               "LESSON": (ConnectLesson, "Lesson")}
 
@@ -218,10 +217,13 @@ def search(text, category='', page=0):
     for element in jsonText["features"]:
         props = element["properties"]
         roles = props["role"].split(",")
-        if props["category"] != "PLUG":
+        category = props["category"]
+        if category != "PLUG":
             title = props["title"] or props["description"].split(".")[0]
-            results.append(categories[props["category"]][0](props["url"],
-                                    title, props["description"], roles))
+            if category in categories:
+                results.append(categories[category][0](props["url"],
+                                                        title,
+                                                        rops["description"], roles))
         else:
             plugin = _plugins.get(props["title"], None)
             if plugin:
