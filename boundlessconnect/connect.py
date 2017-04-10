@@ -223,7 +223,7 @@ def search(text, category='', page=0):
             if category in categories:
                 results.append(categories[category][0](props["url"],
                                                         title,
-                                                        rops["description"], roles))
+                                                        props["description"], roles))
         else:
             plugin = _plugins.get(props["title"], None)
             if plugin:
