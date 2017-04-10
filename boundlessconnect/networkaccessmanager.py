@@ -26,7 +26,7 @@ __date__ = 'August 2016'
 
 import urllib.request, urllib.error, urllib.parse
 
-from qgis.PyQt.QtCore import pyqtSlot, QUrl, QEventLoop, QTextStream
+from qgis.PyQt.QtCore import pyqtSlot, QUrl, QEventLoop
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 from qgis.core import QgsNetworkAccessManager, QgsAuthManager, QgsMessageLog
@@ -255,8 +255,7 @@ class NetworkAccessManager(object):
                 self.http_call_result.exception = RequestsException(msg)
         else:
             ba = self.reply.readAll()
-            txt = QTextStream(ba).readAll()
-            self.http_call_result.text = str(txt)
+            self.http_call_result.text = bytes(ba)
             self.http_call_result.ok = True
 
     @pyqtSlot()
