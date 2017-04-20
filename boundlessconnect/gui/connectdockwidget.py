@@ -108,6 +108,9 @@ class ConnectDockWidget(BASE, WIDGET):
         settings.beginGroup(reposGroup)
         self.authId = settings.value(boundlessRepoName + '/authcfg', '')
         settings.endGroup()
+        if self.authId not in QgsAuthManager.instance().configIds():
+            self.authId = ''
+            utils.setRepositoryAuth(self.authId)
 
         self.showLogin()
 
