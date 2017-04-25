@@ -15,7 +15,6 @@
 *                                                                         *
 ***************************************************************************
 """
-
 import site
 import os
 
@@ -176,6 +175,9 @@ class BoundlessConnectPlugin(object):
         for layer in layers:
             removeLayerActions(layer)
 
+        # cleanup temporary files
+        utils.deleteTempFolder()
+
     def checkFirstRun(self):
         settings = QSettings('Boundless', 'BoundlessConnect')
         firstRun = settings.value('firstRun', True, bool)
@@ -225,7 +227,7 @@ class BoundlessConnectPlugin(object):
     def layersRemoved(self, layerIds):
         if QgsMapLayerRegistry is not None:
             for layerId in layerIds:
-                layer = QgsMapLayerRegistry.instance().mapLayer(layer)
+                layer = QgsMapLayerRegistry.instance().mapLayer(layerId)
                 removeLayerActions(layer)
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):

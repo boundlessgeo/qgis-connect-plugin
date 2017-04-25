@@ -25,19 +25,35 @@ __copyright__ = '(C) 2017 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
+import os
+import shutil
+import zipfile
+
+from requests.packages.urllib3.filepost import encode_multipart_formdata
 
 from boundlessconnect.networkaccessmanager import NetworkAccessManager
+from boundlessconnect.mapboxgl import layerToMapbox
 from boundlessconnect import utils
 
 UPLOAD_ENDPOINT_URL = "https://api.dev.boundlessgeo.io/v1/token/"
 
 
-def upload(layer):
-    token = utils.getToken(UPLOAD_ENDPOINT_URL)
+def publish(layer):
+    folder = utils.tempDirName()
+    print "EXPORT TO", folder
+    layerToMapbox(layer, folder, False)
+    exportedFile = utils.tempFilename("layerexport.zip")
+    print "ZIP TO", exportedFile
+
+    shutil.make_archive(os.path.splitext(exportedFile)[0], "zip", folder)
+
+    with open(exportedFile, 'rb') as f:
+        fileContent = f.read()
+    fields = {"file": (os.path.basename(exportedFile), fileContent) }
+    payload, content_type = encode_multipart_formdata(fields)
 
     headers = {}
-    headers["Authorization"] = "Bearer {}".format(token)
-    headers["Content-Type"] = "multipart/form-data; boundary={}".format(boundary)
+    headers["Content-Type"] = content_type
 
-    nam = NetworkAccessManager()
-    res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=body, headers=headers)
+    #nam = NetworkAccessManager()
+    #res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)

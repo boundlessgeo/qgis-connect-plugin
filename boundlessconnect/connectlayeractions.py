@@ -35,6 +35,7 @@ from qgis.PyQt.QtWidgets import QAction
 from qgis.core import QgsMapLayer
 from qgis.utils import iface
 
+from boundlessconnect import connectlayerupload
 from boundlessconnect import utils
 
 
@@ -82,7 +83,7 @@ def updateLayerActions(layer):
         layer.connectActions = [action]
     else:
         action = QAction("Publish to Connect", iface.legendInterface())
-        action.triggered.connect(partial(uploadLayerToConnect, layer))
+        action.triggered.connect(partial(publishLayerToConnect, layer))
 
         if layer.type() == QgsMapLayer.RasterLayer:
             action.setEnabled(False)
@@ -143,11 +144,13 @@ def saveConnectLayers():
         f.write(json.dumps(connectLayers, cls=encoder))
 
 
-def uploadLayerToConnect(layer):
-    addConnectLayer()
-    updateLayerActions(layer)
+def publishLayerToConnect(layer):
+    if connectlayerupload.publish(layer):
+        addConnectLayer()
+        updateLayerActions(layer)
 
 
 def removeLayerFromConnect(layer):
-    removeConnectLayer()
-    updateLayerActions(layer)
+    if connectlayerupload.delete(layer):
+        removeConnectLayer()
+        updateLayerActions(layer)

@@ -18,8 +18,6 @@
 from future import standard_library
 standard_library.install_aliases()
 from builtins import str
-import tempfile
-import time
 
 __author__ = 'Alexander Bruy'
 __date__ = 'February 2016'
@@ -35,6 +33,8 @@ import base64
 import shutil
 import zipfile
 import socket
+import tempfile
+import uuid
 
 try:
     from configparser import ConfigParser
@@ -393,10 +393,18 @@ def deleteTempFolder():
     if _tempFolder is not None:
         shutil.rmtree(_tempFolder, True)
 
+
 def tempFilename(basename):
-    folder = os.path.join(tempFolder(), str(time.time()))
+    folder = os.path.join(tempFolder(), uuid.uuid4().hex)
     os.mkdir(folder)
     return os.path.join(folder, basename)
+
+
+def tempDirName():
+    folder = tempFolder()
+    folder = os.path.join(folder, uuid.uuid4().hex)
+    os.mkdir(folder)
+    return folder
 
 
 def getCredentialsFromAuthDb(authId):
@@ -407,6 +415,7 @@ def getCredentialsFromAuthDb(authId):
     credentials = (authConfig.config('username'), authConfig.config('password'))
 
     return credentials
+
 
 def getToken(endPointUrl):
     """
