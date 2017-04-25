@@ -4,7 +4,11 @@
 # This code is licensed under the GPL 2.0 license.
 #
 import os
+import shutil
 import zipfile
+import StringIO
+
+import requests
 
 from paver.easy import *
 
@@ -51,6 +55,15 @@ def setup():
             'ext_libs' : ext_libs.abspath(),
             'dep' : req
         })
+
+    mapboxPath = os.path.abspath("./boundlessconnect/mapboxgl")
+    if os.path.exists(mapboxPath):
+        shutil.rmtree(mapboxPath)
+    r = requests.get("https://github.com/boundlessgeo/lib-mapboxgl-qgis/archive/master.zip", stream=True)
+    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z.extractall(path=mapboxPath)
+    path(os.path.join(mapboxPath, "lib-mapboxgl-qgis-master", "mapboxgl", "mapboxgl.py")).copy2("./boundlessconnect")
+    shutil.rmtree(mapboxPath)
 
 
 def _install(folder):
