@@ -47,7 +47,8 @@ def publish(layer):
 
     with open(exportedFile, 'rb') as f:
         fileContent = f.read()
-    fields = {"file": (os.path.basename(exportedFile), fileContent) }
+    fields = {"name": layer.name(),
+              "source": (os.path.basename(exportedFile), fileContent)}
     payload, content_type = encode_multipart_formdata(fields)
 
     headers = {}
