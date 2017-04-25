@@ -40,10 +40,8 @@ UPLOAD_ENDPOINT_URL = "https://api.dev.boundlessgeo.io/v1/token/"
 
 def publish(layer):
     folder = utils.tempDirName()
-    print "EXPORT TO", folder
     layerToMapbox(layer, folder, False)
     exportedFile = utils.tempFilename("layerexport.zip")
-    print "ZIP TO", exportedFile
 
     shutil.make_archive(os.path.splitext(exportedFile)[0], "zip", folder)
 
@@ -55,5 +53,5 @@ def publish(layer):
     headers = {}
     headers["Content-Type"] = content_type
 
-    #nam = NetworkAccessManager()
-    #res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)
+    nam = NetworkAccessManager()
+    res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)
