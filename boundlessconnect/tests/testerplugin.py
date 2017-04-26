@@ -285,7 +285,7 @@ class BoundlessConnectTests(unittest.TestCase):
         for key in plugins.all():
             if key in ['boundlessconnect']:
                 continue
-            if utils.isBoundlessPlugin(plugins.all()[key]) and key not in installedPlugins:
+            if utils.isBoundlessPlugin(plugins.all()[key]) and plugins.all()[key]['installed'] and key not in installedPlugins:
                 installer.uninstallPlugin(key, quiet=True)
 
 
