@@ -194,15 +194,15 @@ class SearchApiTests(unittest.TestCase):
 
     def testPluginsSearchResultsCorrectlyRetrieved(self):
         """Check that plugins search results correctly retrieved"""
-        results = search("MIL-STD-2525")
-        self.assertEqual(1, len(results))
-        self.assertTrue(isinstance(results[0], ConnectPlugin))
+        results = search("MIL-STD-2525", "PLUG")
+        self.assertEqual(1, len(results), results)
+        self.assertIsInstance(results[0], ConnectPlugin)
 
     def testNonPluginsSearchResultsCorrectlyRetrieved(self):
         """Check that non-plugins search results correctly retrieved"""
         results = search("gdal")
         self.assertEqual(20, len(results))
-        results2 = search("gdal", 1)
+        results2 = search("gdal", page=0)
         self.assertEqual(20, len(results))
         self.assertNotEqual(results, results2)
 
@@ -213,10 +213,10 @@ class SearchApiTests(unittest.TestCase):
 
     def testSearchByCategory(self):
         "Check that search by categories works"
-        results = search("what", "PLUG")
+        results = search("what3words", "PLUG")
         self.assertEqual(1, len(results))
         results = search("geogig", "DOC")
-        self.assertEqual(4, len(results))
+        self.assertEqual(5, len(results))
 
     def testSearchByMultipleCategories(self):
         "Check that search by multiple categories works"
@@ -283,7 +283,7 @@ class BoundlessConnectTests(unittest.TestCase):
         # Also remove other installed plugins
         global installedPlugins
         for key in plugins.all():
-            if key in ['boundlessconnect', 'qgistester']:
+            if key in ['boundlessconnect']:
                 continue
             if utils.isBoundlessPlugin(plugins.all()[key]) and key not in installedPlugins:
                 installer.uninstallPlugin(key, quiet=True)
