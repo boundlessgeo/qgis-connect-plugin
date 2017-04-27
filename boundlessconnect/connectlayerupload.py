@@ -56,3 +56,7 @@ def publish(layer):
 
     nam = NetworkAccessManager()
     res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)
+
+
+def delete(layer):
+    pass
