@@ -26,6 +26,7 @@ __copyright__ = '(C) 2017 Boundless, http://boundlessgeo.com'
 __revision__ = '$Format:%H$'
 
 import os
+import json
 import shutil
 import zipfile
 
@@ -35,7 +36,7 @@ from boundlessconnect.networkaccessmanager import NetworkAccessManager
 from boundlessconnect.mapboxgl import layerToMapbox
 from boundlessconnect import utils
 
-UPLOAD_ENDPOINT_URL = "https://api.dev.boundlessgeo.io/v1/token/"
+UPLOAD_ENDPOINT_URL = "https://dev.lyrs.boundlessgeo.com/api/layers"
 
 
 def publish(layer):
@@ -56,7 +57,12 @@ def publish(layer):
 
     nam = NetworkAccessManager()
     res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)
+    data = json.loads(resText)
+    return True, data["id"]
 
 
-def delete(layer):
-    pass
+def delete(layerId):
+    nam = NetworkAccessManager()
+    res, resText = nam.request("{}/{}".format(UPLOAD_ENDPOINT_URL, layerId), method="DELETE")
+    print resText
+    return True

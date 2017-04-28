@@ -24,6 +24,7 @@ __copyright__ = '(C) 2017 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
+import os
 import json
 from json.decoder import JSONDecoder
 from json.encoder import JSONEncoder
@@ -144,13 +145,24 @@ def saveConnectLayers():
         f.write(json.dumps(connectLayers, cls=encoder))
 
 
+def connectId(layer):
+    global connectLayers
+
+    for lay in connectLayers:
+        if lay.source == layer.source():
+            return lay.connectId
+    return None
+
+
 def publishLayerToConnect(layer):
-    if connectlayerupload.publish(layer):
-        addConnectLayer()
+    ok, layerId = connectlayerupload.publish(layer)
+    if ok:
+        addConnectLayer(layer, layerId)
         updateLayerActions(layer)
 
 
 def removeLayerFromConnect(layer):
-    if connectlayerupload.delete(layer):
-        removeConnectLayer()
+    layerId = connectId(layer)
+    if connectlayerupload.delete(layerId):
+        removeConnectLayer(layer)
         updateLayerActions(layer)
