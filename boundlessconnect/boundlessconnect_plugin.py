@@ -48,7 +48,8 @@ from pyplugin_installer.installer_data import (repositories,
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect.connectlayeractions import (updateLayerActions,
                                                   removeLayerActions,
-                                                  isConnectLayer
+                                                  isConnectLayer,
+                                                  readConnectLayers
                                                  )
 from boundlessconnect import utils
 
@@ -88,6 +89,8 @@ class BoundlessConnectPlugin(object):
         self.iface.initializationCompleted.connect(self.checkFirstRun)
 
     def initGui(self):
+        readConnectLayers()
+
         # track layer addition/removal to add/remove Connect menu
         QgsMapLayerRegistry.instance().layersAdded.connect(self.layersAdded)
         QgsMapLayerRegistry.instance().layersWillBeRemoved.connect(self.layersRemoved)

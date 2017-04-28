@@ -107,8 +107,8 @@ def readConnectLayers():
     try:
         global connectLayers
         fileName = os.path.join(utils.userFolder(), 'connectlayers')
-        if os.path.exists(filename):
-            with open(filename) as f:
+        if os.path.exists(fileName):
+            with open(fileName) as f:
                 lines = f.readlines()
             jsonstring = '\n'.join(lines)
             if jsonstring:
