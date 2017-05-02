@@ -58,7 +58,26 @@ def publish(layer):
     nam = NetworkAccessManager()
     res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)
     data = json.loads(resText)
+
+    url = data["params"]["data"]["s3Url"]
+    metadata = {"name": layer.name(),
+                "source": {"url": url}
+               }
+    register(metadata)
+
     return True, data["id"]
+
+
+def register(metadata):
+    headers = {}
+    headers["Content-Type"] = "application/json"
+
+    res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=metadata, headers=headers)
+    response = json.loads(resText)
+    if response["type"] == "REGISTER_LAYER_SUCCEEDED":
+        return True
+    else:
+        return False
 
 
 def delete(layerId):
