@@ -299,6 +299,7 @@ class LayersApiTests(unittest.TestCase):
         layer = QgsMapLayerRegistry.instance().mapLayersByName("points")[0]
         result, layerId = publish(layer)
         self.assertTrue(result)
+        self.assertTrue(delete(layer))
 
 
 def unitTests():

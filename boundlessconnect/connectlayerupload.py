@@ -85,5 +85,8 @@ def register(metadata):
 def delete(layerId):
     nam = NetworkAccessManager()
     res, resText = nam.request("{}/{}".format(UPLOAD_ENDPOINT_URL, layerId), method="DELETE")
-    print resText
-    return True
+    response = json.loads(resText)
+    if response["type"] == "DELETE_LAYER_SUCCEEDED":
+        return True
+    else:
+        return False
