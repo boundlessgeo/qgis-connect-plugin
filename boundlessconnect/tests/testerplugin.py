@@ -179,9 +179,32 @@ def functionalTests():
                                  isVerifyStep=True)
     toggleVisibilityTest.addStep('Close dock.')
     toggleVisibilityTest.addStep('Right-click on QGIS toolbar and check '
-                                '"Boundless Connect" panel. Verify that '
-                                'dock opened with active search screen.',
+                                 '"Boundless Connect" panel. Verify that '
+                                 'dock opened with active search screen.',
                                  isVerifyStep=True)
+
+    layerUploadTest = Test("Check layer publishing")
+    layerUploadTest.addStep('Select "points" layer in the Layer tree '
+                            'and check that there is a "Connect" group '
+                            'in its contex menu with single item called '
+                            '"Publish to Connect".',
+                            prestep=lambda: _loadTestProject("layers"))
+    layerUploadTest.addStep('Publish layer to Connect by selecting '
+                            'corresponding menu entry in its context '
+                            'menu. Verify that messagebar is shown and '
+                            'no errors occured.'
+                            isVerifyStep=True)
+    layerUploadTest.addStep('Check that in layer context menu there is '
+                            'only one item called "Remove from Connect".'
+                            isVerifyStep=True)
+    layerUploadTest.addStep('Remove layer from Connect by selecting '
+                            'corresponding menu entry in its context '
+                            'menu. Verify that messagebar is shown and '
+                            'no errors occured.'
+                            isVerifyStep=True)
+    layerUploadTest.addStep('Check that in layer context menu there is '
+                            'only one item called "Publish to Connect".'
+                            isVerifyStep=True)
 
     return [invalidCredentialsTest, searchTest, emptySearchTest,
             repeatedLoginTest, wrongSearchTest, rolesDisplayTest,
