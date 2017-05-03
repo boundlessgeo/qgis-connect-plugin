@@ -63,9 +63,11 @@ def publish(layer):
     metadata = {"name": layer.name(),
                 "source": {"url": url}
                }
-    register(metadata)
 
-    return True, data["id"]
+    if register(metadata):
+        return True, data["id"]
+    else:
+        return False, None
 
 
 def register(metadata):

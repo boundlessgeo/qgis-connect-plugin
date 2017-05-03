@@ -37,14 +37,15 @@ except:
 
 from qgis.PyQt.QtCore import Qt, QSettings
 
-from qgis.core import QgsApplication
-
+from qgis.core import QgsApplication, QgsProject
 from qgis.utils import active_plugins, home_plugin_path, unloadPlugin, iface
+
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect.connectsearch import search, ConnectPlugin, loadPlugins
+from boundlessconnect.connectlayerupload import publish, delete
 
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils
@@ -54,6 +55,7 @@ testPath = os.path.dirname(__file__)
 dock = None
 originalVersion = None
 installedPlugins = []
+
 
 def functionalTests():
     try:
@@ -289,14 +291,35 @@ class BoundlessConnectTests(unittest.TestCase):
                 installer.uninstallPlugin(key, quiet=True)
 
 
+class LayersApiTests(unittest.TestCase):
+
+    def testUpload(self):
+        """Check that uploading, registering and deleting layer works"""
+        _loadTestProject("layers")
+        layer = QgsMapLayerRegistry.instance().mapLayersByName("points")[0]
+        result, layerId = publish(layer)
+        self.assertTrue(result)
+
+
 def unitTests():
     connectSuite = unittest.makeSuite(BoundlessConnectTests, 'test')
-    apiSuite = unittest.makeSuite(SearchApiTests, 'test')
+    searchApiSuite = unittest.makeSuite(SearchApiTests, 'test')
+    layersApiSuite = unittest.makeSuite(LayersApiTests, 'test')
     _tests = []
     _tests.extend(connectSuite)
     _tests.extend(apiSuite)
 
     return _tests
+
+
+def suite():
+    suite = unittest.TestSuite()
+    suite.addTests(unittest.makeSuite(BoundlessConnectTests, 'test'))
+    return suite
+
+
+def run_tests():
+    unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite())
 
 
 def _openPluginManager(boundlessOnly=False):
@@ -341,11 +364,8 @@ def _startConectPlugin():
     dock.showLogin()
 
 
-def suite():
-    suite = unittest.TestSuite()
-    suite.addTests(unittest.makeSuite(BoundlessConnectTests, 'test'))
-    return suite
-
-
-def run_tests():
-    unittest.TextTestRunner(verbosity=3, stream=sys.stdout).run(suite())
+def _loadTestProject(name):
+    projectFile = os.path.join(os.path.dirname(__file__), "data", "{}.qgs".format(name))
+    currentProjectFile  = QgsProject.instance().fileName()
+    if os.path.normpath(currentProjectFile) != os.path.normpath(projectFile):
+        iface.addProject(projectFile)
