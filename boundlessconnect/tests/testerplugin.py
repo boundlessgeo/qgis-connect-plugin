@@ -192,18 +192,18 @@ def functionalTests():
     layerUploadTest.addStep('Publish layer to Connect by selecting '
                             'corresponding menu entry in its context '
                             'menu. Verify that messagebar is shown and '
-                            'no errors occured.'
+                            'no errors occured.',
                             isVerifyStep=True)
     layerUploadTest.addStep('Check that in layer context menu there is '
-                            'only one item called "Remove from Connect".'
+                            'only one item called "Remove from Connect".',
                             isVerifyStep=True)
     layerUploadTest.addStep('Remove layer from Connect by selecting '
                             'corresponding menu entry in its context '
                             'menu. Verify that messagebar is shown and '
-                            'no errors occured.'
+                            'no errors occured.',
                             isVerifyStep=True)
     layerUploadTest.addStep('Check that in layer context menu there is '
-                            'only one item called "Publish to Connect".'
+                            'only one item called "Publish to Connect".',
                             isVerifyStep=True)
 
     return [invalidCredentialsTest, searchTest, emptySearchTest,
