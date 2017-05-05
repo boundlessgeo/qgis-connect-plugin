@@ -34,6 +34,7 @@ from functools import partial
 from qgis.PyQt.QtWidgets import QAction
 
 from qgis.core import QgsMapLayer
+from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
 from boundlessconnect import connectlayerupload
@@ -159,6 +160,9 @@ def publishLayerToConnect(layer):
     if ok:
         addConnectLayer(layer, layerId)
         updateLayerActions(layer)
+        _showMessage("Layer uploaded to Connect.")
+    else:
+        _showMessage("Layer failed to upload layer.", QgsMessageBar.WARNING)
 
 
 def removeLayerFromConnect(layer):
@@ -166,3 +170,10 @@ def removeLayerFromConnect(layer):
     if connectlayerupload.delete(layerId):
         removeConnectLayer(layer)
         updateLayerActions(layer)
+        _showMessage("Layer removed from Connect.")
+    else:
+        _showMessage("Layer failed to remove layer.", QgsMessageBar.WARNING)
+
+
+def _showMessage(message, level=QgsMessageBar.INFO):
+    iface.messageBar().pushMessage(message, level, iface.messageTimeout())
