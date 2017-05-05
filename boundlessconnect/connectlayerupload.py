@@ -69,8 +69,9 @@ def publish(layer):
                 "source": {"url": url}
                }
 
-    if register(metadata):
-        return True, data["id"]
+    ok, layerId = register(metadata)
+    if ok:
+        return True, layerId
     else:
         return False, None
 
@@ -87,9 +88,9 @@ def register(metadata):
 
     response = json.loads(resText)
     if response["type"] == "REGISTER_LAYER_SUCCEEDED":
-        return True
+        return True, response["data"]["layerId"]
     else:
-        return False
+        return False, None
 
 
 def delete(layerId):
