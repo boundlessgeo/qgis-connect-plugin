@@ -74,7 +74,8 @@ def register(metadata):
     headers = {}
     headers["Content-Type"] = "application/json"
 
-    res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=metadata, headers=headers)
+    nam = NetworkAccessManager()
+    res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=json.dumps(metadata), headers=headers)
     response = json.loads(resText)
     if response["type"] == "REGISTER_LAYER_SUCCEEDED":
         return True
