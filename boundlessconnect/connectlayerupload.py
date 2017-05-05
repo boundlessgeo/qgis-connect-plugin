@@ -32,7 +32,8 @@ import zipfile
 
 from requests.packages.urllib3.filepost import encode_multipart_formdata
 
-from boundlessconnect.networkaccessmanager import NetworkAccessManager
+from boundlessconnect.networkaccessmanager import (NetworkAccessManager,
+                                                   RequestsException)
 from boundlessconnect.mapboxgl import layerToMapbox
 from boundlessconnect import utils
 
@@ -56,7 +57,11 @@ def publish(layer):
     headers["Content-Type"] = content_type
 
     nam = NetworkAccessManager()
-    res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)
+    try:
+        res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=payload, headers=headers)
+    except RequestsException as e:
+        return False, e.message
+
     data = json.loads(resText)
 
     url = data["params"]["data"]["s3Url"]
@@ -75,7 +80,11 @@ def register(metadata):
     headers["Content-Type"] = "application/json"
 
     nam = NetworkAccessManager()
-    res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=json.dumps(metadata), headers=headers)
+    try:
+        res, resText = nam.request(UPLOAD_ENDPOINT_URL, method="POST", body=json.dumps(metadata), headers=headers)
+    except RequestsException as e:
+        return False
+
     response = json.loads(resText)
     if response["type"] == "REGISTER_LAYER_SUCCEEDED":
         return True
@@ -85,7 +94,11 @@ def register(metadata):
 
 def delete(layerId):
     nam = NetworkAccessManager()
-    res, resText = nam.request("{}/{}".format(UPLOAD_ENDPOINT_URL, layerId), method="DELETE")
+    try:
+        res, resText = nam.request("{}/{}".format(UPLOAD_ENDPOINT_URL, layerId), method="DELETE")
+    except RequestsException as e:
+        return False
+
     response = json.loads(resText)
     if response["type"] == "DELETE_LAYER_SUCCEEDED":
         return True
