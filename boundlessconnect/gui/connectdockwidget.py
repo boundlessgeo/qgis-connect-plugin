@@ -41,9 +41,7 @@ from qgis.PyQt.QtCore import QUrl, QSettings, Qt
 from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
 from qgis.PyQt.QtNetwork import (QNetworkRequest,
-                                 QNetworkReply,
-                                 QNetworkProxyFactory,
-                                 QNetworkProxy
+                                 QNetworkReply
                                 )
 from qgis.PyQt.QtWebKitWidgets import QWebPage
 
