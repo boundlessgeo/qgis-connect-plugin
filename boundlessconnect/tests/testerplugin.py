@@ -68,6 +68,14 @@ def functionalTests():
                                    'Check that the "Level:" label is not found at the bottom of the Connect panel.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
 
+    oauthTest = Test("Check OAuth2 configuration created (can fail if no OAuth support)")
+    oauthTest.addStep('Accept dialog by pressing "Login" button '
+                      'without entering any credentials',
+                      prestep=lambda: _startConectPlugin())
+    oauthTest.addStep('Check that "Boundless OAuth2 API" configuration '
+                      'added to "Settings -> Authentication".',
+                      isVerifyStep=True)
+
     repeatedLoginTest = Test("Check repeated logging")
     repeatedLoginTest.addStep('Accept dialog by pressing "Login" button '
                               'without entering any credentials',
