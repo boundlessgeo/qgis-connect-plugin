@@ -31,8 +31,8 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QCoreApplication, QSettings, QLocale, QTranslator, QFileInfo, Qt, QT_VERSION_STR
-from qgis.PyQt.QtWidgets import QAction, QFileDialog, QPushButton
+from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
