@@ -36,7 +36,7 @@ try:
     from qgis.core import QGis
 except ImportError:
     from qgis.core import Qgis as QGis
-    
+
 import qgis.utils
 
 from pyplugin_installer.installer_data import (settingsGroup,
@@ -50,12 +50,10 @@ pluginPath = os.path.dirname(__file__)
 
 boundlessRepoName = QCoreApplication.translate('Boundless Connect',
                                                'Boundless Plugin Repository')
-defaultRepoUrl = 'https://qgis.boundlessgeo.com/plugins.xml'
-authEndpointUrl = 'https://qgis.boundlessgeo.com/api/user_roles'
 
+authEndpointUrl = 'https://qgis.boundlessgeo.com/api/user_roles'
 repoUrlFile = 'repoUrl.txt'
 firstRunPluginsPath = 'first-run-plugins'
-
 
 oldPlugins = ['opengeo']
 

@@ -40,6 +40,9 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 from qgiscommons.gui import askForFiles
+from qgiscommons.settings import (readSettings,
+                                  addSettingsMenu,
+                                  removeSettingsMenu)
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
@@ -59,6 +62,7 @@ class BoundlessConnectPlugin(object):
             pass
 
         self.dockWidget = None
+        readSettings()
 
         self.iface.initializationCompleted.connect(self.checkFirstRun)
 
@@ -112,6 +116,8 @@ class BoundlessConnectPlugin(object):
                 if utils.isRepositoryInDirectory():
                     menuPlugin.insertAction(separator, self.actionPluginManager)
 
+        addSettingsMenu('Boundless Connect')
+
         # Enable check for updates if it is not enabled
         utils.addCheckForUpdates()
 
@@ -132,6 +138,7 @@ class BoundlessConnectPlugin(object):
                 if utils.isRepositoryInDirectory():
                     menuPlugin.removeAction(self.actionPluginManager)
 
+        removeSettingsMenu('Boundless Connect')
         self.dockWidget.hide()
 
         try:
