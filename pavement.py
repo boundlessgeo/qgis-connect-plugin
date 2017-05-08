@@ -5,7 +5,9 @@
 #
 import os
 import zipfile
+import StringIO
 
+import requests
 from paver.easy import *
 
 
@@ -19,8 +21,7 @@ options(
         tests = ['test'],
         excludes = [
             '*.pyc',
-            '.git',
-            '*.pro'
+            '.git'
         ],
         # skip certain files inadvertently found by exclude pattern globbing
         skip_exclude = []
@@ -43,6 +44,28 @@ def setup():
     if clean:
         ext_libs.rmtree()
     ext_libs.makedirs()
+
+    tmpCommonsPath = path(__file__).dirname() / "qgiscommons"
+    dst = ext_libs / "qgiscommons"
+    if dst.exists():
+        dst.rmtree()
+    r = requests.get("https://github.com/boundlessgeo/lib-qgis-commons/archive/master.zip", stream=True)
+    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z.extractall(path=tmpCommonsPath.abspath())
+    src = tmpCommonsPath / "lib-qgis-commons-master" / "qgiscommons"
+    src.copytree(dst.abspath())
+    tmpCommonsPath.rmtree()
+
+    tmpCommonsPath = path(__file__).dirname() / "boundlesscommons"
+    dst = ext_libs / "boundlesscommons"
+    if dst.exists():
+        dst.rmtree()
+    r = requests.get("https://github.com/boundlessgeo/lib-qgis-boundless-commons/archive/master.zip", stream=True)
+    z = zipfile.ZipFile(StringIO.StringIO(r.content))
+    z.extractall(path=tmpCommonsPath.abspath())
+    src = tmpCommonsPath / "lib-qgis-boundless-commons-master" / "boundlesscommons"
+    src.copytree(dst.abspath())
+    tmpCommonsPath.rmtree()
 
     runtime, test = read_requirements()
     os.environ['PYTHONPATH']=ext_libs.abspath()
@@ -75,13 +98,16 @@ def _install(folder):
         if not docs_link.islink():
             docs.symlink(docs_link)
 
+
 @task
 def install(options):
     _install(".qgis2")
 
+
 @task
 def installdev(options):
     _install(".qgis-dev")
+
 
 @task
 def install3(options):
@@ -223,6 +249,7 @@ def _make_zip(zipFile, options):
         for f in files:
             relpath = os.path.join(options.plugin.name, "docs", os.path.relpath(root, options.sphinx.builddir))
             zipFile.write(path(root) / f, path(relpath) / f)
+
 
 def read_requirements():
     """Return a list of runtime and list of test requirements"""
