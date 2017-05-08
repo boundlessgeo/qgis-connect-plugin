@@ -1,0 +1,16 @@
+[
+    {"name":"repoUrl",
+     "label": "Boundless repository URL",
+     "description": "URL of the Boundless plugins repository",
+     "type": "string",
+     "default": "https://qgis.boundlessgeo.com/plugins.xml",
+     "group": "General"
+    },
+    {"name":"oauthEndpoint",
+     "label": "OAuth2 endpoint",
+     "description": "URL of the OAuth2 endpoint",
+     "type": "string",
+     "default": "https://api.test.boundlessgeo.io/v1/token/oauth/",
+     "group": "General"
+    }
+]
