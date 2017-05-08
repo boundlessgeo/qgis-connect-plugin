@@ -20,8 +20,9 @@ from qgis.utils import iface, available_plugins, active_plugins
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
 
+from qgiscommons.networkaccessmanager import NetworkAccessManager
+
 from boundlessconnect.gui.executor import execute
-from boundlessconnect.networkaccessmanager import NetworkAccessManager
 from boundlessconnect import utils
 
 pluginPath = os.path.dirname(__file__)
