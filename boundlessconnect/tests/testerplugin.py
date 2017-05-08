@@ -151,7 +151,7 @@ def functionalTests():
                             'press Enter. Verify that a warning is displayed.',
                             isVerifyStep=True)
 
-    helpTest = Test("Help test")
+    helpTest = Test("Check Help displaying")
     helpTest.addStep('Click on "Help" button and verify help is '
                      'correctly open in a browser.',
                      prestep=lambda: _startConectPlugin())
@@ -183,7 +183,7 @@ def functionalTests():
 
     return [invalidCredentialsTest, searchTest, emptySearchTest,
             repeatedLoginTest, wrongSearchTest, rolesDisplayTest,
-            toggleVisibilityTest, categorySearchTest]
+            toggleVisibilityTest, categorySearchTest, helpTest]
 
 
 class SearchApiTests(unittest.TestCase):
