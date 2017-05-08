@@ -174,7 +174,7 @@
   <customwidget>
    <class>IconLineEdit</class>
    <extends>QLineEdit</extends>
-   <header location="global">boundlessconnect.gui.iconlineedit</header>
+   <header location="global">qgiscommons.iconlineedit</header>
   </customwidget>
   <customwidget>
    <class>FixedAspectSvgWidget</class>
@@ -185,7 +185,7 @@
   <customwidget>
    <class>CheckComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">boundlessconnect.gui.checkcombobox</header>
+   <header location="global">qgiscommons.checkcombobox</header>
   </customwidget>
   <customwidget>
    <class>ConnectCredentialsWidget</class>
