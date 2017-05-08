@@ -42,13 +42,12 @@ from qgis.PyQt.QtGui import QIcon, QCursor
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
 from qgis.PyQt.QtNetwork import (QNetworkRequest,
                                  QNetworkReply,
-                                 QNetworkAccessManager,
                                  QNetworkProxyFactory,
                                  QNetworkProxy
                                 )
 from qgis.PyQt.QtWebKitWidgets import QWebPage
 
-from qgis.core import QgsAuthManager, QgsAuthMethodConfig
+from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager
 from qgis.gui import QgsMessageBar
 
 from pyplugin_installer.installer_data import reposGroup
@@ -178,10 +177,8 @@ class ConnectDockWidget(BASE, WIDGET):
         #httpAuth = base64.encodestring('{}:{}'.format(self.connectWidget.login().strip(), self.connectWidget.password().strip()))[:-1]
         httpAuth = base64.b64encode(b"%s:%s" % (self.connectWidget.login().strip(), self.connectWidget.password().strip())).decode("ascii")
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
-        self.manager = QNetworkAccessManager()
-        self.setProxy()
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.reply = self.manager.get(self.request)
+        self.reply = QgsNetworkAccessManager.instance().get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
     def search(self, page=0):
@@ -272,39 +269,6 @@ class ConnectDockWidget(BASE, WIDGET):
         # also setup OAuth2 configuration if possible
         if oauth2_supported():
             setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), OAUTH_TOKEN_URL)
-
-    def setProxy(self):
-        proxy = None
-        settings = QSettings()
-        if settings.value('proxy/proxyEnabled', False):
-            proxyHost = settings.value('proxy/proxyHost', '')
-            try:
-                proxyPort = int(settings.value('proxy/proxyPort', '0'))
-            except:
-                proxyPort = 0
-            proxyUser = settings.value('proxy/proxyUser', '')
-            proxyPassword = settings.value('proxy/proxyPassword', '')
-            proxyTypeString = settings.value('proxy/proxyType', '')
-
-            if proxyTypeString == 'DefaultProxy':
-                QNetworkProxyFactory.setUseSystemConfiguration(True)
-                proxies = QNetworkProxyFactory.systemProxyForQuery()
-                if len(proxies) > 0:
-                    proxy = proxies[0]
-            else:
-                proxyType = QNetworkProxy.DefaultProxy
-                if proxyTypeString == 'Socks5Proxy':
-                    proxyType = QNetworkProxy.Socks5Proxy
-                elif proxyTypeString == 'HttpProxy':
-                    proxyType = QNetworkProxy.HttpProxy
-                elif proxyTypeString == 'HttpCachingProxy':
-                    proxyType = QNetworkProxy.HttpCachingProxy
-                elif proxyTypeString == 'FtpCachingProxy':
-                    proxyType = QNetworkProxy.FtpCachingProxy
-
-                proxy = QNetworkProxy(proxyType, proxyHost, proxyPort,
-                                      proxyUser, proxyPassword)
-            self.manager.setProxy(proxy)
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         iface.messageBar().pushMessage(
