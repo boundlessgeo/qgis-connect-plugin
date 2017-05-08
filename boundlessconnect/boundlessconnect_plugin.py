@@ -126,6 +126,13 @@ class BoundlessConnectPlugin(object):
         # Enable check for updates if it is not enabled
         utils.addCheckForUpdates()
 
+        try:
+            from lessons import addLessonsFolder
+            folder = os.path.join(pluginPath, '_lessons')
+            addLessonsFolder(folder)
+        except:
+            pass
+
     def unload(self):
         actions = self.iface.mainWindow().menuBar().actions()
         for action in actions:
@@ -143,6 +150,13 @@ class BoundlessConnectPlugin(object):
             from qgistester.tests import removeTestModule
             removeTestModule(testerplugin, 'Boundless Connect')
         except Exception as e:
+            pass
+
+        try:
+            from lessons import removeLessonsFolder
+            folder = os.path.join(pluginPath, '_lessons')
+            removeLessonsFolder(folder)
+        except:
             pass
 
     def checkFirstRun(self):
