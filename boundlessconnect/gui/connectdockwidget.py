@@ -90,9 +90,6 @@ class ConnectDockWidget(BASE, WIDGET):
         self.leSearch.setPlaceholderText("Search text")
         self.btnSearch.clicked.connect(self.search)
 
-        self.leLogin.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'envelope.svg')))
-        self.leLogin.setPlaceholderText("Email")
-
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(QUrl("file://" +
             os.path.join(os.path.dirname(__file__), "search.css").replace("\\", "/")))
@@ -129,8 +126,9 @@ class ConnectDockWidget(BASE, WIDGET):
                                   QgsMessageBar.WARNING)
                 username = ''
                 password = ''
-            self.leLogin.setText(username)
-            self.lePassword.setText(password)
+
+            self.connectWidget.setLogin(username)
+            self.connectWidget.setPassword(password)
 
         BASE.showEvent(self, event)
 
@@ -146,8 +144,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.webView.setVisible(False)
         self.webView.setHtml("")
         self.leSearch.setText("")
-        self.leLogin.setText("")
-        self.lePassword.setText("")
+        self.connectWidget.setLogin("")
+        self.connectWidget.setPassword("")
 
     def showHelp(self):
         webbrowser.open(OFFLINE_HELP_URL)
@@ -164,7 +162,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def logIn(self):
         utils.addBoundlessRepository()
-        if self.leLogin.text().strip() == '' or self.lePassword.text().strip() == '':
+        if self.connectWidget.login().strip() == "" or self.connectWidget.password().strip() == "":
             execute(connect.loadPlugins)
             self.stackedWidget.setCurrentIndex(1)
             self.roles = ["open"]
@@ -174,8 +172,8 @@ class ConnectDockWidget(BASE, WIDGET):
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
-        #httpAuth = base64.encodestring('{}:{}'.format(self.leLogin.text().strip(), self.lePassword.text().strip()))[:-1]
-        httpAuth = base64.b64encode(b"%s:%s" % (self.leLogin.text().strip(), self.lePassword.text().strip())).decode("ascii")
+        #httpAuth = base64.encodestring('{}:{}'.format(self.connectWidget.login().strip(), self.connectWidget.password().strip()))[:-1]
+        httpAuth = base64.b64encode(b"%s:%s" % (self.connectWidget.login().strip(), self.connectWidget.password().strip())).decode("ascii")
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         self.manager = QNetworkAccessManager()
         self.setProxy()
@@ -241,7 +239,7 @@ class ConnectDockWidget(BASE, WIDGET):
         execute(connect.loadPlugins)
         self.stackedWidget.setCurrentIndex(1)
         self.labelLevel.setVisible(visible)
-        self.labelLevel.setText("Logged in as: <b>%s</b>" % self.leLogin.text())
+        self.labelLevel.setText("Logged in as: <b>%s</b>" % self.connectWidget.login())
 
         self.loggedIn = True
 
@@ -250,8 +248,8 @@ class ConnectDockWidget(BASE, WIDGET):
             authConfig = QgsAuthMethodConfig('Basic')
             self.authId = QgsAuthManager.instance().uniqueConfigId()
             authConfig.setId(self.authId)
-            authConfig.setConfig('username', self.leLogin.text().strip())
-            authConfig.setConfig('password', self.lePassword.text().strip())
+            authConfig.setConfig('username', self.connectWidget.login().strip())
+            authConfig.setConfig('password', self.connectWidget.password().strip())
             authConfig.setName('Boundless Connect Portal')
 
             settings = QSettings('Boundless', 'BoundlessConnect')
@@ -264,8 +262,8 @@ class ConnectDockWidget(BASE, WIDGET):
         else:
             authConfig = QgsAuthMethodConfig()
             QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
-            authConfig.setConfig('username', self.leLogin.text().strip())
-            authConfig.setConfig('password', self.lePassword.text().strip())
+            authConfig.setConfig('username', self.connectWidget.login().strip())
+            authConfig.setConfig('password', self.connectWidget.password().strip())
             QgsAuthManager.instance().updateAuthenticationConfig(authConfig)
 
     def setProxy(self):
