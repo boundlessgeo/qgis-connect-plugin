@@ -53,14 +53,19 @@ from qgis.gui import QgsMessageBar
 
 from pyplugin_installer.installer_data import reposGroup
 
-from boundlessconnect import utils
+from qgiscommons.oauth2 import (oauth2_supported,
+                                setup_oauth
+                               )
+
 from boundlessconnect.plugins import boundlessRepoName, authEndpointUrl
+from boundlessconnect import utils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'connectdockwidget.ui'))
 
 OFFLINE_HELP_URL = os.path.join(pluginPath, 'docs', 'html', 'index.html')
+OAUTH_TOKEN_URL = "https://api.test.boundlessgeo.io/v1/token/oauth/"
 
 class ConnectDockWidget(BASE, WIDGET):
 
@@ -263,6 +268,10 @@ class ConnectDockWidget(BASE, WIDGET):
             authConfig.setConfig('username', self.connectWidget.login().strip())
             authConfig.setConfig('password', self.connectWidget.password().strip())
             QgsAuthManager.instance().updateAuthenticationConfig(authConfig)
+
+        # also setup OAuth2 configuration if possible
+        if oauth2_supported():
+            setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), OAUTH_TOKEN_URL)
 
     def setProxy(self):
         proxy = None
