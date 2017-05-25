@@ -160,6 +160,9 @@ class BoundlessConnectPlugin(object):
         firstRun = settings.value('firstRun', True, bool)
         settings.setValue('firstRun', False)
 
+        if self.dockWidget is None:
+            self.dockWidget = getConnectDockWidget()
+
         if firstRun:
             self.dockWidget.show()
             utils.installFromStandardPath()
