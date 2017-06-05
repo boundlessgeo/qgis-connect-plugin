@@ -198,10 +198,8 @@ def loadPlugins():
 
 categories = {"LC": (ConnectLearning, "Learning"),
               "DOC": (ConnectDocumentation, "Documentation"),
-              "VID": (ConnectVideo, "Video"),
               "BLOG": (ConnectBlog, "Blog"),
               "QA": (ConnectQA, "Q & A"),
-              "PLUG": (ConnectPlugin, "Plugin"),
               "LESSON": (ConnectLesson, "Lesson")}
 
 RESULTS_PER_PAGE = 20
@@ -230,3 +228,15 @@ def search(text, category='', page=0):
             if plugin:
                 results.append(ConnectPlugin(plugin, roles))
     return results
+
+
+def searchKnowledge(text):
+    pass
+
+
+def searchData(text):
+    pass
+
+
+def searchPlugins(text):
+    pass
