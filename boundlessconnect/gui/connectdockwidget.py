@@ -102,7 +102,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(QUrl("file://" +
-            os.path.join(os.path.dirname(__file__), "search.css").replace("\\", "/")))
+            os.path.join(pluginPath, "resources", "search.css").replace("\\", "/")))
         self.webView.linkClicked.connect(self.linkClicked)
 
         content = {}
