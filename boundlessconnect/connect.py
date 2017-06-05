@@ -43,8 +43,9 @@ class ConnectContent(object):
         self.description = description
         self.roles = roles
 
-    def icon(self):
-        return QIcon(os.path.join(pluginPath, "icons", "%s.png" % self.typeName().lower()))
+    def iconPath(self):
+        #return QIcon(os.path.join(pluginPath, "icons", "%s.png" % self.typeName().lower()))
+        pass
 
     def categoryDescription(self):
         path = os.path.join(pluginPath, "html", "%s.html" % self.typeName().lower())
@@ -106,6 +107,9 @@ class ConnectLesson(ConnectContent):
     def typeName(self):
         return "Lesson"
 
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "howto.svg")
+
 
 class ConnectWebAdress(ConnectContent):
     def _open(self):
@@ -140,6 +144,7 @@ class ConnectPlugin(ConnectContent):
                      QMessageBox.Yes | QMessageBox.No)
             if reply != QMessageBox.Yes:
                 return
+
         def _install():
             installer = pyplugin_installer.instance()
             installer.installPlugin(self.plugin["id"])
@@ -155,20 +160,29 @@ class ConnectLearning(ConnectWebAdress):
     def typeName(self):
         return "Learning"
 
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "learning.svg")
 
 class ConnectQA(ConnectWebAdress):
     def typeName(self):
         return "Q & A"
 
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "qa.svg")
 
 class ConnectBlog(ConnectWebAdress):
     def typeName(self):
         return "Blog"
 
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "blog.svg")
 
 class ConnectDocumentation(ConnectWebAdress):
     def typeName(self):
         return "Documentation"
+
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "doc.svg")
 
 
 class ConnectDiscussion(ConnectWebAdress):
