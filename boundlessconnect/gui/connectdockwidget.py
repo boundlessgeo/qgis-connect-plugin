@@ -78,7 +78,17 @@ class ConnectDockWidget(BASE, WIDGET):
         self.svgLogo.load(os.path.join(pluginPath, 'icons', 'connect-logo.svg'))
 
         btnOk = self.buttonBox.button(QDialogButtonBox.Ok)
-        btnOk.setText(self.tr('Login'))
+        btnOk.setText('Login')
+
+        # setup tab bar
+        self.tabsContent.addTab('Knowledge')
+        self.tabsContent.addTab('Data')
+        self.tabsContent.addTab('Plugins')
+        self.tabsContent.setDocumentMode(True)
+        self.tabsContent.setDrawBase(False)
+        self._toggleCategoriesSelector(True)
+        self.tabsContent.setCurrentIndex(0)
+        self.tabsContent.currentChanged.connect(self.tabChanged)
 
         self.buttonBox.helpRequested.connect(self.showHelp)
         self.buttonBox.accepted.connect(self.logIn)
@@ -267,6 +277,18 @@ class ConnectDockWidget(BASE, WIDGET):
         # also setup OAuth2 configuration if possible
         if oauth2_supported():
             setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), OAUTH_TOKEN_URL)
+
+    def tabChanged(self, index):
+        if index == 0:
+            self._toggleCategoriesSelector(True)
+        elif index == 1:
+            self._toggleCategoriesSelector(False)
+        elif index == 2:
+            self._toggleCategoriesSelector(False)
+
+    def _toggleCategoriesSelector(self, visible):
+        self.lblCategorySearch.setVisible(visible)
+        self.cmbContentType.setVisible(visible)
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         iface.messageBar().pushMessage(

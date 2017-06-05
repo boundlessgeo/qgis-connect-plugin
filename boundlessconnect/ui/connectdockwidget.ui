@@ -34,7 +34,7 @@
        </sizepolicy>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <layout class="QGridLayout" name="gridLayout">
@@ -68,10 +68,52 @@
       </widget>
       <widget class="QWidget" name="page_2">
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="2" column="0" colspan="4">
-         <widget class="IconLineEdit" name="leSearch"/>
+        <item row="0" column="3">
+         <widget class="QPushButton" name="btnSearch">
+          <property name="text">
+           <string>Search</string>
+          </property>
+         </widget>
         </item>
-        <item row="7" column="0">
+        <item row="1" column="0" colspan="4">
+         <widget class="QTabBar" name="tabsContent" native="true"/>
+        </item>
+        <item row="2" column="0">
+         <widget class="QLabel" name="lblCategorySearch">
+          <property name="text">
+           <string>Search in</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0" colspan="4">
+         <widget class="QWebView" name="webView">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>100</height>
+           </size>
+          </property>
+          <property name="url">
+           <url>
+            <string>about:blank</string>
+           </url>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="2">
+         <spacer name="verticalSpacer_2">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>40</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item row="5" column="0">
          <widget class="QLabel" name="labelLevel">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -90,14 +132,23 @@
           </property>
          </widget>
         </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_3">
+        <item row="5" column="3">
+         <widget class="QPushButton" name="btnSignOut">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
           <property name="text">
-           <string>Search in</string>
+           <string>Sign out</string>
           </property>
          </widget>
         </item>
-        <item row="7" column="2">
+        <item row="2" column="1" colspan="3">
+         <widget class="CheckComboBox" name="cmbContentType"/>
+        </item>
+        <item row="0" column="0" colspan="3">
+         <widget class="IconLineEdit" name="leSearch"/>
+        </item>
+        <item row="5" column="1" colspan="2">
          <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -109,54 +160,6 @@
            </size>
           </property>
          </spacer>
-        </item>
-        <item row="6" column="2">
-         <spacer name="verticalSpacer_2">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-        <item row="2" column="4">
-         <widget class="QPushButton" name="btnSearch">
-          <property name="text">
-           <string>Search</string>
-          </property>
-         </widget>
-        </item>
-        <item row="5" column="0" colspan="5">
-         <widget class="QWebView" name="webView">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>100</height>
-           </size>
-          </property>
-          <property name="url">
-           <url>
-            <string>about:blank</string>
-           </url>
-          </property>
-         </widget>
-        </item>
-        <item row="7" column="4">
-         <widget class="QPushButton" name="btnSignOut">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Sign out</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="1" colspan="4">
-         <widget class="CheckComboBox" name="cmbContentType"/>
         </item>
        </layout>
       </widget>
@@ -191,6 +194,12 @@
    <class>ConnectCredentialsWidget</class>
    <extends>QWidget</extends>
    <header location="global">boundlesscommons.connectcredentialswidget</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QTabBar</class>
+   <extends>QWidget</extends>
+   <header>qgis.PyQt.QtWidgets</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
