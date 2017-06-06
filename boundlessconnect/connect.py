@@ -5,6 +5,7 @@ from builtins import object
 import os
 import re
 import json
+import urllib2
 import tempfile
 from copy import copy
 import webbrowser
@@ -15,16 +16,19 @@ from qgis.PyQt.QtWidgets import QMessageBox, QApplication
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.gui import QgsMessageBar, QgsFileDownloader
-from qgis.core import QgsNetworkAccessManager
+from qgis.core import QgsNetworkAccessManager, QgsRasterLayer
 from qgis.utils import iface, available_plugins, active_plugins
 
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
 
 from qgiscommons.networkaccessmanager import NetworkAccessManager
-
+from qgiscommons.oauth2 import (oauth2_supported,
+                                get_oauth_authcfg
+                               )
 from boundlessconnect.gui.executor import execute
 from boundlessconnect import utils
+from boundlessconnect import basemaputils
 
 pluginPath = os.path.dirname(__file__)
 
@@ -245,11 +249,15 @@ def search(text, category='', page=0):
 
 
 class ConnectBasemap(object):
-    def __init__(self, url, name, description, roles=["open"]):
+    def __init__(self, url, name, description, json, roles=["open"]):
         self.url = url
         self.name = name
         self.description = description
         self.roles = roles
+        self.json = json
+
+    def typeName(self):
+        return "Basemap"
 
     def canOpen(self, roles):
         matches = [role for role in roles if role in self.roles]
@@ -257,20 +265,42 @@ class ConnectBasemap(object):
 
     def asHtmlEntry(self, roles):
         available = 'CanInstall' if self.canOpen(roles) else 'CannotInstall'
-                s = """<div class='outer'><a class='title{canInstall}'>{name}</a>
-                       <div class='inner'><div class='category{canInstall}'>{category}</div>
-                       <div class='description{canInstall}'>{description}</div></div></div>
-                    """.format(canInstall=available,
-                               name=self.name,
-                               category=self.typeName(),
-                               description=self.description)
+        s = """<div class='outer'><a class='title{canInstall}'>{name}</a>
+               <div class='inner'><div class='category{canInstall}'>{category}</div>
+               <div class='description{canInstall}'>{description}</div></div></div>
+            """.format(canInstall=available,
+                       name=self.name,
+                       category=self.typeName(),
+                       description=self.description)
         return s
 
     def addToCanvas(self):
-        pass
+        if not oauth2_supported:
+            iface.messageBar().pushMessage(
+                "Cannot load basemap",
+                "OAuth support is not available",
+                QgsMessageBar.WARNING)
+        else:
+            authcfg = get_oauth_authcfg()
+            if authcfg is None:
+                iface.messageBar().pushMessage(
+                    "Cannot load basemap",
+                    "Cannot find a valid authentication configuration",
+                    QgsMessageBar.WARNING)
+            else:
+                authId = authcfg.id()
+                layer = QgsRasterLayer(u"authcfg=%{authCfgId}&type=xyz&url={url}".format(
+                    url=urllib2.quote(self.url), authCfgId=authId), self.name, "wms")
+                if layer.isValid():
+                    QgsMapLayerRegistry.instance().addMapLayer(layer)
+                else:
+                    iface.messageBar().pushMessage(
+                        "Cannot load basemap",
+                        "Cannot create basemap layer",
+                        QgsMessageBar.WARNING)
 
     def addToDefaultProject(self):
-        pass
+        basemaputils.add
 
 
 BASEMAPS_ENDPOINT = "http://api.dev.boundlessgeo.io/v1/basemaps/"
@@ -286,9 +316,11 @@ def searchBasemaps(text):
         j = json.load(f)
     os.unlink(t)
 
+    maps = [l for l in j if basemaputils.isSupported(l)]
+
     results = []
-    for item in j:
-        if text.lower() in [item["name"].lower(), item["description"].lower()]:
+    for item in maps:
+        if text.lower() in item["name"].lower() or text.lower() in item["description"].lower():
             results.append(
                 ConnectBasemap(item["endpoint"],
                                item["name"],
@@ -296,65 +328,3 @@ def searchBasemaps(text):
                                item["accessList"]))
 
     return results
-
-
-#~ class ConnectApi(QObject):
-
-    #~ searchProgress = pyqtSignal()
-    #~ searchFinished = pyqtSignal()
-
-    #~ def __init__(self):
-        #~ super(ConnectApi, self).__init__()
-
-    #~ def fetchPage(self, text, category, page=0):
-        #~ if category == '':
-            #~ uri = "{}?q={}&si={}&c={}".format(SEARCH_ENDPOINT, text, int(page), RESULTS_PER_PAGE)
-        #~ else:
-            #~ uri = "{}?q={}&cat={}&si={}&c={}".format(SEARCH_ENDPOINT, text, category, int(page), RESULTS_PER_PAGE)
-
-        #~ t = tempfile.mktemp()
-        #~ q = QgsFileDownloader(QUrl(uri), t)
-        #~ loop = QEventLoop()
-        #~ q.downloadExited.connect(loop.quit)
-        #~ loop.exec_()
-        #~ if not os.path.isfile(t):
-            #~ return []
-
-        #~ with open(t) as f:
-            #~ j = json.load(f)
-        #~ os.unlink(t)
-
-        #~ results = []
-        #~ for element in j["features"]:
-            #~ props = element["properties"]
-            #~ roles = props["role"].split(",")
-            #~ category = props["category"]
-            #~ if category != "PLUG":
-                #~ title = props["title"] or props["description"].split(".")[0]
-                #~ if category in categories:
-                    #~ results.append(categories[category][0](props["url"],
-                                                            #~ title,
-                                                            #~ props["description"], roles))
-            #~ else:
-                #~ plugin = _plugins.get(props["title"], None)
-                #~ if plugin:
-                    #~ results.append(ConnectPlugin(plugin, roles))
-
-        #~ self.searchFinished.emit()
-        #~ return results
-
-    #~ def fetchAll(self, text, category):
-        #~ page = 0
-        #~ results = []
-
-        #~ data = search(text, category, page)
-        #~ self.searchProgress.emit()
-        #~ results = data
-        #~ while len(data) == RESULTS_PER_PAGE:
-            #~ page += 1
-            #~ data = search(text, category, page)
-            #~ self.searchProgress.emit()
-            #~ results.extend(data)
-
-        #~ self.searchFinished.emit()
-        #~ return results

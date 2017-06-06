@@ -226,6 +226,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def _findBasemap(self):
         text = self.leSearch.text().strip()
+        print "LOOKING FOR", text
         if text:
             try:
                 results = execute(lambda: connect.searchBasemaps(text))
