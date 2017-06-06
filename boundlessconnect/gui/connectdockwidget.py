@@ -131,8 +131,7 @@ class ConnectDockWidget(BASE, WIDGET):
             else:
                 self.authId = ''
                 utils.setRepositoryAuth(self.authId)
-                self._showMessage(self.tr('Could not find Connect '
-                                          'credentials in the database.'),
+                self._showMessage('Could not find Connect credentials in the database.',
                                   QgsMessageBar.WARNING)
                 username = ''
                 password = ''
@@ -177,7 +176,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.stackedWidget.setCurrentIndex(1)
             self.roles = ["open"]
             self.labelLevel.setVisible(False)
-            self.btnSignOut.setText(self.tr("Go to login"))
+            self.btnSignOut.setText("Go to login")
             self.loggedIn = True
             return
 
@@ -210,12 +209,12 @@ class ConnectDockWidget(BASE, WIDGET):
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
                 else:
-                    QMessageBox.warning(iface.mainWindow(), "Search", "No search matching the entered text was found.")
+                    self._showMessage("No search matching the entered text was found.",
+                                      QgsMessageBar.WARNING)
                     self.webView.setVisible(False)
             except Exception as e:
-                QMessageBox.warning(self, "Search",
-                    u"There has been a problem performing the search:\n" + str(e.args[0]),
-                    QMessageBox.Ok)
+                self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                                  QgsMessageBar.WARNING)
 
     def requestFinished(self):
         QApplication.restoreOverrideCursor()
@@ -223,24 +222,24 @@ class ConnectDockWidget(BASE, WIDGET):
         visible = True
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
-                msg = self.tr('Your credentials seem invalid. \n'
-                              'You will be able to access only open content.\n'
-                              'Do you want to save credentials anyway?')
+                msg = 'Your credentials seem invalid. \n'
+                      'You will be able to access only open content.\n'
+                      'Do you want to save credentials anyway?'
             else:
-                msg = self.tr('An error occurred when validating your '
-                              'credentials. Server responded:\n{}.\n'
-                              'You will be able to access only open content.\n'
-                              'Do you want to save credentials anyway?'.format(reply.errorString()))
-            ret = QMessageBox.warning(self, self.tr('Error!'), msg,
+                msg = 'An error occurred when validating your '
+                      'credentials. Server responded:\n{}.\n'
+                      'You will be able to access only open content.\n'
+                      'Do you want to save credentials anyway?'.format(reply.errorString()))
+            ret = QMessageBox.warning(self, 'Error!', msg,
                                       QMessageBox.Yes | QMessageBox.No,
                                       QMessageBox.No)
             if ret == QMessageBox.Yes:
                 self.saveOrUpdateAuthId()
             visible = False
             self.roles = ["open"]
-            self.btnSignOut.setText(self.tr("Go to login"))
+            self.btnSignOut.setText("Go to login")
         else:
-            self.btnSignOut.setText(self.tr("Logout"))
+            self.btnSignOut.setText("Logout")
             self.saveOrUpdateAuthId()
             self.roles = json.loads(str(reply.readAll()))
 
@@ -266,7 +265,7 @@ class ConnectDockWidget(BASE, WIDGET):
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
                 utils.setRepositoryAuth(self.authId)
             else:
-                QMessageBox.information(self, self.tr('Error!'), self.tr('Unable to save credentials'))
+                self._showMessage('Unable to save credentials.', QgsMessageBar.WARNING)
         else:
             authConfig = QgsAuthMethodConfig()
             QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
