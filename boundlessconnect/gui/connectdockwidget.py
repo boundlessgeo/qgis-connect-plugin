@@ -189,12 +189,20 @@ class ConnectDockWidget(BASE, WIDGET):
         self.reply.finished.connect(self.requestFinished)
 
     def search(self, page=0):
+        if self.tabsContent.currentIndex() == 0:
+            cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
+            self._search(cat, page)
+        elif self.tabsContent.currentIndex() == 1:
+            self._findBasemap()
+        elif self.tabsContent.currentIndex() == 2:
+            self_search("PLUG", page)
+
+    def _search(self, category, page=0):
         text = self.leSearch.text().strip()
-        cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
         if text:
             self.searchPage = page
             try:
-                results = execute(lambda: connect.search(text, cat, self.searchPage))
+                results = execute(lambda: connect.search(text, category, self.searchPage))
                 if results:
                     self.searchResults = {r.url:r for r in results}
                     html = "<ul>"
@@ -216,20 +224,40 @@ class ConnectDockWidget(BASE, WIDGET):
                 self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
                                   QgsMessageBar.WARNING)
 
+    def _findBasemap(self):
+        text = self.leSearch.text().strip()
+        if text:
+            try:
+                results = execute(lambda: connect.searchBasemaps(text))
+                if results:
+                    html = "<ul>"
+                    for r in results:
+                        html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                    html += "</ul>"
+                    self.webView.setHtml(html)
+                    self.webView.setVisible(True)
+                else:
+                    self._showMessage("No search matching the entered text was found.",
+                                      QgsMessageBar.WARNING)
+                    self.webView.setVisible(False)
+            except Exception as e:
+                self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                                  QgsMessageBar.WARNING)
+
     def requestFinished(self):
         QApplication.restoreOverrideCursor()
         reply = self.sender()
         visible = True
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
-                msg = 'Your credentials seem invalid. \n'
-                      'You will be able to access only open content.\n'
+                msg = 'Your credentials seem invalid.\n' \
+                      'You will be able to access only open content.\n' \
                       'Do you want to save credentials anyway?'
             else:
-                msg = 'An error occurred when validating your '
-                      'credentials. Server responded:\n{}.\n'
-                      'You will be able to access only open content.\n'
-                      'Do you want to save credentials anyway?'.format(reply.errorString()))
+                msg = 'An error occurred when validating your ' \
+                      'credentials. Server responded:\n{}.\n' \
+                      'You will be able to access only open content.\n' \
+                      'Do you want to save credentials anyway?'.format(reply.errorString())
             ret = QMessageBox.warning(self, 'Error!', msg,
                                       QMessageBox.Yes | QMessageBox.No,
                                       QMessageBox.No)
@@ -280,10 +308,14 @@ class ConnectDockWidget(BASE, WIDGET):
     def tabChanged(self, index):
         if index == 0:
             self._toggleCategoriesSelector(True)
+            cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
+            self._search(cat)
         elif index == 1:
             self._toggleCategoriesSelector(False)
+            self._findBasemap()
         elif index == 2:
             self._toggleCategoriesSelector(False)
+            self._search("PLUG")
 
     def _toggleCategoriesSelector(self, visible):
         self.lblCategorySearch.setVisible(visible)
