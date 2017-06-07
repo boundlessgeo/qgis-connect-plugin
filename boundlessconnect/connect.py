@@ -16,7 +16,7 @@ from qgis.PyQt.QtWidgets import QMessageBox, QApplication
 from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.gui import QgsMessageBar, QgsFileDownloader
-from qgis.core import QgsNetworkAccessManager, QgsRasterLayer
+from qgis.core import QgsNetworkAccessManager, QgsRasterLayer, QgsMapLayerRegistry
 from qgis.utils import iface, available_plugins, active_plugins
 
 import pyplugin_installer
@@ -70,11 +70,12 @@ class ConnectContent(object):
         #    % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
         canInstall = "available" if self.canOpen(roles) else "notavailabale"
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<div class="{available}">{itemType}</div></div>
+               {description}<a class="{available}" href="{url}">{itemType}</a></div>
             """.format(image=self.iconPath,
                        title=self.name,
                        description=self.description,
                        available=canInstall,
+                       url=self.url,
                        itemType=self.typeName().upper())
         return s
 
@@ -149,10 +150,11 @@ class ConnectLesson(ConnectContent):
 
     def asHtmlEntry(self, roles):
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<a class="available">{itemType} href="open"</a></div>
+               {description}<a class="available" href="{url}">{itemType}</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
+                       url=self.url,
                        itemType=self.typeName().upper())
         return s
 
@@ -221,11 +223,12 @@ class ConnectPlugin(ConnectContent):
     def asHtmlEntry(self, roles):
         canInstall = "available" if self.canOpen(roles) else "notavailable"
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<a class="{available}">INSTALL</a></div>
+               {description}<a class="{available}" href="{url}">INSTALL</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
-                       available=canInstall)
+                       available=canInstall,
+                       url=self.url)
         return s
 
     def _open(self):
@@ -272,11 +275,12 @@ class ConnectBasemap(ConnectContent):
     def asHtmlEntry(self, roles):
         canInstall = "available" if self.canOpen(roles) else "notavailable"
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<a class="{available}" href="addToMap">ADD TO MAP</a>
-               <a class="{available}" href="addToDefaultProject">ADD TO DEFAULT PROJECT</a></div>
+               {description}<a class="{available}" href="canvas{url}">ADD TO MAP</a>
+               <a class="{available}" href="project{url}">ADD TO DEFAULT PROJECT</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
+                       url=self.url,
                        available=canInstall)
         return s
 
@@ -296,8 +300,10 @@ class ConnectBasemap(ConnectContent):
                         QgsMessageBar.WARNING)
                 else:
                     authId = authcfg.id()
-                    layer = QgsRasterLayer(u"authcfg=%{authCfgId}&type=xyz&url={url}".format(
-                        url=urllib2.quote(self.url), authCfgId=authId), self.name, "wms")
+                    connstring = u'type=xyz&url=%(url)s'
+                    connstring = u'authcfg=%(authcfg)s&' + connstring
+                    layer = QgsRasterLayer(connstring % {
+                        "url": urllib2.quote(self.url), "authcfg": authId}, self.name, "wms")
                     if layer.isValid():
                         QgsMapLayerRegistry.instance().addMapLayer(layer)
                     else:
@@ -324,7 +330,12 @@ class ConnectBasemap(ConnectContent):
                         QgsMessageBar.WARNING)
                 else:
                     authId = authcfg.id()
-                    basemaputils.addToDefaultProject([self.json], [self.name], authId)
+                    if not basemaputils.createOrAddDefaultBasemap([self.json], [self.name], authId):
+                        iface.messageBar().pushMessage(
+                            "Cannot add basemap",
+                            "Cannot update or create default project",
+                            QgsMessageBar.WARNING)
+
         else:
             webbrowser.open_new(SUBSCRIBE_URL)
 
@@ -347,8 +358,8 @@ def loadPlugins():
 categories = {"LC": (ConnectLearning, "Learning"),
               "DOC": (ConnectDocumentation, "Documentation"),
               "BLOG": (ConnectBlog, "Blog"),
-              "QA": (ConnectQA, "Q & A"),
-              "LESSON": (ConnectLesson, "Lesson")}
+              "QA": (ConnectQA, "Q & A")
+             }
 
 
 def search(text, category='', page=0):
@@ -411,6 +422,7 @@ def searchBasemaps(text):
                 ConnectBasemap(item["endpoint"],
                                item["name"],
                                item["description"],
+                               item,
                                item["accessList"]))
 
     return results

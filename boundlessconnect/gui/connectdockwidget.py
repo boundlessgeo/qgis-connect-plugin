@@ -106,7 +106,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.webView.linkClicked.connect(self.linkClicked)
 
         content = {}
-        self.cmbContentType.addItem("All", "ALL")
+        self.cmbContentType.addItem("All", ",".join(list(connect.categories.keys())))
         for cat, cls in connect.categories.items():
             self.cmbContentType.addItem(cls[1], cat)
         self.cmbContentType.setCheckedItems(["All"])
@@ -165,10 +165,10 @@ class ConnectDockWidget(BASE, WIDGET):
             self.search(self.searchPage + 1)
         elif name == "previous":
             self.search(self.searchPage - 1)
-        elif name == "addToMap":
+        elif name.startswith("canvas"):
             content = self.searchResults[name]
             content.addToCanvas(self.roles)
-        elif name == "addToDefaultProject":
+        elif name.startswith("project"):
             content = self.searchResults[name]
             content.addToDefaultProject(self.roles)
         else:
@@ -201,7 +201,7 @@ class ConnectDockWidget(BASE, WIDGET):
         elif self.tabsContent.currentIndex() == 1:
             self._findBasemap()
         elif self.tabsContent.currentIndex() == 2:
-            self_search("PLUG", page)
+            self._search("PLUG", page)
 
     def _search(self, category, page=0):
         text = self.leSearch.text().strip()
@@ -238,7 +238,8 @@ class ConnectDockWidget(BASE, WIDGET):
             try:
                 results = execute(lambda: connect.searchBasemaps(text))
                 if results:
-                    self.searchResults = {r.url:r for r in results}
+                    self.searchResults = {"canvas"+r.url:r for r in results}
+                    self.searchResults.update({"project"+r.url:r for r in results})
                     html = "<div class='results'>{} resutls</div><hr/>".format(len(results))
                     html += "<ul>"
                     for r in results:

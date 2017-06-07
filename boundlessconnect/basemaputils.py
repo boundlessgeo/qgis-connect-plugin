@@ -21,6 +21,9 @@ __date__ = 'June 2017'
 __copyright__ = '(C) 2017 Boundless, http://boundlessgeo.com'
 
 import os
+import shutil
+import urllib2
+from datetime import datetime
 
 from qgis.PyQt.QtCore import QSettings
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
@@ -30,6 +33,8 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsRasterLayer
                       )
+
+PROJECT_DEFAULT_TEMPLATE = os.path.join(os.path.dirname(__file__), 'resources', 'project_default.qgs.tpl')
 
 
 def isSupported(layer):
@@ -85,6 +90,11 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
         layers.append(layer)
 
+    if os.path.isfile(defaultProjectPath()):
+        backup = defaultProjectPath().replace(
+            '.qgs', '-%s.qgs' % datetime.now().strftime('%Y-%m-%d-%H:%M:%S'))
+        shutil.copy2(defaultProjectPath(), backup)
+
    # open default project
     with open(defaultProjectPath()) as f:
         content = f.read()
@@ -97,7 +107,7 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
     root = doc.documentElement()
 
     for layer in layers:
-        is_visible = layer.name() in visible_maps
+        is_visible = layer.name() in visibleMaps
         xml = QgsMapLayer.asLayerDefinition([layer])
         r = xml.documentElement()
         mapLayerElement = r.firstChildElement("maplayers").firstChildElement("maplayer")
@@ -162,3 +172,62 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
     settings = QSettings()
     settings.setValue('Qgis/newProjectDefault', True)
     return True
+
+
+def createDefaultProject(available_maps, visible_maps, project_template, authcfg=None):
+    """Create a default project from a template and return it as a string"""
+    layers = []
+    for m in available_maps:
+        connstring = u'type=xyz&url=%(url)s'
+        if authcfg is not None:
+            connstring = u'authcfg=%(authcfg)s&' + connstring
+        layer = QgsRasterLayer(connstring % {
+            'url': urllib2.quote(m['endpoint']),
+            'authcfg': authcfg,
+        }, m['name'], 'wms')
+        # I've no idea why the following is required even if the crs is specified
+        # in the layer definition
+        layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
+        layers.append(layer)
+    if len(layers):
+        xml = QgsMapLayer.asLayerDefinition(layers)
+        maplayers = "\n".join(xml.toString().split("\n")[3:-3])
+        layer_tree_layer = ""
+        custom_order = ""
+        legend_layer = ""
+        layer_coordinate_transform = ""
+        for layer in layers:
+            is_visible = layer.name() in visible_maps
+            values = {'name': layer.name(), 'id': layer.id(), 'visible': ('1' if is_visible else '0'), 'checked': ('Qt::Checked' if is_visible else 'Qt::Unchecked')}
+            custom_order += "<item>%s</item>" % layer.id()
+            layer_tree_layer += """
+            <layer-tree-layer expanded="1" checked="%(checked)s" id="%(id)s" name="%(name)s">
+                <customproperties/>
+            </layer-tree-layer>""" % values
+            legend_layer += """
+            <legendlayer drawingOrder="-1" open="true" checked="%(checked)s" name="%(name)s" showFeatureCount="0">
+              <filegroup open="true" hidden="false">
+                <legendlayerfile isInOverview="0" layerid="%(id)s" visible="%(visible)s"/>
+              </filegroup>
+            </legendlayer>""" % values
+            layer_coordinate_transform += '<layer_coordinate_transform destAuthId="EPSG:3857" srcAuthId="EPSG:3857" srcDatumTransform="-1" destDatumTransform="-1" layerid="%s"/>' % layer.id()
+        tpl = ""
+        with open(project_template, 'rb') as f:
+            tpl = f.read()
+        for tag in ['custom_order', 'layer_tree_layer', 'legend_layer', 'layer_coordinate_transform', 'maplayers']:
+            tpl = tpl.replace("#%s#" % tag.upper(), locals()[tag])
+        return tpl
+    else:
+        return None
+
+
+def createOrAddDefaultBasemap(maps, visibleMaps, authcfg=None):
+    if os.path.isfile(defaultProjectPath()):
+       return addToDefaultProject(maps, visibleMaps, authcfg)
+    else:
+        template = PROJECT_DEFAULT_TEMPLATE
+        prj = createDefaultProject(maps, visibleMaps, template, authcfg)
+        if prj is None or prj == '':
+            return False
+
+        return writeDefaultProject(prj)
