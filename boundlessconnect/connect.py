@@ -85,11 +85,12 @@ class ConnectWebAdress(ConnectContent):
         webbrowser.open_new(self.url)
 
     def asHtmlEntry(self, roles):
-        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<div class="available">{itemType}</div></div>
+        s = """<div class="description"><img src="file://{image}"><b>{title}<br/>
+               {description}<a class="available" href="{url}">{itemType}</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
+                       url=self.url,
                        itemType=self.typeName().upper())
         return s
 
@@ -149,7 +150,7 @@ class ConnectLesson(ConnectContent):
         return os.path.join(pluginPath, "icons", "howto.svg")
 
     def asHtmlEntry(self, roles):
-        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
+        s = """<div class="description"><img src="file://{image}"><b>{title}<br/>
                {description}<a class="available" href="{url}">{itemType}</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
@@ -222,7 +223,7 @@ class ConnectPlugin(ConnectContent):
 
     def asHtmlEntry(self, roles):
         canInstall = "available" if self.canOpen(roles) else "notavailable"
-        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
+        s = """<div class="description"><img src="file://{image}"><b>{title}<br/>
                {description}<a class="{available}" href="{url}">INSTALL</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
