@@ -149,7 +149,7 @@ class ConnectLesson(ConnectContent):
 
     def asHtmlEntry(self, roles):
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<div class="available">{itemType}</div></div>
+               {description}<a class="available">{itemType} href="open"</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
@@ -221,7 +221,7 @@ class ConnectPlugin(ConnectContent):
     def asHtmlEntry(self, roles):
         canInstall = "available" if self.canOpen(roles) else "notavailable"
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<div class="{available}">INSTALL</div></div>
+               {description}<a class="{available}">INSTALL</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
@@ -384,7 +384,6 @@ def findAll(text, category):
     while len(data) == RESULTS_PER_PAGE:
         page += 1
         data = search(text, category, page)
-        self.searchProgress.emit()
         results.extend(data)
 
     return results
