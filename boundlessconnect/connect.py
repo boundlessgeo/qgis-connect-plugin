@@ -36,9 +36,7 @@ OPEN_ROLE = "open"
 PUBLIC_ROLE = "public"
 SUBSCRIBE_URL = "https://connect.boundlessgeo.com/Upgrade-Subscription"
 
-
-class OpenContentException(Exception):
-    pass
+LESSONS_PLUGIN_NAME = "lessons"
 
 
 class ConnectContent(object):
@@ -49,7 +47,6 @@ class ConnectContent(object):
         self.roles = roles
 
     def iconPath(self):
-        #return QIcon(os.path.join(pluginPath, "icons", "%s.png" % self.typeName().lower()))
         pass
 
     def categoryDescription(self):
@@ -68,92 +65,32 @@ class ConnectContent(object):
             webbrowser.open_new(SUBSCRIBE_URL)
 
     def asHtmlEntry(self, roles):
-        canInstall = 'CanInstall' if self.canOpen(roles) else 'CannotInstall'
-        s = ("<div class='outer'><a class='title%s' href='%s'>%s</a><div class='inner'><div class='category%s'>%s</div><div class='description%s'>%s</div></div></div>"
-            % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
+        #canInstall = "CanInstall" if self.canOpen(roles) else 'CannotInstall'
+        #s = ("<div class='outer'><a class='title%s' href='%s'>%s</a><div class='inner'><div class='category%s'>%s</div><div class='description%s'>%s</div></div></div>"
+        #    % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
+        canInstall = "available" if self.canOpen(roles) else "notavailabale"
+        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
+               {description}<div class="{available}">{itemType}</div></div>
+            """.format(image=self.iconPath,
+                       title=self.name,
+                       description=self.description,
+                       available=canInstall,
+                       itemType=self.typeName().upper())
         return s
-
-
-LESSONS_PLUGIN_NAME = "lessons"
-
-
-class ConnectLesson(ConnectContent):
-    def _open(self):
-        if LESSONS_PLUGIN_NAME not in available_plugins:
-            iface.messageBar().pushMessage("Cannot install lessons", "Lessons plugin is not installed", QgsMessageBar.WARNING)
-        elif LESSONS_PLUGIN_NAME not in active_plugins:
-            iface.messageBar().pushMessage("Cannot install lessosn", "Lessons plugin is not active", QgsMessageBar.WARNING)
-        else:
-            self.downloadAndInstall()
-
-    def downloadAndInstall(self):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        url = QUrl(self.url)
-        self.request = QNetworkRequest(url)
-        self.reply = QgsNetworkAccessManager.instance().get(self.request)
-        self.reply.finished.connect(self.requestFinished)
-
-    def requestFinished(self):
-        if self.reply.error() != QNetworkReply.NoError:
-            QApplication.restoreOverrideCursor()
-            iface.messageBar().pushMessage("Lessons could not be installed", self.reply.errorString(), QgsMessageBar.WARNING)
-            self.reply.deleteLater()
-            return
-        f = QFile(utils.tempFilename(os.path.basename(self.url).split(".")[0]))
-        f.open(QFile.WriteOnly)
-        f.write(self.reply.readAll())
-        f.close()
-        self.reply.deleteLater()
-        from lessons import installLessonsFromZipFile
-        installLessonsFromZipFile(f.fileName())
-        QApplication.restoreOverrideCursor()
-        iface.messageBar().pushMessage("", "Lessons were correctly installed", QgsMessageBar.INFO)
-
-    def typeName(self):
-        return "Lesson"
-
-    def iconPath(self):
-        return os.path.join(pluginPath, "icons", "howto.svg")
 
 
 class ConnectWebAdress(ConnectContent):
     def _open(self):
         webbrowser.open_new(self.url)
 
-
-class ConnectPlugin(ConnectContent):
-
-    def __init__(self, plugin, roles):
-        self.plugin = plugin
-        self.name = plugin["name"]
-        self.description = re.sub('<p>This plugin is available.*?access</a></p>', '', plugin["description"])
-        self.url = plugin["download_url"]
-        self.roles = roles
-
-    def typeName(self):
-        return "Plugin"
-
-    def _open(self):
-        if self.plugin['status'] == 'upgradeable':
-            reply = QMessageBox.question(iface.mainWindow(), 'Plugin',
-                     "An older version of the plugin is already installed. Do you want to upgrade it?",
-                     QMessageBox.Yes | QMessageBox.No)
-
-            if reply != QMessageBox.Yes:
-                return
-        elif self.plugin['status'] in ['not installed', 'new']:
-            pass
-        else:
-            reply = QMessageBox.question(iface.mainWindow(), 'Plugin',
-                     "The plugin is already installed. Do you want to reinstall it?",
-                     QMessageBox.Yes | QMessageBox.No)
-            if reply != QMessageBox.Yes:
-                return
-
-        def _install():
-            installer = pyplugin_installer.instance()
-            installer.installPlugin(self.plugin["id"])
-        execute(_install)
+    def asHtmlEntry(self):
+        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
+               {description}<div class="available">{itemType}</div></div>
+            """.format(image=self.iconPath.replace("\\", "/"),
+                       title=self.name,
+                       description=self.description,
+                       itemType=self.typeName().upper())
+        return s
 
 
 class ConnectVideo(ConnectWebAdress):
@@ -168,6 +105,7 @@ class ConnectLearning(ConnectWebAdress):
     def iconPath(self):
         return os.path.join(pluginPath, "icons", "learning.svg")
 
+
 class ConnectQA(ConnectWebAdress):
     def typeName(self):
         return "Q & A"
@@ -175,12 +113,14 @@ class ConnectQA(ConnectWebAdress):
     def iconPath(self):
         return os.path.join(pluginPath, "icons", "qa.svg")
 
+
 class ConnectBlog(ConnectWebAdress):
     def typeName(self):
         return "Blog"
 
     def iconPath(self):
         return os.path.join(pluginPath, "icons", "blog.svg")
+
 
 class ConnectDocumentation(ConnectWebAdress):
     def typeName(self):
@@ -200,55 +140,122 @@ class ConnectOther(ConnectWebAdress):
         return "Other"
 
 
-BASE_URL = "http://api.dev.boundlessgeo.io/v1/search/"
+class ConnectLesson(ConnectContent):
+    def typeName(self):
+        return "Lesson"
 
-_plugins = {}
-def loadPlugins():
-    global _plugins
-    _plugins = {}
-    installer = pyplugin_installer.instance()
-    installer.fetchAvailablePlugins(True)
-    for name in plugins.all():
-        plugin = plugins.all()[name]
-        if utils.isBoundlessPlugin(plugin) and name not in ['boundlessconnect']:
-            _plugins[plugin["name"]] = copy(plugin)
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "howto.svg")
 
+    def asHtmlEntry(self):
+        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
+               {description}<div class="available">{itemType}</div></div>
+            """.format(image=self.iconPath.replace("\\", "/"),
+                       title=self.name,
+                       description=self.description,
+                       itemType=self.typeName().upper())
+        return s
 
-categories = {"LC": (ConnectLearning, "Learning"),
-              "DOC": (ConnectDocumentation, "Documentation"),
-              "BLOG": (ConnectBlog, "Blog"),
-              "QA": (ConnectQA, "Q & A"),
-              "LESSON": (ConnectLesson, "Lesson")}
-
-RESULTS_PER_PAGE = 20
-
-
-def search(text, category='', page=0):
-    nam = NetworkAccessManager()
-    if category == '':
-        res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
-    else:
-        res, resText = nam.request("{}?q={}&cat={}&si={}&c={}".format(BASE_URL, text, category, int(page), RESULTS_PER_PAGE))
-    jsonText = json.loads(resText)
-    results = []
-    for element in jsonText["features"]:
-        props = element["properties"]
-        roles = props["role"].split(",")
-        category = props["category"]
-        if category != "PLUG":
-            title = props["title"] or props["description"].split(".")[0]
-            if category in categories:
-                results.append(categories[category][0](props["url"],
-                                                        title,
-                                                        props["description"], roles))
+    def _open(self):
+        if LESSONS_PLUGIN_NAME not in available_plugins:
+            iface.messageBar().pushMessage(
+                "Cannot install lessons",
+                "Lessons plugin is not installed",
+                QgsMessageBar.WARNING)
+        elif LESSONS_PLUGIN_NAME not in active_plugins:
+            iface.messageBar().pushMessage(
+                "Cannot install lessons",
+                "Lessons plugin is not active",
+                QgsMessageBar.WARNING)
         else:
-            plugin = _plugins.get(props["title"], None)
-            if plugin:
-                results.append(ConnectPlugin(plugin, roles))
-    return results
+            self.downloadAndInstall()
+
+    def downloadAndInstall(self):
+        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        url = QUrl(self.url)
+        self.request = QNetworkRequest(url)
+        self.reply = QgsNetworkAccessManager.instance().get(self.request)
+        self.reply.finished.connect(self.requestFinished)
+
+    def requestFinished(self):
+        if self.reply.error() != QNetworkReply.NoError:
+            QApplication.restoreOverrideCursor()
+            iface.messageBar().pushMessage(
+                "Lessons could not be installed:\n",
+                self.reply.errorString(),
+                QgsMessageBar.WARNING)
+            self.reply.deleteLater()
+            return
+
+        f = QFile(utils.tempFilename(os.path.basename(self.url).split(".")[0]))
+        f.open(QFile.WriteOnly)
+        f.write(self.reply.readAll())
+        f.close()
+        self.reply.deleteLater()
+
+        from lessons import installLessonsFromZipFile
+        installLessonsFromZipFile(f.fileName())
+        QApplication.restoreOverrideCursor()
+
+        iface.messageBar().pushMessage(
+            "Completed",
+            "Lessons were correctly installed",
+            QgsMessageBar.INFO)
 
 
-class ConnectBasemap(object):
+class ConnectPlugin(ConnectContent):
+
+    def __init__(self, plugin, roles):
+        self.plugin = plugin
+        self.name = plugin["name"]
+        self.description = re.sub("<p>This plugin is available.*?access</a></p>", "", plugin["description"])
+        self.url = plugin["download_url"]
+        self.roles = roles
+
+    def typeName(self):
+        return "Plugin"
+
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "plugin.svg")
+
+    def asHtmlEntry(self):
+        canInstall = "available" if self.canOpen(roles) else "notavailable"
+        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
+               {description}<div class="{available}">INSTALL</div></div>
+            """.format(image=self.iconPath.replace("\\", "/"),
+                       title=self.name,
+                       description=self.description,
+                       available=canInstall)
+        return s
+
+    def _open(self):
+        if self.plugin["status"] == "upgradeable":
+            reply = QMessageBox.question(
+                iface.mainWindow(),
+                "Plugin",
+                "An older version of the plugin is already installed. Do you want to upgrade it?",
+                QMessageBox.Yes | QMessageBox.No)
+            if reply != QMessageBox.Yes:
+                return
+        elif self.plugin["status"] in ["not installed", "new"]:
+            pass
+        else:
+            reply = QMessageBox.question(
+                iface.mainWindow(),
+                "Plugin",
+                "The plugin is already installed. Do you want to reinstall it?",
+                QMessageBox.Yes | QMessageBox.No)
+            if reply != QMessageBox.Yes:
+                return
+
+        def _install():
+            installer = pyplugin_installer.instance()
+            installer.installPlugin(self.plugin["id"])
+
+        execute(_install)
+
+
+class ConnectBasemap(ConnectContent):
     def __init__(self, url, name, description, json, roles=["open"]):
         self.url = url
         self.name = name
@@ -259,19 +266,15 @@ class ConnectBasemap(object):
     def typeName(self):
         return "Basemap"
 
-    def canOpen(self, roles):
-        matches = [role for role in roles if role in self.roles]
-        return bool(matches) or (OPEN_ROLE in self.roles) or (PUBLIC_ROLE in self.roles)
-
     def asHtmlEntry(self, roles):
-        available = 'CanInstall' if self.canOpen(roles) else 'CannotInstall'
-        s = """<div class='outer'><a class='title{canInstall}'>{name}</a>
-               <div class='inner'><div class='category{canInstall}'>{category}</div>
-               <div class='description{canInstall}'>{description}</div></div></div>
-            """.format(canInstall=available,
-                       name=self.name,
-                       category=self.typeName(),
-                       description=self.description)
+        canInstall = "available" if self.canOpen(roles) else "notavailable"
+        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
+               {description}<div class="{available}">ADD TO MAP</div>
+               <div class="{available}">ADD TO DEFAULT PROJECT</div></div>
+            """.format(image=self.iconPath.replace("\\", "/"),
+                       title=self.name,
+                       description=self.description,
+                       available=canInstall)
         return s
 
     def addToCanvas(self):
@@ -301,6 +304,55 @@ class ConnectBasemap(object):
 
     def addToDefaultProject(self):
         basemaputils.add
+
+
+RESULTS_PER_PAGE = 20
+BASE_URL = "http://api.dev.boundlessgeo.io/v1/search/"
+
+_plugins = {}
+def loadPlugins():
+    global _plugins
+    _plugins = {}
+    installer = pyplugin_installer.instance()
+    installer.fetchAvailablePlugins(True)
+    for name in plugins.all():
+        plugin = plugins.all()[name]
+        if utils.isBoundlessPlugin(plugin) and name not in ["boundlessconnect"]:
+            _plugins[plugin["name"]] = copy(plugin)
+
+
+categories = {"LC": (ConnectLearning, "Learning"),
+              "DOC": (ConnectDocumentation, "Documentation"),
+              "BLOG": (ConnectBlog, "Blog"),
+              "QA": (ConnectQA, "Q & A"),
+              "LESSON": (ConnectLesson, "Lesson")}
+
+
+def search(text, category='', page=0):
+    nam = NetworkAccessManager()
+    if category == '':
+        res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
+    else:
+        res, resText = nam.request("{}?q={}&cat={}&si={}&c={}".format(BASE_URL, text, category, int(page), RESULTS_PER_PAGE))
+    jsonText = json.loads(resText)
+    results = []
+    for element in jsonText["features"]:
+        props = element["properties"]
+        roles = props["role"].split(",")
+        category = props["category"]
+        if category != "PLUG":
+            title = props["title"] or props["description"].split(".")[0]
+            if category in categories:
+                results.append(categories[category][0](props["url"],
+                                                        title,
+                                                        props["description"], roles))
+        else:
+            plugin = _plugins.get(props["title"], None)
+            if plugin:
+                results.append(ConnectPlugin(plugin, roles))
+    return results
+
+
 
 
 BASEMAPS_ENDPOINT = "http://api.dev.boundlessgeo.io/v1/basemaps/"

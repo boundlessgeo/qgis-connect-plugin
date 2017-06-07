@@ -33,7 +33,7 @@ from qgis.core import (QgsApplication,
 
 
 def isSupported(layer):
-    """Check weither the layer is supported by QGIS by excluding vector
+    """Check whether the layer is supported by QGIS by excluding vector
     tiles
     """
     return (layer['tileFormat'] == 'PNG' and layer['standard'] == 'XYZ')

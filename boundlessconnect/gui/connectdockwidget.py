@@ -102,7 +102,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(QUrl("file://" +
-            os.path.join(pluginPath, "resources", "search.css").replace("\\", "/")))
+            os.path.join(pluginPath, "resources", "connect.css").replace("\\", "/")))
         self.webView.linkClicked.connect(self.linkClicked)
 
         content = {}
@@ -226,7 +226,6 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def _findBasemap(self):
         text = self.leSearch.text().strip()
-        print "LOOKING FOR", text
         if text:
             try:
                 results = execute(lambda: connect.searchBasemaps(text))
