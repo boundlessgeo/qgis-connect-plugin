@@ -266,44 +266,67 @@ class ConnectBasemap(ConnectContent):
     def typeName(self):
         return "Basemap"
 
+    def iconPath(self):
+        return os.path.join(pluginPath, "icons", "plugin.svg")
+
     def asHtmlEntry(self, roles):
         canInstall = "available" if self.canOpen(roles) else "notavailable"
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<div class="{available}">ADD TO MAP</div>
-               <div class="{available}">ADD TO DEFAULT PROJECT</div></div>
+               {description}<a class="{available}" href="addToMap">ADD TO MAP</a>
+               <a class="{available}" href="addToDefaultProject">ADD TO DEFAULT PROJECT</a></div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
                        available=canInstall)
         return s
 
-    def addToCanvas(self):
-        if not oauth2_supported:
-            iface.messageBar().pushMessage(
-                "Cannot load basemap",
-                "OAuth support is not available",
-                QgsMessageBar.WARNING)
-        else:
-            authcfg = get_oauth_authcfg()
-            if authcfg is None:
+    def addToCanvas(self, roles):
+        if self.canOpen(roles):
+            if not oauth2_supported:
                 iface.messageBar().pushMessage(
                     "Cannot load basemap",
-                    "Cannot find a valid authentication configuration",
+                    "OAuth support is not available",
                     QgsMessageBar.WARNING)
             else:
-                authId = authcfg.id()
-                layer = QgsRasterLayer(u"authcfg=%{authCfgId}&type=xyz&url={url}".format(
-                    url=urllib2.quote(self.url), authCfgId=authId), self.name, "wms")
-                if layer.isValid():
-                    QgsMapLayerRegistry.instance().addMapLayer(layer)
-                else:
+                authcfg = get_oauth_authcfg()
+                if authcfg is None:
                     iface.messageBar().pushMessage(
                         "Cannot load basemap",
-                        "Cannot create basemap layer",
+                        "Cannot find a valid authentication configuration",
                         QgsMessageBar.WARNING)
+                else:
+                    authId = authcfg.id()
+                    layer = QgsRasterLayer(u"authcfg=%{authCfgId}&type=xyz&url={url}".format(
+                        url=urllib2.quote(self.url), authCfgId=authId), self.name, "wms")
+                    if layer.isValid():
+                        QgsMapLayerRegistry.instance().addMapLayer(layer)
+                    else:
+                        iface.messageBar().pushMessage(
+                            "Cannot load basemap",
+                            "Cannot create basemap layer",
+                            QgsMessageBar.WARNING)
+        else:
+            webbrowser.open_new(SUBSCRIBE_URL)
 
-    def addToDefaultProject(self):
-        basemaputils.add
+    def addToDefaultProject(self, roles):
+        if self.canOpen(roles):
+            if not oauth2_supported:
+                iface.messageBar().pushMessage(
+                    "Cannot add basemap",
+                    "OAuth support is not available",
+                    QgsMessageBar.WARNING)
+            else:
+                authcfg = get_oauth_authcfg()
+                if authcfg is None:
+                    iface.messageBar().pushMessage(
+                        "Cannot add basemap",
+                        "Cannot find a valid authentication configuration",
+                        QgsMessageBar.WARNING)
+                else:
+                    authId = authcfg.id()
+                    basemaputils.addToDefaultProject([self.json], [self.name], authId)
+        else:
+            webbrowser.open_new(SUBSCRIBE_URL)
 
 
 RESULTS_PER_PAGE = 20
@@ -352,7 +375,19 @@ def search(text, category='', page=0):
                 results.append(ConnectPlugin(plugin, roles))
     return results
 
+def findAll(text, category):
+    page = 0
+    results = []
 
+    data = search(text, category, page)
+    results = data
+    while len(data) == RESULTS_PER_PAGE:
+        page += 1
+        data = search(text, category, page)
+        self.searchProgress.emit()
+        results.extend(data)
+
+    return results
 
 
 BASEMAPS_ENDPOINT = "http://api.dev.boundlessgeo.io/v1/basemaps/"

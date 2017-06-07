@@ -165,6 +165,12 @@ class ConnectDockWidget(BASE, WIDGET):
             self.search(self.searchPage + 1)
         elif name == "previous":
             self.search(self.searchPage - 1)
+        elif name == "addToMap":
+            content = self.searchResults[name]
+            content.addToCanvas(self.roles)
+        elif name == "addToDefaultProject":
+            content = self.searchResults[name]
+            content.addToDefaultProject(self.roles)
         else:
             content = self.searchResults[name]
             content.open(self.roles)
@@ -202,18 +208,20 @@ class ConnectDockWidget(BASE, WIDGET):
         if text:
             self.searchPage = page
             try:
-                results = execute(lambda: connect.search(text, category, self.searchPage))
+                #results = execute(lambda: connect.search(text, category, self.searchPage))
+                results = execute(lambda: connect.findAll(text, category))
                 if results:
                     self.searchResults = {r.url:r for r in results}
-                    html = "<ul>"
+                    html = "<div class='results'>{} resutls</div><hr/>".format(len(results))
+                    html += "<ul>"
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     html += "</ul>"
-                    if len(results) == connect.RESULTS_PER_PAGE:
-                        if self.searchPage == 0:
-                            html += "<a class='pagination' href='next'>Next</a>"
-                        else:
-                            html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
+                    #~ if len(results) == connect.RESULTS_PER_PAGE:
+                        #~ if self.searchPage == 0:
+                            #~ html += "<a class='pagination' href='next'>Next</a>"
+                        #~ else:
+                            #~ html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
                 else:
@@ -230,7 +238,9 @@ class ConnectDockWidget(BASE, WIDGET):
             try:
                 results = execute(lambda: connect.searchBasemaps(text))
                 if results:
-                    html = "<ul>"
+                    self.searchResults = {r.url:r for r in results}
+                    html = "<div class='results'>{} resutls</div><hr/>".format(len(results))
+                    html += "<ul>"
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     html += "</ul>"
