@@ -14,6 +14,8 @@ li {
 
 img {
   float: left;
+  height: 60px;
+  width: 60px;
   margin: 10px 10px 10px 10px;
   vertical-align: middle;
 }
@@ -47,6 +49,7 @@ img {
   text-align: center;
 
   margin-left: 78px;
+  display: inline-block;
 
   width: 75px;
   height: 10px;
@@ -63,6 +66,7 @@ img {
   text-align: center;
 
   margin-left: 78px;
+  display: inline-block;
 
   width: 75px;
   height: 10px;

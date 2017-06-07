@@ -83,10 +83,10 @@ class ConnectWebAdress(ConnectContent):
     def _open(self):
         webbrowser.open_new(self.url)
 
-    def asHtmlEntry(self):
+    def asHtmlEntry(self, roles):
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
                {description}<div class="available">{itemType}</div></div>
-            """.format(image=self.iconPath.replace("\\", "/"),
+            """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
                        itemType=self.typeName().upper())
@@ -147,10 +147,10 @@ class ConnectLesson(ConnectContent):
     def iconPath(self):
         return os.path.join(pluginPath, "icons", "howto.svg")
 
-    def asHtmlEntry(self):
+    def asHtmlEntry(self, roles):
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
                {description}<div class="available">{itemType}</div></div>
-            """.format(image=self.iconPath.replace("\\", "/"),
+            """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
                        itemType=self.typeName().upper())
@@ -218,11 +218,11 @@ class ConnectPlugin(ConnectContent):
     def iconPath(self):
         return os.path.join(pluginPath, "icons", "plugin.svg")
 
-    def asHtmlEntry(self):
+    def asHtmlEntry(self, roles):
         canInstall = "available" if self.canOpen(roles) else "notavailable"
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
                {description}<div class="{available}">INSTALL</div></div>
-            """.format(image=self.iconPath.replace("\\", "/"),
+            """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
                        available=canInstall)
@@ -271,7 +271,7 @@ class ConnectBasemap(ConnectContent):
         s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
                {description}<div class="{available}">ADD TO MAP</div>
                <div class="{available}">ADD TO DEFAULT PROJECT</div></div>
-            """.format(image=self.iconPath.replace("\\", "/"),
+            """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
                        available=canInstall)
