@@ -74,8 +74,11 @@ class ConnectDockWidget(BASE, WIDGET):
     def __init__(self, parent=None, visible=False):
         super(ConnectDockWidget, self).__init__(parent)
         self.setupUi(self)
+
         self.loggedIn = False
         self.askForAuth = False
+
+        self.progressBar.hide()
 
         self.setVisible(visible)
 
@@ -213,6 +216,7 @@ class ConnectDockWidget(BASE, WIDGET):
         if text:
             self.searchPage = page
             try:
+                self._toggleSearchProgress()
                 #results = execute(lambda: connect.search(text, category, self.searchPage))
                 results = execute(lambda: connect.findAll(text, category))
                 if results:
@@ -229,6 +233,7 @@ class ConnectDockWidget(BASE, WIDGET):
                             #~ html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
+                    self._toggleSearchProgress(False)
                 else:
                     self._showMessage("No search matching the entered text was found.",
                                       QgsMessageBar.WARNING)
@@ -418,6 +423,15 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self._showMessage("Basemap added to the default project.")
         return True
+
+    def _toggleSearchProgress(self, show=True):
+        if show:
+            self.progressBar.setRange(0, 0)
+            self.progressBar.show()
+        else:
+            self.progressBar.setRange(0, 100)
+            self.progressBar.reset()
+            self.progressBar.hide()
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         iface.messageBar().pushMessage(
