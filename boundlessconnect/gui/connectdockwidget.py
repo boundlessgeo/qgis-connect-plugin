@@ -67,7 +67,6 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'connectdockwidget.ui'))
 
 OFFLINE_HELP_URL = os.path.join(pluginPath, 'docs', 'html', 'index.html')
-OAUTH_TOKEN_URL = "https://api.boundlessgeo.io/v1/token/oauth/"
 
 class ConnectDockWidget(BASE, WIDGET):
 
@@ -341,7 +340,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         # also setup OAuth2 configuration if possible
         if oauth2_supported():
-            setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), OAUTH_TOKEN_URL)
+            setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), pluginSetting("oauthEndpoint"))
 
     def tabChanged(self, index):
         if index == 0:
