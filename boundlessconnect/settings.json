@@ -12,5 +12,19 @@
      "type": "string",
      "default": "https://api.test.boundlessgeo.io/v1/token/oauth/",
      "group": "General"
+    },
+    {"name":"maps_uri",
+     "label": "BCS available maps URI",
+     "description": "URI to get the available base maps",
+     "type": "string",
+     "default": "https://api.boundlessgeo.io/v1/basemaps/",
+     "group": "General"
+    },
+    {"name":"enabled",
+     "label": "Add the Boundless basemap to your default project",
+     "description": "Add the Boundless basemap to your default project",
+     "type": "bool",
+     "default": false,
+     "group": "General"
     }
 ]

@@ -45,6 +45,7 @@ from pyplugin_installer.installer_data import (settingsGroup,
 from pyplugin_installer.version_compare import (compareVersions,
                                                 normalizeVersion,
                                                 isCompatible)
+from qgiscommons.settings import pluginSetting, setPluginSetting
 
 pluginPath = os.path.dirname(__file__)
 
@@ -95,8 +96,7 @@ class LocalPlugins(QObject):
             del self.localCache[key]
 
     def load(self):
-        settings = QSettings('Boundless', 'BoundlessConnect')
-        repoUrl = settings.value('repoUrl', '', str)
+        repoUrl = pluginSetting('repoUrl')
 
         repoPath = os.path.abspath(repoUrl)
         repoFile = os.path.join(repoPath, 'plugins.xml')

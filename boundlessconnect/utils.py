@@ -372,19 +372,3 @@ def addCheckForUpdates():
         repositories.setCheckingOnStart(True)
         repositories.setCheckingOnStartInterval(30)
         repositories.saveCheckingOnStartLastDate()
-
-_tempFolder = None
-def tempFolder():
-    global _tempFolder
-    if _tempFolder is None:
-        _tempFolder = tempfile.mkdtemp()
-    return _tempFolder
-
-def deleteTempFolder():
-    if _tempFolder is not None:
-        shutil.rmtree(_tempFolder, True)
-
-def tempFilename(basename):
-    folder = os.path.join(tempFolder(), str(time.time()))
-    os.mkdir(folder)
-    return os.path.join(folder, basename)

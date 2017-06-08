@@ -26,22 +26,27 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
+import re
 import os
 import sys
 import json
 import unittest
+import tempfile
+
 try:
     from configparser import ConfigParser
 except:
     from ConfigParser import ConfigParser
 
-from qgis.PyQt.QtCore import Qt, QSettings
+from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
 
-from qgis.core import QgsApplication
+from qgis.core import QgsApplication, QgsProject
 
 from qgis.utils import active_plugins, home_plugin_path, unloadPlugin, iface
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
+
+from qgiscommons.oauth2 import oauth2_supported
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect.connect import search, ConnectPlugin, loadPlugins
@@ -67,14 +72,6 @@ def functionalTests():
                                    'Close error message by pressing "No" button.'
                                    'Check that the "Level:" label is not found at the bottom of the Connect panel.',
                         prestep=lambda: _startConectPlugin(), isVerifyStep=True)
-
-    oauthTest = Test("Check OAuth2 configuration created (can fail if no OAuth support)")
-    oauthTest.addStep('Accept dialog by pressing "Login" button '
-                      'without entering any credentials',
-                      prestep=lambda: _startConectPlugin())
-    oauthTest.addStep('Check that "Boundless OAuth2 API" configuration '
-                      'added to "Settings -> Authentication".',
-                      isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
     repeatedLoginTest.addStep('Accept dialog by pressing "Login" button '
@@ -297,12 +294,87 @@ class BoundlessConnectTests(unittest.TestCase):
                 installer.uninstallPlugin(key, quiet=True)
 
 
+class BasemapsTest(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.data_dir = os.path.join(os.path.dirname(__file__), 'data')
+        cls.local_maps_uri = os.path.join(cls.data_dir, 'basemaps.json')
+        cls.tpl_path = os.path.join(
+            os.path.dirname(__file__), os.path.pardir, 'resources', 'project_default.qgs.tpl')
+
+    def _standard_id(self, tpl):
+        """Change the layer ids to XXXXXXXX and also clear extents"""
+        tpl = re.sub(r'id="([^\d]+)[^"]*"', 'id="\g<1>XXXXXXX"', tpl)
+        tpl = re.sub(
+            r'<item>([^\d]+).*?</item>', '<item>\g<1>XXXXXXX</item>', tpl)
+        tpl = re.sub(r'<id>([^\d]+).*?</id>', '<id>\g<1>XXXXXXX</id>', tpl)
+        tpl = re.sub(r'authcfg=[a-z0-9]+', 'authcfg=YYYYYY', tpl)
+        tpl = re.sub(r'(xmin|ymin|xmax|ymax)>[^<]+<.*', '\g<1>>ZZZZZ</\g<1>>', tpl)
+        return tpl
+
+    def test_utils_get_available_maps(self):
+        """Check available maps retrieval from local test json file"""
+        self.assertTrue(oauth2_supported())
+        maps = utils.get_available_maps(os.path.join(self.data_dir,
+                                                     'basemaps.json'))
+        names = [m['name'] for m in maps]
+        names.sort()
+        self.assertEqual(names, [u'Boundless Basemap',
+                                 u'Mapbox Dark',
+                                 u'Mapbox Light',
+                                 u'Mapbox Outdoors',
+                                 u'Mapbox Satellite',
+                                 u'Mapbox Satellite Streets',
+                                 #u'Mapbox Street Vector Tiles',
+                                 u'Mapbox Streets',
+                                 #u'Mapbox Traffic Vector Tiles',
+                                 u'Recent Imagery',
+                                 ])
+
+    def test_utils_create_default_auth_project(self):
+        """Create the default project with authcfg"""
+        self.assertTrue(oauth2_supported())
+        visible_maps = ['Mapbox Light', 'Recent Imagery']
+        prj = utils.create_default_project(
+            utils.get_available_maps(self.local_maps_uri),
+            visible_maps,
+            self.tpl_path,
+            'abc123')
+        prj = self._standard_id(prj)
+        # Re-generate reference:
+        #with open(os.path.join(self.data_dir, 'project_default_reference.qgs'), 'wb+') as f:
+        #    f.write(prj)
+        self.assertEqual(
+            prj, open(os.path.join(self.data_dir, 'project_default_reference.qgs'), 'rb').read())
+
+    def test_utils_create_default_project(self):
+        """Use a no_auth project template for automated testing of valid project"""
+        visible_maps = ['OSM Basemap B']
+        prj = utils.create_default_project(
+            utils.get_available_maps(
+                os.path.join(self.data_dir, 'basemaps_no_auth.json')),
+            visible_maps,
+            self.tpl_path)
+        # Re-generate reference:
+        #with open(os.path.join(self.data_dir, 'project_default_no_auth_reference.qgs'), 'wb+') as f:
+        #    f.write(self._standard_id(prj))
+        tmp = tempfile.mktemp('.qgs')
+        with open(tmp, 'wb+') as f:
+            f.write(prj)
+        self.assertTrue(QgsProject.instance().read(QFileInfo(tmp)))
+        self.assertEqual(self._standard_id(prj), open(
+            os.path.join(self.data_dir, 'project_default_no_auth_reference.qgs'), 'rb').read())
+
+
 def unitTests():
     connectSuite = unittest.makeSuite(BoundlessConnectTests, 'test')
     apiSuite = unittest.makeSuite(SearchApiTests, 'test')
+    basemapsSuite = unittest.makeSuite(BasemapsTest, 'test')
     _tests = []
     _tests.extend(connectSuite)
     _tests.extend(apiSuite)
+    _tests.extend(basemapsSuite)
 
     return _tests
 

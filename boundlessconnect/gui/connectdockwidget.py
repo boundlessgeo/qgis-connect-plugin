@@ -51,18 +51,21 @@ from qgis.gui import QgsMessageBar
 from pyplugin_installer.installer_data import reposGroup
 
 from qgiscommons.oauth2 import (oauth2_supported,
-                                setup_oauth
+                                setup_oauth,
+                                get_oauth_authcfg
                                )
+from qgiscommons.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.plugins import boundlessRepoName, authEndpointUrl
 from boundlessconnect import utils
+from boundlessconnect import basemaputils
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'connectdockwidget.ui'))
 
 OFFLINE_HELP_URL = os.path.join(pluginPath, 'docs', 'html', 'index.html')
-OAUTH_TOKEN_URL = "https://api.test.boundlessgeo.io/v1/token/oauth/"
+OAUTH_TOKEN_URL = "https://api.boundlessgeo.io/v1/token/oauth/"
 
 class ConnectDockWidget(BASE, WIDGET):
 
@@ -282,6 +285,23 @@ class ConnectDockWidget(BASE, WIDGET):
             self.saveOrUpdateAuthId()
             self.roles = json.loads(str(reply.readAll()))
 
+            # if this is first login ask if user wants to have basemap
+            settings = QSettings()
+            firstLogin = settings.value('boundlessconnect/firstLogin', True, bool)
+            if firstLogin:
+                settings.setValue('boundlessconnect/firstLogin', False)
+                if oauth2_supported():
+                    ret = QMessageBox.question(self,
+                                               self.tr('Base Maps'),
+                                               self.tr('Would you like to add Boundless basemap '
+                                                       'to your default project? This option can '
+                                                       'be disabled at any time in the settings.'),
+                                               QMessageBox.Yes | QMessageBox.No,
+                                               QMessageBox.No)
+                    if ret == QMessageBox.Yes:
+                         if self.installBaseMap():
+                             pass
+
         execute(connect.loadPlugins)
         self.stackedWidget.setCurrentIndex(1)
         self.labelLevel.setVisible(visible)
@@ -299,7 +319,7 @@ class ConnectDockWidget(BASE, WIDGET):
             authConfig.setName('Boundless Connect Portal')
 
             settings = QSettings('Boundless', 'BoundlessConnect')
-            authConfig.setUri(settings.value('repoUrl', ''))
+            authConfig.setUri(pluginSetting('repoUrl'))
 
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):
                 utils.setRepositoryAuth(self.authId)
@@ -331,6 +351,71 @@ class ConnectDockWidget(BASE, WIDGET):
     def _toggleCategoriesSelector(self, visible):
         self.lblCategorySearch.setVisible(visible)
         self.cmbContentType.setVisible(visible)
+
+    def installBaseMap(self):
+        authcfg = get_oauth_authcfg()
+        if authcfg is None:
+            self._showMessage('Could not find a valid authentication configuration!',
+                              QgsMessageBar.WARNING)
+            return False
+
+        authId = authcfg.id()
+        mapBoxStreets = basemaputils.getMapBoxStreetsMap()
+
+        if os.path.isfile(basemaputils.defaultProjectPath()):
+            # default project already exists, make a backup copy
+            backup = basemaputils.defaultProjectPath().replace(
+                '.qgs', '-%s.qgs' % datetime.now().strftime('%Y-%m-%d-%H:%M:%S'))
+            shutil.copy2(basemaputils.defaultProjectPath(), backup)
+            self._showMessage("A backup copy of the previous default project "
+                              "has been saved to {}".format(backup))
+
+            msgBox = QMessageBox()
+            msgBox.setIcon(QMessageBox.Question)
+            msgBox.setText("A default project already exists.  Do you "
+                           "wish to add the Boundless basemap to your "
+                           "existing default project or create a new "
+                           "default project?")
+            btnAdd = msgBox.addButton("Add", QMessageBox.ActionRole)
+            btnCreateNew = msgBox.addButton("Create New", QMessageBox.ActionRole)
+            msgBox.exec_()
+            if msgBox.clickedButton() == btnAdd:
+                if not basemaputils.addToDefaultProject([mapBoxStreets], ["Mapbox Streets"], authId):
+                    self._showMessage("Could not update default project with basemap!",,
+                                      QgsMessageBar.WARNING)
+                    return False
+            elif msgBox.clickedButton() == btnCreateNew:
+                template = basemaputils.PROJECT_DEFAULT_TEMPLATE
+
+                prj = basemaputils.createDefaultProject([mapBoxStreets], ["Mapbox Streets"],
+                                                        template, authId)
+                if prj is None or prj == '':
+                    self._showMessage("Could not create a valid default project from the template '{}'!".format(template),
+                                      QgsMessageBar.WARNING)
+                    return False
+
+                if not basemaputils.writeDefaultProject(prj):
+                    self._showMessage("Could not write the default project on disk!",
+                                      QgsMessageBar.WARNING)
+                    return False
+        else:
+            # no default project, create one
+            template = basemaputils.PROJECT_DEFAULT_TEMPLATE
+
+            prj = basemaputils.createDefaultProject([mapBoxStreets], ["Mapbox Streets"],
+                                               template, authId)
+            if prj is None or prj == '':
+                self._showMessage("Could not create a valid default project from the template '{}'!".format(template),
+                                  QgsMessageBar.WARNING)
+                return False
+
+            if not basemaputils.writeDefaultProject(prj):
+                self._showMessage("Could not write the default project on disk!",
+                                  QgsMessageBar.WARNING)
+                return False
+
+        self._showMessage("Basemap added to the default project.")
+        return True
 
     def _showMessage(self, message, level=QgsMessageBar.INFO):
         iface.messageBar().pushMessage(

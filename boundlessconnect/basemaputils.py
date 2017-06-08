@@ -21,11 +21,13 @@ __date__ = 'June 2017'
 __copyright__ = '(C) 2017 Boundless, http://boundlessgeo.com'
 
 import os
+import json
 import shutil
 import urllib2
+import tempfile
 from datetime import datetime
 
-from qgis.PyQt.QtCore import QSettings
+from qgis.PyQt.QtCore import QSettings, QEventLoop, QUrl
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 
 from qgis.core import (QgsApplication,
@@ -33,6 +35,7 @@ from qgis.core import (QgsApplication,
                        QgsMapLayer,
                        QgsRasterLayer
                       )
+from qgis.gui import QgsFileDownloader
 
 PROJECT_DEFAULT_TEMPLATE = os.path.join(os.path.dirname(__file__), 'resources', 'project_default.qgs.tpl')
 
@@ -231,3 +234,32 @@ def createOrAddDefaultBasemap(maps, visibleMaps, authcfg=None):
             return False
 
         return writeDefaultProject(prj)
+
+def availableMaps(maps_uri):
+    """Fetch the list of available maps from BCS endpoint,
+    apparently this API method does not require auth"""
+    # For testing purposes, we can also access to a json file directly
+    if not maps_uri.startswith('http'):
+        j = json.load(open(maps_uri))
+    else:
+        t = tempfile.mktemp()
+        q = QgsFileDownloader(QUrl(maps_uri), t)
+        loop = QEventLoop()
+        q.downloadExited.connect(loop.quit)
+        loop.exec_()
+        if not os.path.isfile(t):
+            return []
+
+        with open(t) as f:
+            j = json.load(f)
+        os.unlink(t)
+
+    return [l for l in j if isSupported(l)]
+
+
+def getMapBoxStreetsMap():
+    allMaps = availableMaps(pluginSetting('maps_uri'))
+    for m in allMaps:
+        if m["name"] == "Mapbox Streets":
+            return m
+    return None

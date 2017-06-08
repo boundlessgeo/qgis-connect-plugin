@@ -156,9 +156,9 @@ class BoundlessConnectPlugin(object):
             pass
 
     def checkFirstRun(self):
-        settings = QSettings('Boundless', 'BoundlessConnect')
-        firstRun = settings.value('firstRun', True, bool)
-        settings.setValue('firstRun', False)
+        settings = QSettings()
+        firstRun = settings.value('boundlessconnect/firstRun', True, bool)
+        settings.setValue('boundlessconnect/firstRun', False)
 
         if self.dockWidget is None:
             self.dockWidget = getConnectDockWidget()
