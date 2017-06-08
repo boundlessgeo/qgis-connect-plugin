@@ -27,8 +27,10 @@ __revision__ = '$Format:%H$'
 
 import os
 import json
+import shutil
 import base64
 import webbrowser
+from datetime import datetime
 
 from qgis.utils import iface
 
@@ -381,7 +383,7 @@ class ConnectDockWidget(BASE, WIDGET):
             msgBox.exec_()
             if msgBox.clickedButton() == btnAdd:
                 if not basemaputils.addToDefaultProject([mapBoxStreets], ["Mapbox Streets"], authId):
-                    self._showMessage("Could not update default project with basemap!",,
+                    self._showMessage("Could not update default project with basemap!",
                                       QgsMessageBar.WARNING)
                     return False
             elif msgBox.clickedButton() == btnCreateNew:
