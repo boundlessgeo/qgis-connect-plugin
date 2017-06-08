@@ -10,7 +10,7 @@
      "label": "OAuth2 endpoint",
      "description": "URL of the OAuth2 endpoint",
      "type": "string",
-     "default": "https://api.test.boundlessgeo.io/v1/token/oauth/",
+     "default": "https://api.boundlessgeo.io/v1/token/oauth/",
      "group": "General"
     },
     {"name":"maps_uri",

@@ -342,7 +342,7 @@ class ConnectBasemap(ConnectContent):
 
 
 RESULTS_PER_PAGE = 20
-BASE_URL = "http://api.dev.boundlessgeo.io/v1/search/"
+BASE_URL = "http://api.boundlessgeo.io/v1/search/"
 
 _plugins = {}
 def loadPlugins():
@@ -401,7 +401,7 @@ def findAll(text, category):
     return results
 
 
-BASEMAPS_ENDPOINT = "http://api.dev.boundlessgeo.io/v1/basemaps/"
+BASEMAPS_ENDPOINT = "http://api.boundlessgeo.io/v1/basemaps/"
 def searchBasemaps(text):
     t = tempfile.mktemp()
     q = QgsFileDownloader(QUrl(BASEMAPS_ENDPOINT), t)
