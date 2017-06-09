@@ -265,3 +265,10 @@ def getMapBoxStreetsMap():
         if m["name"] == "Mapbox Streets":
             return m
     return None
+
+
+def restoreFromBackup():
+    backups = glob.glob(os.path.join(QgsApplication.qgisSettingsDirPath(), "project_default-*.qgs"))
+    backups.sort()
+    lastBackup = backups[-1]
+    shutil.copy2(lastBackup, defaultProjectPath())

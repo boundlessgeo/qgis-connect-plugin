@@ -65,13 +65,13 @@ class ConnectContent(object):
             webbrowser.open_new(SUBSCRIBE_URL)
 
     def asHtmlEntry(self, roles):
-        #canInstall = "CanInstall" if self.canOpen(roles) else 'CannotInstall'
-        #s = ("<div class='outer'><a class='title%s' href='%s'>%s</a><div class='inner'><div class='category%s'>%s</div><div class='description%s'>%s</div></div></div>"
-        #    % (canInstall, self.url, self.name, canInstall, self.typeName(), canInstall, self.description))
-        canInstall = "available" if self.canOpen(roles) else "notavailabale"
-        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<a class="{available}" href="{url}">{itemType}</a></div>
-            """.format(image=self.iconPath,
+        canInstall = "green" if self.canOpen(roles) else "orange"
+        s = """<div class="icon-knowledge"><div class="icon-knowledge-container">
+               <img src="file://{image}"></div></div>
+               <div class="description"><h2>{title}</h2><p>{description}</p>
+               <a class="btn-action {available}" href="{url}">{itemType}</a>
+               </div>
+            """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
                        available=canInstall,
@@ -83,16 +83,6 @@ class ConnectContent(object):
 class ConnectWebAdress(ConnectContent):
     def _open(self):
         webbrowser.open_new(self.url)
-
-    def asHtmlEntry(self, roles):
-        s = """<div class="description"><img src="file://{image}"><b>{title}<br/>
-               {description}<a class="available" href="{url}">{itemType}</a></div>
-            """.format(image=self.iconPath().replace("\\", "/"),
-                       title=self.name,
-                       description=self.description,
-                       url=self.url,
-                       itemType=self.typeName().upper())
-        return s
 
 
 class ConnectVideo(ConnectWebAdress):
@@ -148,16 +138,6 @@ class ConnectLesson(ConnectContent):
 
     def iconPath(self):
         return os.path.join(pluginPath, "icons", "howto.svg")
-
-    def asHtmlEntry(self, roles):
-        s = """<div class="description"><img src="file://{image}"><b>{title}<br/>
-               {description}<a class="available" href="{url}">{itemType}</a></div>
-            """.format(image=self.iconPath().replace("\\", "/"),
-                       title=self.name,
-                       description=self.description,
-                       url=self.url,
-                       itemType=self.typeName().upper())
-        return s
 
     def _open(self):
         if LESSONS_PLUGIN_NAME not in available_plugins:
@@ -222,14 +202,18 @@ class ConnectPlugin(ConnectContent):
         return os.path.join(pluginPath, "icons", "plugin.svg")
 
     def asHtmlEntry(self, roles):
-        canInstall = "available" if self.canOpen(roles) else "notavailable"
-        s = """<div class="description"><img src="file://{image}"><b>{title}<br/>
-               {description}<a class="{available}" href="{url}">INSTALL</a></div>
+        canInstall = "green" if self.canOpen(roles) else "orange"
+        s = """<div class="icon-knowledge"><div class="icon-knowledge-container">
+               <img src="file://{image}"></div></div>
+               <div class="description"><h2>{title}</h2><p>{description}</p>
+               <a class="btn-action {available}" href="{url}">INSTALL</a>
+               </div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
                        available=canInstall,
-                       url=self.url)
+                       url=self.url
+                      )
         return s
 
     def _open(self):
@@ -271,18 +255,22 @@ class ConnectBasemap(ConnectContent):
         return "Basemap"
 
     def iconPath(self):
-        return os.path.join(pluginPath, "icons", "plugin.svg")
+        return os.path.join(pluginPath, "icons", "thumbnail.png")
 
     def asHtmlEntry(self, roles):
-        canInstall = "available" if self.canOpen(roles) else "notavailable"
-        s = """<div class="description"><img src="file://{image}"><b>{title}</b><br/>
-               {description}<a class="{available}" href="canvas{url}">ADD TO MAP</a>
-               <a class="{available}" href="project{url}">ADD TO DEFAULT PROJECT</a></div>
+        canInstall = "green" if self.canOpen(roles) else "orange"
+        s = """<div class="icon"><div class="icon-thumbnail-container">
+               <img src="file://{image}"></div></div>
+               <div class="description">{title}{description}
+               <a class="btn-action {available}" href="{url}">ADD TO MAP</a>
+               <a class="btn-action {available}" href="{url}">ADD TO DEFAULT PROJECT</a>
+               </div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
                        description=self.description,
-                       url=self.url,
-                       available=canInstall)
+                       available=canInstall,
+                       url=self.url
+                      )
         return s
 
     def addToCanvas(self, roles):

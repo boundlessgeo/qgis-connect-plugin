@@ -109,7 +109,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(QUrl("file://" +
-            os.path.join(pluginPath, "resources", "connect.css").replace("\\", "/")))
+            os.path.join(pluginPath, "resources", "style.css").replace("\\", "/")))
         self.webView.linkClicked.connect(self.linkClicked)
 
         content = {}
@@ -220,11 +220,12 @@ class ConnectDockWidget(BASE, WIDGET):
                 results = execute(lambda: connect.findAll(text, category))
                 if results:
                     self.searchResults = {r.url:r for r in results}
-                    html = "<div class='results'>{} resutls</div><hr/>".format(len(results))
-                    html += "<ul>"
+                    html = "<h1>{} resutls</h1><hr/>".format(len(results))
+                    html += '<ul class="search-results">'
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     html += "</ul>"
+                    print html
                     #~ if len(results) == connect.RESULTS_PER_PAGE:
                         #~ if self.searchPage == 0:
                             #~ html += "<a class='pagination' href='next'>Next</a>"
@@ -234,10 +235,12 @@ class ConnectDockWidget(BASE, WIDGET):
                     self.webView.setVisible(True)
                     self._toggleSearchProgress(False)
                 else:
+                    self._toggleSearchProgress(False)
                     self._showMessage("No search matching the entered text was found.",
                                       QgsMessageBar.WARNING)
                     self.webView.setVisible(False)
             except Exception as e:
+                self._toggleSearchProgress(False)
                 self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
                                   QgsMessageBar.WARNING)
 
