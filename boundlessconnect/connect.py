@@ -262,8 +262,8 @@ class ConnectBasemap(ConnectContent):
         s = """<div class="icon"><div class="icon-thumbnail-container">
                <img src="file://{image}"></div></div>
                <div class="description">{title}{description}
-               <a class="btn-action {available}" href="{url}">ADD TO MAP</a>
-               <a class="btn-action {available}" href="{url}">ADD TO DEFAULT PROJECT</a>
+               <a class="btn-action {available}" href="canvas{url}">ADD TO MAP</a>
+               <a class="btn-action {available}" href="project{url}">ADD TO DEFAULT PROJECT</a>
                </div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
