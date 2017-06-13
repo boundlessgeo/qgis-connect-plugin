@@ -23,6 +23,7 @@ import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
 
 from qgiscommons.networkaccessmanager import NetworkAccessManager
+from qgiscommons.settings import pluginSetting
 from qgiscommons.oauth2 import (oauth2_supported,
                                 get_oauth_authcfg
                                )
@@ -37,6 +38,7 @@ PUBLIC_ROLE = "public"
 SUBSCRIBE_URL = "https://connect.boundlessgeo.com/Upgrade-Subscription"
 
 LESSONS_PLUGIN_NAME = "lessons"
+RESULTS_PER_PAGE = 20
 
 
 class ConnectContent(object):
@@ -329,8 +331,13 @@ class ConnectBasemap(ConnectContent):
             webbrowser.open_new(SUBSCRIBE_URL)
 
 
-RESULTS_PER_PAGE = 20
-BASE_URL = "http://api.boundlessgeo.io/v1/search/"
+# knowledge content categories
+categories = {"LC": (ConnectLearning, "Learning"),
+              "DOC": (ConnectDocumentation, "Documentation"),
+              "BLOG": (ConnectBlog, "Blog"),
+              "QA": (ConnectQA, "Q & A")
+             }
+
 
 _plugins = {}
 def loadPlugins():
@@ -344,19 +351,13 @@ def loadPlugins():
             _plugins[plugin["name"]] = copy(plugin)
 
 
-categories = {"LC": (ConnectLearning, "Learning"),
-              "DOC": (ConnectDocumentation, "Documentation"),
-              "BLOG": (ConnectBlog, "Blog"),
-              "QA": (ConnectQA, "Q & A")
-             }
-
-
 def search(text, category='', page=0):
+    searchUrl = pluginSetting("search_uri")
     nam = NetworkAccessManager()
     if category == '':
-        res, resText = nam.request("{}?q={}&si={}&c={}".format(BASE_URL, text, int(page), RESULTS_PER_PAGE))
+        res, resText = nam.request("{}?q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE))
     else:
-        res, resText = nam.request("{}?q={}&cat={}&si={}&c={}".format(BASE_URL, text, category, int(page), RESULTS_PER_PAGE))
+        res, resText = nam.request("{}?q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE))
     jsonText = json.loads(resText)
     results = []
     for element in jsonText["features"]:
@@ -389,10 +390,10 @@ def findAll(text, category):
     return results
 
 
-BASEMAPS_ENDPOINT = "http://api.boundlessgeo.io/v1/basemaps/"
 def searchBasemaps(text):
+    searchUrl = pluginSetting("maps_uri")
     t = tempfile.mktemp()
-    q = QgsFileDownloader(QUrl(BASEMAPS_ENDPOINT), t)
+    q = QgsFileDownloader(QUrl(searchUrl), t)
     loop = QEventLoop()
     q.downloadExited.connect(loop.quit)
     loop.exec_()

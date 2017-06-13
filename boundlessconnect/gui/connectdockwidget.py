@@ -68,6 +68,7 @@ WIDGET, BASE = uic.loadUiType(
 
 OFFLINE_HELP_URL = os.path.join(pluginPath, 'docs', 'html', 'index.html')
 
+
 class ConnectDockWidget(BASE, WIDGET):
 
     def __init__(self, parent=None, visible=False):
