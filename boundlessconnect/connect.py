@@ -65,11 +65,11 @@ class ConnectContent(object):
             webbrowser.open_new(SUBSCRIBE_URL)
 
     def asHtmlEntry(self, roles):
-        canInstall = "green" if self.canOpen(roles) else "orange"
-        s = """<div class="icon-knowledge"><div class="icon-knowledge-container">
+        canInstall = "Green" if self.canOpen(roles) else "Orange"
+        s = """<div class="icon"><div class="icon-container">
                <img src="file://{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
-               <a class="btn-action {available}" href="{url}">{itemType}</a>
+               <a class="btn{available}" href="{url}">{itemType}</a>
                </div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
@@ -202,11 +202,11 @@ class ConnectPlugin(ConnectContent):
         return os.path.join(pluginPath, "icons", "plugin.svg")
 
     def asHtmlEntry(self, roles):
-        canInstall = "green" if self.canOpen(roles) else "orange"
-        s = """<div class="icon-knowledge"><div class="icon-knowledge-container">
+        canInstall = "Green" if self.canOpen(roles) else "Orange"
+        s = """<div class="icon"><div class="icon-container">
                <img src="file://{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
-               <a class="btn-action {available}" href="{url}">INSTALL</a>
+               <a class="btn{available}" href="{url}">INSTALL</a>
                </div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,
@@ -258,12 +258,12 @@ class ConnectBasemap(ConnectContent):
         return os.path.join(pluginPath, "icons", "thumbnail.png")
 
     def asHtmlEntry(self, roles):
-        canInstall = "green" if self.canOpen(roles) else "orange"
-        s = """<div class="icon"><div class="icon-thumbnail-container">
+        canInstall = "Green" if self.canOpen(roles) else "Orange"
+        s = """<div class="icon"><div class="icon-container">
                <img src="file://{image}"></div></div>
-               <div class="description">{title}{description}
-               <a class="btn-action {available}" href="canvas{url}">ADD TO MAP</a>
-               <a class="btn-action {available}" href="project{url}">ADD TO DEFAULT PROJECT</a>
+               <div class="description"><h2>{title}</h2><p>{description}</p>
+               <a class="btn{available}" href="canvas{url}">ADD TO MAP</a>
+               <a class="btn{available}" href="project{url}">ADD TO DEFAULT PROJECT</a>
                </div>
             """.format(image=self.iconPath().replace("\\", "/"),
                        title=self.name,

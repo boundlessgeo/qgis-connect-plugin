@@ -109,7 +109,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(
-            QUrl.fromLocalFile(os.path.join(pluginPath, "resources", "style.css")))
+            QUrl.fromLocalFile(os.path.join(pluginPath, "resources", "search.css")))
         self.webView.linkClicked.connect(self.linkClicked)
 
         content = {}
@@ -221,11 +221,10 @@ class ConnectDockWidget(BASE, WIDGET):
                 if results:
                     self.searchResults = {r.url:r for r in results}
                     html = "<h1>{} resutls</h1><hr/>".format(len(results))
-                    html += '<ul class="search-results">'
+                    html += "<ul>"
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     html += "</ul>"
-                    print html
                     #~ if len(results) == connect.RESULTS_PER_PAGE:
                         #~ if self.searchPage == 0:
                             #~ html += "<a class='pagination' href='next'>Next</a>"
