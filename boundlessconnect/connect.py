@@ -355,12 +355,13 @@ def search(text, category='', page=0):
     searchUrl = pluginSetting("search_uri")
     nam = NetworkAccessManager()
     if category == '':
-        res, resText = nam.request("{}?q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE))
+        res, content = nam.request("{}?q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE))
     else:
-        res, resText = nam.request("{}?q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE))
-    jsonText = json.loads(resText)
+        res, content = nam.request("{}?q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE))
+
+    j = json.loads(re.sub(r'[^\x00-\x7f]',r'', content))
     results = []
-    for element in jsonText["features"]:
+    for element in j["features"]:
         props = element["properties"]
         roles = props["role"].split(",")
         category = props["category"]
@@ -369,7 +370,8 @@ def search(text, category='', page=0):
             if category in categories:
                 results.append(categories[category][0](props["url"],
                                                         title,
-                                                        props["description"], roles))
+                                                        props["description"],
+                                                        roles))
         else:
             plugin = _plugins.get(props["title"], None)
             if plugin:
