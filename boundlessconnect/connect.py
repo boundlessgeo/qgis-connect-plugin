@@ -393,7 +393,7 @@ def findAll(text, category):
 def searchBasemaps(text):
     searchUrl = pluginSetting("maps_uri")
     t = tempfile.mktemp()
-    q = QgsFileDownloader(QUrl(searchUrl), t)
+    q = QgsFileDownloader(QUrl(searchUrl), t, False)
     loop = QEventLoop()
     q.downloadExited.connect(loop.quit)
     loop.exec_()

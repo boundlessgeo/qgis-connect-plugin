@@ -245,7 +245,7 @@ def availableMaps(maps_uri):
         j = json.load(open(maps_uri))
     else:
         t = tempfile.mktemp()
-        q = QgsFileDownloader(QUrl(maps_uri), t)
+        q = QgsFileDownloader(QUrl(maps_uri), t, False)
         loop = QEventLoop()
         q.downloadExited.connect(loop.quit)
         loop.exec_()
