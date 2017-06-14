@@ -286,10 +286,8 @@ class ConnectBasemap(ConnectContent):
                         QgsMessageBar.WARNING)
                 else:
                     authId = authcfg.id()
-                    connstring = u'type=xyz&url=%(url)s'
-                    connstring = u'authcfg=%(authcfg)s&' + connstring
-                    layer = QgsRasterLayer(connstring % {
-                        "url": urllib2.quote(self.url), "authcfg": authId}, self.name, "wms")
+                    layer = QgsRasterLayer('authcfg={authcfg}&type=xyz&url={url}'.format(url=urllib2.quote(self.url),
+                                                                                         authcfg=authId), self.name, "wms")
                     if layer.isValid():
                         QgsMapLayerRegistry.instance().addMapLayer(layer)
                     else:

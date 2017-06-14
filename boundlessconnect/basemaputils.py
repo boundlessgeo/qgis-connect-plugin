@@ -86,10 +86,8 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
         connstring = u'type=xyz&url=%(url)s'
         if authcfg is not None:
             connstring = u'authcfg=%(authcfg)s&' + connstring
-        layer = QgsRasterLayer(connstring % {
-            'url': urllib2.quote(m['endpoint']),
-            'authcfg': authcfg,
-        }, m['name'], 'wms')
+        layer = QgsRasterLayer('authcfg={authcfg}&type=xyz&url={url}'.format(url=urllib2.quote(m['endpoint']),
+                                                                             authcfg=authId), m['name'], 'wms')
         # I've no idea why the following is required even if the crs is specified
         # in the layer definition
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
@@ -186,10 +184,8 @@ def createDefaultProject(available_maps, visible_maps, project_template, authcfg
         connstring = u'type=xyz&url=%(url)s'
         if authcfg is not None:
             connstring = u'authcfg=%(authcfg)s&' + connstring
-        layer = QgsRasterLayer(connstring % {
-            'url': urllib2.quote(m['endpoint']),
-            'authcfg': authcfg,
-        }, m['name'], 'wms')
+        layer = QgsRasterLayer('authcfg={authcfg}&type=xyz&url={url}'.format(url=urllib2.quote(m['endpoint']),
+                                                                             authcfg=authId), m['name'], "wms")
         # I've no idea why the following is required even if the crs is specified
         # in the layer definition
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
