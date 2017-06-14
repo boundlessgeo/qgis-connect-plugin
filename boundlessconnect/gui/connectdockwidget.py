@@ -252,7 +252,7 @@ class ConnectDockWidget(BASE, WIDGET):
                 if results:
                     self.searchResults = {"canvas"+r.url:r for r in results}
                     self.searchResults.update({"project"+r.url:r for r in results})
-                    html = "<div class='results'>{} resutls</div><hr/>".format(len(results))
+                    html = "<h1>{} resutls</h1><hr/>".format(len(results))
                     html += "<ul>"
                     for r in results:
                         html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
