@@ -17,7 +17,7 @@
      "label": "BCS available maps URI",
      "description": "URI to get the available base maps",
      "type": "string",
-     "default": "https://test-api.boundlessgeo.io/v1/basemaps/",
+     "default": "http://test-api.boundlessgeo.io/v1/basemaps/",
      "group": "General"
     },
     {"name":"search_uri",
