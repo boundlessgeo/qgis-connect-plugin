@@ -51,11 +51,6 @@ class ConnectContent(object):
     def iconPath(self):
         pass
 
-    def categoryDescription(self):
-        path = os.path.join(pluginPath, "html", "%s.html" % self.typeName().lower())
-        with open(path) as f:
-            return f.read()
-
     def canOpen(self, roles):
         matches = [role for role in roles if role in self.roles]
         return bool(matches) or (OPEN_ROLE in self.roles) or (PUBLIC_ROLE in self.roles)
@@ -69,11 +64,11 @@ class ConnectContent(object):
     def asHtmlEntry(self, roles):
         canInstall = "Green" if self.canOpen(roles) else "Orange"
         s = """<div class="icon"><div class="icon-container">
-               <img src="file://{image}"></div></div>
+               <img src="{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
                <a class="btn{available}" href="{url}">{itemType}</a>
                </div>
-            """.format(image=self.iconPath().replace("\\", "/"),
+            """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
                        title=self.name,
                        description=self.description,
                        available=canInstall,
@@ -206,11 +201,11 @@ class ConnectPlugin(ConnectContent):
     def asHtmlEntry(self, roles):
         canInstall = "Green" if self.canOpen(roles) else "Orange"
         s = """<div class="icon"><div class="icon-container">
-               <img src="file://{image}"></div></div>
+               <img src="{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
                <a class="btn{available}" href="{url}">INSTALL</a>
                </div>
-            """.format(image=self.iconPath().replace("\\", "/"),
+            """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
                        title=self.name,
                        description=self.description,
                        available=canInstall,
@@ -262,12 +257,12 @@ class ConnectBasemap(ConnectContent):
     def asHtmlEntry(self, roles):
         canInstall = "Green" if self.canOpen(roles) else "Orange"
         s = """<div class="icon"><div class="icon-container">
-               <img src="file://{image}"></div></div>
+               <img src="{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
                <a class="btn{available}" href="canvas{url}">ADD TO MAP</a>
                <a class="btn{available}" href="project{url}">ADD TO DEFAULT PROJECT</a>
                </div>
-            """.format(image=self.iconPath().replace("\\", "/"),
+            """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
                        title=self.name,
                        description=self.description,
                        available=canInstall,
@@ -331,7 +326,6 @@ class ConnectBasemap(ConnectContent):
             webbrowser.open_new(SUBSCRIBE_URL)
 
 
-# knowledge content categories
 categories = {"LC": (ConnectLearning, "Learning"),
               "DOC": (ConnectDocumentation, "Documentation"),
               "BLOG": (ConnectBlog, "Blog"),
@@ -378,6 +372,7 @@ def search(text, category='', page=0):
             if plugin:
                 results.append(ConnectPlugin(plugin, roles))
     return results
+
 
 def findAll(text, category):
     page = 0
