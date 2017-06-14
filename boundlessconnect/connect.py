@@ -335,7 +335,8 @@ class ConnectBasemap(ConnectContent):
 categories = {"LC": (ConnectLearning, "Learning"),
               "DOC": (ConnectDocumentation, "Documentation"),
               "BLOG": (ConnectBlog, "Blog"),
-              "QA": (ConnectQA, "Q & A")
+              "QA": (ConnectQA, "Q & A"),
+              "LESSON": (ConnectLesson, "Lesson")
              }
 
 
