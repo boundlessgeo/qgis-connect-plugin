@@ -277,6 +277,7 @@ class BoundlessConnectTests(unittest.TestCase):
 
         self.assertTrue('http://dummyurl.com', settings.value('repoUrl', '', str))
         settings.setValue('repoUrl', oldRepoUrl)
+        os.remove(fName)
 
     @classmethod
     def tearDownClass(cls):
