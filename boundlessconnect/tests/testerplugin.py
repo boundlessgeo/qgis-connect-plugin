@@ -53,6 +53,7 @@ from boundlessconnect.connect import search, ConnectPlugin, loadPlugins
 
 from boundlessconnect.plugins import boundlessRepoName, repoUrlFile
 from boundlessconnect import utils
+from boundlessconnect import basemaputils
 
 testPath = os.path.dirname(__file__)
 
@@ -317,7 +318,7 @@ class BasemapsTest(unittest.TestCase):
     def test_utils_get_available_maps(self):
         """Check available maps retrieval from local test json file"""
         self.assertTrue(oauth2_supported())
-        maps = utils.get_available_maps(os.path.join(self.data_dir,
+        maps = basemaputils.availableMaps(os.path.join(self.data_dir,
                                                      'basemaps.json'))
         names = [m['name'] for m in maps]
         names.sort()
@@ -337,8 +338,8 @@ class BasemapsTest(unittest.TestCase):
         """Create the default project with authcfg"""
         self.assertTrue(oauth2_supported())
         visible_maps = ['Mapbox Light', 'Recent Imagery']
-        prj = utils.create_default_project(
-            utils.get_available_maps(self.local_maps_uri),
+        prj = basemaputils.createDefaultProject(
+            basemaputils.availableMaps(self.local_maps_uri),
             visible_maps,
             self.tpl_path,
             'abc123')
@@ -352,8 +353,8 @@ class BasemapsTest(unittest.TestCase):
     def test_utils_create_default_project(self):
         """Use a no_auth project template for automated testing of valid project"""
         visible_maps = ['OSM Basemap B']
-        prj = utils.create_default_project(
-            utils.get_available_maps(
+        prj = basemaputils.createDefaultProject(
+            utibasemaputilsls.availableMaps(
                 os.path.join(self.data_dir, 'basemaps_no_auth.json')),
             visible_maps,
             self.tpl_path)
