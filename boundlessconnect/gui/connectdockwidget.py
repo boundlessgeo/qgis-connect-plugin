@@ -40,7 +40,7 @@ from boundlessconnect.gui.executor import execute
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl, QSettings, Qt
-from qgis.PyQt.QtGui import QIcon, QCursor
+from qgis.PyQt.QtGui import QIcon, QCursor, QPixmap
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
 from qgis.PyQt.QtNetwork import (QNetworkRequest,
                                  QNetworkReply
@@ -84,6 +84,9 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.setWindowIcon(QIcon(os.path.join(pluginPath, 'icons', 'connect.svg')))
         self.svgLogo.load(os.path.join(pluginPath, 'icons', 'connect-logo.svg'))
+
+        self.lblSmallLogo.setPixmap(QPixmap(os.path.join(pluginPath, 'icons', 'connect.png')))
+        self.lblSmallLogo.hide()
 
         btnOk = self.buttonBox.button(QDialogButtonBox.Ok)
         btnOk.setText('Login')
@@ -163,6 +166,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.connectWidget.setLogin("")
         self.connectWidget.setPassword("")
         self.svgLogo.show()
+        self.lblSmallLogo.hide()
 
     def showHelp(self):
         webbrowser.open(OFFLINE_HELP_URL)
@@ -212,6 +216,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self._search("PLUG", page)
 
         self.svgLogo.hide()
+        self.lblSmallLogo.show()
 
     def _search(self, category, page=0):
         text = self.leSearch.text().strip()
