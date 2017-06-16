@@ -103,10 +103,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.btnSignOut.clicked.connect(self.showLogin)
 
         self.labelLevel.linkActivated.connect(self.showLogin)
+        self.leSearch.buttonClicked.connect(self.search)
         self.leSearch.returnPressed.connect(self.search)
-        self.leSearch.setIcon(QIcon(os.path.join(pluginPath, 'icons', 'search.svg')))
-        self.leSearch.setPlaceholderText("Search text")
-        self.btnSearch.clicked.connect(self.search)
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         self.webView.settings().setUserStyleSheetUrl(
