@@ -145,6 +145,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.connectWidget.setLogin(username)
             self.connectWidget.setPassword(password)
 
+
         BASE.showEvent(self, event)
 
     def keyPressEvent(self, event):
@@ -161,6 +162,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.leSearch.setText("")
         self.connectWidget.setLogin("")
         self.connectWidget.setPassword("")
+        self.svgLogo.show()
 
     def showHelp(self):
         webbrowser.open(OFFLINE_HELP_URL)
@@ -208,6 +210,8 @@ class ConnectDockWidget(BASE, WIDGET):
             self._findBasemap()
         elif self.tabsContent.currentIndex() == 2:
             self._search("PLUG", page)
+
+        self.svgLogo.hide()
 
     def _search(self, category, page=0):
         text = self.leSearch.text().strip()
