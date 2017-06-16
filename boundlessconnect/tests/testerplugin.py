@@ -97,9 +97,8 @@ def functionalTests():
                         prestep=lambda: _startConectPlugin())
     searchTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown',
                        isVerifyStep=True)
-    searchTest.addStep('Type "gdal" in the search box and press Enter. Verify that a list of results is shown and pagination links ("next") are shown as well.',
+    searchTest.addStep('Type "gdal" in the search box and press Enter. Verify that a list of results is shown.',
                        isVerifyStep=True)
-    searchTest.addStep('Verify that pagination links work')
 
     categorySearchTest = Test("Check search by categories")
     categorySearchTest.addStep('Accept dialog by pressing "Login" '
@@ -121,10 +120,8 @@ def functionalTests():
                                isVerifyStep=True)
     categorySearchTest.addStep('Type "gdal" in the search box and press '
                                'Enter. Verify that a list of results is '
-                               'shown and pagination links ("next") are '
-                               'shown as well.',
+                               'shown',
                                isVerifyStep=True)
-    categorySearchTest.addStep('Verify that pagination links work')
 
     rolesDisplayTest = Test("Check roles display")
     rolesDisplayTest.addStep('Accept dialog by pressing "Login" button '
