@@ -44,7 +44,7 @@ class ButtonLineEdit(QLineEdit):
 
         self.btnSearch = QToolButton(self)
         self.btnSearch.setIcon(QIcon(os.path.join(pluginPath, "icons", "search.svg")))
-        self.btnSearch.setStyleSheet("QToolButton { border: none; padding: 0px; }")
+        self.btnSearch.setStyleSheet("QToolButton { padding: 0px; }")
         self.btnSearch.setCursor(Qt.ArrowCursor)
         self.btnSearch.clicked.connect(self.buttonClicked.emit)
 
