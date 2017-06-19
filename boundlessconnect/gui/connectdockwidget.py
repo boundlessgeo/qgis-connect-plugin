@@ -110,11 +110,11 @@ class ConnectDockWidget(BASE, WIDGET):
         self.leSearch.returnPressed.connect(self.search)
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
-        self.webView.settings().setUserStyleSheetUrl(
-            QUrl.fromLocalFile(os.path.join(pluginPath, "resources", "search.css")))
+        cssFile = os.path.join(pluginPath, "resources", "search.css")
+        with open(cssFile) as f:
+            self.css = f.read()
         self.webView.linkClicked.connect(self.linkClicked)
 
-        content = {}
         self.cmbContentType.addItem("All", ",".join(list(connect.categories.keys())))
         for cat, cls in connect.categories.items():
             self.cmbContentType.addItem(cls[1], cat)
@@ -228,16 +228,27 @@ class ConnectDockWidget(BASE, WIDGET):
                 results = execute(lambda: connect.findAll(text, category))
                 if results:
                     self.searchResults = {r.url:r for r in results}
-                    html = "<h1>{} resutls</h1><hr/>".format(len(results))
-                    html += "<ul>"
+                    body = "<h1>{} results</h1><hr/>".format(len(results))
+                    body += "<ul>"
                     for r in results:
-                        html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
-                    html += "</ul>"
+                        body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                    body += "</ul>"
                     #~ if len(results) == connect.RESULTS_PER_PAGE:
                         #~ if self.searchPage == 0:
                             #~ html += "<a class='pagination' href='next'>Next</a>"
                         #~ else:
                             #~ html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
+                    html = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+                              <html>
+                              <head>
+                              <style>
+                              %s
+                              </style>
+                              </head>
+                              <body>
+                              %s
+                              </body>
+                              </html>''' % (self.css, body)
                     self.webView.setHtml(html)
                     self.webView.setVisible(True)
                     self._toggleSearchProgress(False)
