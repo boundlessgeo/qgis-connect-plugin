@@ -252,7 +252,7 @@ class ConnectBasemap(ConnectContent):
         return "Basemap"
 
     def iconPath(self):
-        return os.path.join(pluginPath, "icons", "thumbnail.png")
+        return os.path.join(pluginPath, "icons", "map.svg")
 
     def asHtmlEntry(self, roles):
         canInstall = "Green" if self.canOpen(roles) else "Orange"
