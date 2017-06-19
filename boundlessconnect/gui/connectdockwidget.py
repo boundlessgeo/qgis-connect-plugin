@@ -218,6 +218,20 @@ class ConnectDockWidget(BASE, WIDGET):
         self.svgLogo.hide()
         self.lblSmallLogo.show()
 
+    def _getSearchHtml(self, body):
+        html = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+                              <html>
+                              <head>
+                              <style>
+                              %s
+                              </style>
+                              </head>
+                              <body>
+                              %s
+                              </body>
+                              </html>''' % (self.css, body)
+        return html
+
     def _search(self, category, page=0):
         text = self.leSearch.text().strip()
         if text:
@@ -238,18 +252,8 @@ class ConnectDockWidget(BASE, WIDGET):
                             #~ html += "<a class='pagination' href='next'>Next</a>"
                         #~ else:
                             #~ html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
-                    html = '''<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-                              <html>
-                              <head>
-                              <style>
-                              %s
-                              </style>
-                              </head>
-                              <body>
-                              %s
-                              </body>
-                              </html>''' % (self.css, body)
-                    self.webView.setHtml(html)
+
+                    self.webView.setHtml(self._getSearchHtml(body))
                     self.webView.setVisible(True)
                     self._toggleSearchProgress(False)
                 else:
@@ -270,12 +274,12 @@ class ConnectDockWidget(BASE, WIDGET):
                 if results:
                     self.searchResults = {"canvas"+r.url:r for r in results}
                     self.searchResults.update({"project"+r.url:r for r in results})
-                    html = "<h1>{} resutls</h1><hr/>".format(len(results))
-                    html += "<ul>"
+                    body = "<h1>{} resutls</h1><hr/>".format(len(results))
+                    body += "<ul>"
                     for r in results:
-                        html += "<li>%s</li>" % r.asHtmlEntry(self.roles)
-                    html += "</ul>"
-                    self.webView.setHtml(html)
+                        body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                    body += "</ul>"
+                    self.webView.setHtml(self._getSearchHtml(body))
                     self.webView.setVisible(True)
                 else:
                     self._showMessage("No search matching the entered text was found.",
