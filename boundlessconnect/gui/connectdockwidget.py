@@ -208,7 +208,10 @@ class ConnectDockWidget(BASE, WIDGET):
 
     def search(self, page=0):
         if self.tabsContent.currentIndex() == 0:
-            cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
+            categories = self.cmbContentType.selectedData(Qt.UserRole)
+            if len(categories) == 0:
+                categories = list(connect.categories.keys())
+            cat = ','.join(categories)
             self._search(cat, page)
         elif self.tabsContent.currentIndex() == 1:
             self._findBasemap()
