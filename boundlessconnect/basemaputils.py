@@ -268,3 +268,7 @@ def restoreFromBackup():
     backups.sort()
     lastBackup = backups[-1]
     shutil.copy2(lastBackup, defaultProjectPath())
+
+
+def canAccessBasemap(roles):
+    return True if "bcs-basemap-boundless" in roles else False
