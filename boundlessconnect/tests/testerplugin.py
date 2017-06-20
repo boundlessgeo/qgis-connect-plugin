@@ -104,11 +104,22 @@ def functionalTests():
                             isVerifyStep=True)
 
     searchTest = Test("Check normal search")
-    searchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
-                        prestep=lambda: _startConectPlugin())
-    searchTest.addStep('Type "MIL-STD-2525" in the search box and press Enter. Verify that one plugin result is shown',
+    searchTest.addStep('Accept dialog by pressing "Login" button '
+                       'without entering any credentials',
+                       prestep=lambda: _startConectPlugin())
+    searchTest.addStep('Switch to the "Knowledge" tab. Type "gdal" in '
+                       'the search box and press Enter. Verify that '
+                       'a list of results is shown.',
                        isVerifyStep=True)
-    searchTest.addStep('Type "gdal" in the search box and press Enter. Verify that a list of results is shown.',
+    searchTest.addStep('Type "MIL-STD-2525" in the search box and switch '
+                       'to the "Plugins" tab. Verify that one plugin '
+                       'result is shown.',
+                       isVerifyStep=True)
+    searchTest.addStep('Type "lesson" in the search box and press Enter. '
+                       'Verify that one plugin result is shown.',
+                       isVerifyStep=True)
+    searchTest.addStep('Type "mapbox" in the search box and switch '
+                       'to the "Data" tab. Verify that a list of results is shown.',
                        isVerifyStep=True)
 
     categorySearchTest = Test("Check search by categories")
