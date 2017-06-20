@@ -34,7 +34,7 @@ The ``$HOME/.qgis2/repoUrl.txt`` file is an INI-like text file with single
 The value of the ``repoUrl`` key with repository location can be:
 
 * A **repository URL**. The plugin will add this URL to the list of available
-  plugins repositories and QGIS *Plugin Manager* can be used to access it.
+  plugins repositories, and QGIS *Plugin Manager* can be used to access it.
   This is the default.
 * An **absolute path to the plugins directory**. In this case, the directory
   should contain plugins packages as well as repository description file
@@ -65,27 +65,28 @@ repository.
 
 To use our scripts you will need docker >= 1.10 and docker-compose >= 1.6.
 
-First you need to clone repository
+First, you need to clone repository.
 
 ::
 
   git clone --recursive git@github.com:boundlessgeo/qgis-plugin-repos.git
   cd qgis-plugin-repos/docker-plugins-xml
 
-Edit `docker-compose.env` file specifying your own user name and password for
-SSH service and plugin repository domain. Then source this file using command
+Next, edit the `docker-compose.env` file specifying your own user name and
+password for the SSH service and plugin repository domain. Then source this
+file using the command:
 
 ::
 
   source docker-compose.env
 
-and finally build Docker images
+and finally, build the Docker images:
 
 ::
 
   docker-compose build
 
-To start containers use following command
+To start containers use following command:
 
 ::
 
@@ -101,19 +102,20 @@ configuration, namely improve security.
 Uploading plugins to repository
 ...............................
 
-To add new plugin to the repository follow these steps:
+To add a new plugin to the repository follow these steps:
 
-# copy plugin's package to server
+#. copy plugin's package to server
 
-  ::
+   ::
 
-    scp plugin.zip repository.domain:/opt/repo-updater/uploads/
+     scp plugin.zip repository.domain:/opt/repo-updater/uploads/
 
-# run remote updater script on uploaded archive
+#. run remote updater script on uploaded archive
 
-  ::
+   ::
 
-    ssh repository.domain "/opt/repo-updater/plugins-xml/plugins-xml.sh update plugin.zip"
+     ssh repository.domain "/opt/repo-updater/plugins-xml/plugins-xml.sh
+     update plugin.zip"
 
 Run `plugins-xml.sh --help` to get information about script usage and subcommands.
 
