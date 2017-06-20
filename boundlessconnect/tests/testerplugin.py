@@ -90,7 +90,18 @@ def functionalTests():
     emptySearchTest.addStep('Accept dialog by pressing "Login" button '
                             'without entering any credentials',
                             prestep=lambda: _startConectPlugin())
-    emptySearchTest.addStep('Leave search box empty and press Enter. Verify that no results are shown and no error is thrown')
+    emptySearchTest.addStep('Switch to the "Knowledge" tab. Leave search '
+                            'box empty and press Enter. Verify that no '
+                            'results are shown and no error is thrown',
+                            isVerifyStep=True)
+    emptySearchTest.addStep('Switch to the "Data" tab. Leave search '
+                            'box empty and press Enter. Verify that no '
+                            'results are shown and no error is thrown',
+                            isVerifyStep=True)
+    emptySearchTest.addStep('Switch to the "Plugins" tab. Leave search '
+                            'box empty and press Enter. Verify that no '
+                            'results are shown and no error is thrown',
+                            isVerifyStep=True)
 
     searchTest = Test("Check normal search")
     searchTest.addStep('Accept dialog by pressing "Login" button without entering any credentials',
