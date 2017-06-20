@@ -126,23 +126,23 @@ def functionalTests():
     categorySearchTest.addStep('Accept dialog by pressing "Login" '
                                'button without entering any credentials',
                                prestep=lambda: _startConectPlugin())
-    categorySearchTest.addStep('Type "MIL-STD-2525" in the search box '
-                               'and press Enter. Verify that multiple '
-                               'results are shown.',
+    categorySearchTest.addStep('Switch to the "Knowledge" tab. Type '
+                               '"MIL-STD-2525" in the search box and '
+                               'ensure that "Search in" combobox set to '
+                               '"All". Press Enter. Verify that multiple '
+                               'results are shown and they are from '
+                               'different categories.',
                                isVerifyStep=True)
-    categorySearchTest.addStep('In the "Search for" combobox select '
-                               '"Plugin" and deselect any other items. '
+    categorySearchTest.addStep('Type "style" in the search box and in '
+                               'the "Search in" combobox select "Lesson" '
+                               'and deselect any other items. '
                                'Click on the "Search" button again and '
-                               'check that only plugin result is shown',
+                               'check that only lessons results are shown',
                                isVerifyStep=True)
-    categorySearchTest.addStep('In the "Search for" combobox additionaly '
+    categorySearchTest.addStep('In the "Search in" combobox additionaly '
                                'select "Learning". Click on the "Search" '
-                               'button again and check that two results '
-                               'are shown: plugin and learning center content.',
-                               isVerifyStep=True)
-    categorySearchTest.addStep('Type "gdal" in the search box and press '
-                               'Enter. Verify that a list of results is '
-                               'shown',
+                               'button again and check that multiple results '
+                               'are shown: lesson and learning center content.',
                                isVerifyStep=True)
 
     rolesDisplayTest = Test("Check roles display")
