@@ -172,7 +172,8 @@ def functionalTests():
     wrongSearchTest.addStep('Accept dialog by pressing "Login" button '
                             'without entering any credentials',
                             prestep=lambda: _startConectPlugin())
-    wrongSearchTest.addStep('Type "wrongsearch" in the search box and '
+    wrongSearchTest.addStep('Switch to the "Knowledge" tab. Type '
+                            '"wrongsearch" in the search box and '
                             'press Enter. Verify that a warning is displayed.',
                             isVerifyStep=True)
 
