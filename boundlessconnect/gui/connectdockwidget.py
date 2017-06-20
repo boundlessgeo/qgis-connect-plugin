@@ -322,9 +322,9 @@ class ConnectDockWidget(BASE, WIDGET):
             # if this is first login ask if user wants to have basemap
             settings = QSettings()
             firstLogin = settings.value('boundlessconnect/firstLogin', True, bool)
-            if firstLogin and basemaputils.canAccessBasemap(self.roles):
+            if firstLogin:
                 settings.setValue('boundlessconnect/firstLogin', False)
-                if oauth2_supported():
+                if oauth2_supported() and basemaputils.canAccessBasemap(self.roles):
                     ret = QMessageBox.question(self,
                                                self.tr('Base Maps'),
                                                self.tr('Would you like to add Boundless basemap '
