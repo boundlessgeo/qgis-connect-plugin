@@ -149,7 +149,8 @@ def functionalTests():
     rolesDisplayTest.addStep('Accept dialog by pressing "Login" button '
                              'without entering any credentials',
                              prestep=lambda: _startConectPlugin())
-    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and '
+    rolesDisplayTest.addStep('Switch to the "Plugin" tab. Type '
+                             '"MIL-STD-2525" in the search box and '
                              'press Enter. Verify that one plugin result '
                              'is shown and is not available (red)',
                              isVerifyStep=True)
@@ -159,7 +160,8 @@ def functionalTests():
                              isVerifyStep=True)
     rolesDisplayTest.addStep('Click on the "Sign out" button')
     rolesDisplayTest.addStep('Login with credentials for Desktop Enterprise"')
-    rolesDisplayTest.addStep('Type "MIL-STD-2525" in the search box and '
+    rolesDisplayTest.addStep('Switch to the "Plugin" tab. Type '
+                             '"MIL-STD-2525" in the search box and '
                              'press Enter. Verify that one plugin result '
                              'is shown and is available (green)',
                              isVerifyStep=True)
