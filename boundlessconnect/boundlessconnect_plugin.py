@@ -122,9 +122,11 @@ class BoundlessConnectPlugin(object):
         utils.addCheckForUpdates()
 
         try:
-            from lessons import addLessonsFolder
-            folder = os.path.join(pluginPath, '_lessons')
-            addLessonsFolder(folder)
+            from lessons import addLessonsFolder, addGroup
+            folder = os.path.join(os.path.dirname(__file__), "_lessons")
+            addLessonsFolder(folder, "boundlessconnect")
+            group_description = os.path.join(folder, "group.md")
+            addGroup("Boundless Connect plugin", group_description)
         except:
             pass
 
