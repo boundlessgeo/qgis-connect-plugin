@@ -364,6 +364,9 @@ class ConnectDockWidget(BASE, WIDGET):
     def tabChanged(self, index):
         if index == 0:
             self._toggleCategoriesSelector(True)
+            categories = self.cmbContentType.selectedData(Qt.UserRole)
+            if len(categories) == 0:
+                categories = list(connect.categories.keys())
             cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
             self._search(cat)
         elif index == 1:
