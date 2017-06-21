@@ -115,10 +115,8 @@ class ConnectDockWidget(BASE, WIDGET):
             self.css = f.read()
         self.webView.linkClicked.connect(self.linkClicked)
 
-        self.cmbContentType.addItem("All", ",".join(list(connect.categories.keys())))
         for cat, cls in connect.categories.items():
             self.cmbContentType.addItem(cls[1], cat)
-        self.cmbContentType.setCheckedItems(["All"])
 
         settings = QSettings()
         settings.beginGroup(reposGroup)

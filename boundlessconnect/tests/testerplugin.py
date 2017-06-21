@@ -72,7 +72,7 @@ def functionalTests():
                                    'Check that Connect shows error message complaining about invalid credentials.'
                                    'Close error message by pressing "No" button.'
                                    'Check that the "Level:" label is not found at the bottom of the Connect panel.',
-                        prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+                                   prestep=lambda: _startConectPlugin(), isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
     repeatedLoginTest.addStep('Accept dialog by pressing "Login" button '
