@@ -63,6 +63,9 @@ class ConnectContent(object):
 
     def asHtmlEntry(self, roles):
         canInstall = "Green" if self.canOpen(roles) else "Orange"
+        desc = self.description
+        if len(self.description) < 100:
+            desc = self.description + "&nbsp;  " * (100-len(self.description))
         s = """<div class="icon"><div class="icon-container">
                <img src="{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
@@ -70,7 +73,7 @@ class ConnectContent(object):
                </div>
             """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
                        title=self.name,
-                       description=self.description,
+                       description=desc,
                        available=canInstall,
                        url=self.url,
                        itemType=self.typeName().upper())
