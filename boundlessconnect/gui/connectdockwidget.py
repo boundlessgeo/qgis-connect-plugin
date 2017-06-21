@@ -197,7 +197,6 @@ class ConnectDockWidget(BASE, WIDGET):
             return
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
-        #httpAuth = base64.encodestring('{}:{}'.format(self.connectWidget.login().strip(), self.connectWidget.password().strip()))[:-1]
         httpAuth = base64.b64encode(b"%s:%s" % (self.connectWidget.login().strip(), self.connectWidget.password().strip())).decode("ascii")
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -239,7 +238,6 @@ class ConnectDockWidget(BASE, WIDGET):
             self.searchPage = page
             try:
                 self._toggleSearchProgress()
-                #results = execute(lambda: connect.search(text, category, self.searchPage))
                 results = execute(lambda: connect.findAll(text, category))
                 if results:
                     self.searchResults = {r.url:r for r in results}
@@ -248,11 +246,6 @@ class ConnectDockWidget(BASE, WIDGET):
                     for r in results:
                         body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     body += "</ul>"
-                    #~ if len(results) == connect.RESULTS_PER_PAGE:
-                        #~ if self.searchPage == 0:
-                            #~ html += "<a class='pagination' href='next'>Next</a>"
-                        #~ else:
-                            #~ html += "<a class='pagination' href='previous'>Previous</a><a class='pagination' href='next'>Next</a>"
 
                     self.webView.setHtml(self._getSearchHtml(body))
                     self.webView.setVisible(True)
