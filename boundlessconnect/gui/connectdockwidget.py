@@ -233,7 +233,6 @@ class ConnectDockWidget(BASE, WIDGET):
         return html
 
     def _search(self, category, page=0):
-        print category
         text = self.leSearch.text().strip()
         if text:
             self.searchPage = page
