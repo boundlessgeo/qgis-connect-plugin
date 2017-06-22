@@ -233,6 +233,7 @@ class ConnectDockWidget(BASE, WIDGET):
         return html
 
     def _search(self, category, page=0):
+        print category
         text = self.leSearch.text().strip()
         if text:
             self.searchPage = page
@@ -367,7 +368,7 @@ class ConnectDockWidget(BASE, WIDGET):
             categories = self.cmbContentType.selectedData(Qt.UserRole)
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
-            cat = ','.join(self.cmbContentType.selectedData(Qt.UserRole))
+            cat = ','.join(categories)
             self._search(cat)
         elif index == 1:
             self._toggleCategoriesSelector(False)
