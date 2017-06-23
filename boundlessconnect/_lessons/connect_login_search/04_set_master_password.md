@@ -3,18 +3,20 @@ If you haven’t done it before, QGIS will ask you to set a *Master Password*. T
 example, username and passwords for connecting to spatial databases.
 
 Choose your master password wisely and make sure you memorize it, as the master
-password is not retrievable. Type in the password twice and click **OK**.
+password is not retrievable.
 
-![add-master-password.png](add-master-password.png)
+1. Type in the password twice and click **OK**.
+
+   ![add-master-password.png](add-master-password.png)
 
 
 If you already have set a master password, you may be asked to enter it
 to unlock QGIS’s authentication database and save your Boundless Connect
-credentials in it. In that case, type your master password and click **OK**
+credentials in it.In that case, type your master password and click **OK**
 
 ![enter-master-password.png](enter-master-password.png)
 
-If neither of the dialogs shows up, then you can safely skip this step, as it
+**Note:** If neither of the dialogs shows up, then you can safely skip this step, as it
 seems that you have already provided your master password.
 
 When you are done, click **Next Step**.

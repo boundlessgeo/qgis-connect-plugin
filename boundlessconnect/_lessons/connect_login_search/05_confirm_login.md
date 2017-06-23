@@ -5,4 +5,4 @@ you should see your email and a button to **Logout**.
 
 You are now ready to search for Boundless Connect content.
 
-This step ends the lesson, click **Finish Lesson**.
+When you are done, click **Next Step**.
