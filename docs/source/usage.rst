@@ -141,9 +141,8 @@ for QGIS Lesson plugin.
 
 When in the :guilabel:`Knowledge` tab, under the search field there is a
 drop-down list of the available categories from where you can select
-the ones you are interested in searching from. Note that "All" category includes
-all other categories, so if you enable it, there is no need to choose
-any other category.
+the ones you are interested in searching from. When no category is selected,
+the search runs through all categories.
 
 .. figure:: img/knowledge_tab.png
 
