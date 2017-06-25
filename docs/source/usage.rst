@@ -13,33 +13,46 @@ QGIS starts for the first time.
 
 .. note::
 
-   If at the time, you don't want to enter your credentials and search for Boundless Connect resources, you can safely close it. You can open it again later clicking :menuselection:`Plugins --> Boundless Connect` or :menuselection:`View --> Panels --> Plugins --> Boundless Connect` menu items.
+   If at the time, you don't want to enter your credentials and search for
+   Boundless Connect resources, you can safely close it. You can open it again
+   later clicking :menuselection:`Plugins --> Boundless Connect` or
+   :menuselection:`View --> Panels --> Plugins --> Boundless Connect` menu
+   items.
 
 .. _connect-login:
 
 Boundless Connect Login
 -----------------------
 
-If you want to install Boundless plugins from the remote *Boundless QGIS Plugin Repository* or search and access `Boundless Connect <https://connect.boundlessgeo.com/>`_ additional resources, you will need to enter `Boundless Connect <https://connect.boundlessgeo.com/>`_ credentials in the :guilabel:`email` and :guilabel:`password` fields, and press :guilabel:`Login`.
+If you want to install Boundless plugins from the remote *Boundless QGIS Plugin
+Repository* or search and access `Boundless Connect
+<https://connect.boundlessgeo.com/>`_ additional resources, you will need to
+enter `Boundless Connect <https://connect.boundlessgeo.com/>`_ credentials in
+the :guilabel:`email` and :guilabel:`password` fields, and press
+:guilabel:`Login`.
 
-After pressing the :guilabel:`Login` button, |connect_plugin| will try to validate your credentials in Boundless Connect portal (internet connection is needed).
-If the credentials are valid, it will save them in QGIS's authentication encrypted database, so that you don't have to enter them again.
+After pressing the :guilabel:`Login` button, |connect_plugin| will try to
+validate your credentials in Boundless Connect portal (internet connection is
+needed). If the credentials are valid, it will save them in QGIS's
+authentication encrypted database, so that you don't have to enter them again.
 
 .. note::
 
-   If you haven't done this before, QGIS will ask you to set a **master password**.
-   The *master password* is used to protect all your credentials inside QGIS,
-   for example, usernames and passwords for connecting to spatial databases. Choose
-   your master password wisely and make sure you memorize it, as **the master
-   password is not retrievable**. Press :guilabel:`OK` to complete the process.
+   If you haven't done this before, QGIS will ask you to set a **master
+   password**. The *master password* is used to protect all your credentials
+   inside QGIS, for example, usernames and passwords for connecting to spatial
+   databases. Choose your master password wisely and make sure you memorize it,
+   as **the master password is not retrievable**. Press :guilabel:`OK` to
+   complete the process.
 
    .. figure:: img/add-master-password.png
       :align: center
 
       Setting QGIS master authentication password
 
-   If you already have a master password, you will be asked to enter it to be able to unlock
-   QGIS's authentication database and save your *Boundless Connect* credentials in it.
+   If you already have a master password, you will be asked to enter it to be
+   able to unlock QGIS's authentication database and save your *Boundless
+   Connect* credentials in it.
 
    .. figure:: img/enter-master-password.png
       :align: center
@@ -57,17 +70,22 @@ a message dialog, asking you what to do.
 
    Message about invalid credentials
 
-You can also skip entering your credentials, by pressing :guilabel:`Login` without filling the :guilabel:`Email` and :guilabel:`Password` fields.
+You can also skip entering your credentials, by pressing :guilabel:`Login`
+without filling the :guilabel:`Email` and :guilabel:`Password` fields.
 
 .. note::
 
-   Even with no credentials or invalid ones, you will be able to use |connect_plugin| and even
-   perform a search in the Boundless Connect portal. You will also be able to download plugins
-   and other resources that don't require authentication. But, if you try to download protected
-   plugins or access resources behind authentication, you will be asked for valid credentials.
+   Even with no credentials or invalid ones, you will be able to use
+   |connect_plugin| and even perform a search in the Boundless Connect portal.
+   You will also be able to download plugins and other resources that don't
+   require authentication. But, if you try to download protected plugins or
+   access resources behind authentication, you will be asked for valid
+   credentials.
 
-If |BLQGIS| is configured to use a local directory-based repository (check this with your system administrator), you can leave
-:guilabel:`Email` and :guilabel:`Password` fields empty. Press :guilabel:`Login` to continue. (In this case, you won't be asked for a master password.)
+If |BLQGIS| is configured to use a local directory-based repository (check this
+with your system administrator), you can leave :guilabel:`Email` and
+:guilabel:`Password` fields empty. Press :guilabel:`Login` to continue. (In this
+case, you won't be asked for a master password.)
 
 Setting default basemaps
 ........................
@@ -91,7 +109,10 @@ default project.
 Searching Boundless Connect
 ---------------------------
 
-After the login (either by entering your credentials or skipping it), the :guilabel:`Boundless Connect` panel will show a :guilabel:`Search` field which can be used to search for Plugins, Data and Knowledge content from Boundless Connect.
+After the login (either by entering your credentials or skipping it), the
+:guilabel:`Boundless Connect` panel will show a :guilabel:`Search` field which
+can be used to search for Plugins, Data and Knowledge content from Boundless
+Connect.
 
 .. figure:: img/search-panel.png
    :align: center
@@ -102,7 +123,10 @@ Under the search field, there are three tabs which allow you to choose the
 type content to search for: :guilabel:`Knowledge`, :guilabel:`Data`, and
 :guilabel:`Plugins`.
 
-At the bottom of the :guilabel:`Boundless Connect` panel, you can find the user's email you have logged with and a :guilabel:`Logout` button (clicking the :guilabel:`Logout` button will return you to the login page where you can enter new credentials).
+At the bottom of the :guilabel:`Boundless Connect` panel, you can find the
+user's email you have logged with and a :guilabel:`Logout` button (clicking the
+:guilabel:`Logout` button will return you to the login page where you can enter
+new credentials).
 
 To search for Boundless Connect content, select the appropriate tab, type some
 text in the field and click the :guilabel:`Search` icon (or press :kbd:`Enter`
@@ -189,4 +213,7 @@ download and install the plugin easily.
 
 .. note::
 
-   You can also install Boundless plugins in the usual way by opening QGIS *Plugin Manager* from :menuselection:`Plugins --> Manage and install plugins` and entering "Boundless" in the filter field in the top of the *Plugin Manager* dialog.
+   You can also install Boundless plugins in the usual way by opening QGIS
+   *Plugin Manager* from :menuselection:`Plugins --> Manage and install plugins`
+   and entering "Boundless" in the filter field in the top of the *Plugin
+   Manager* dialog.

@@ -54,7 +54,8 @@ additional plugins during the post-installation step, he can create a directory
 desired plugins ZIP packages in it.
 
 The |connect_plugin| will check if the directory exists and will install all the
-ZIP packages from it. Notice that the packages will be removed after the installation.
+ZIP packages from it. Notice that the packages will be removed after the
+installation.
 
 Setting up repository in Docker container
 -----------------------------------------
@@ -92,7 +93,8 @@ To start containers use following command:
 
   docker-compose up  -d
 
-More details available in `README <https://github.com/boundlessgeo/qgis-plugin-repos/blob/master/docker-plugins-xml/README.md>`_
+More details available in `README
+<https://github.com/boundlessgeo/qgis-plugin-repos/blob/master/docker-plugins-xml/README.md>`_
 file inside GitHub repository.
 
 *NOTE*: our scripts are just sample and should not be used in production. Before
