@@ -343,7 +343,6 @@ class ConnectDockWidget(BASE, WIDGET):
             authConfig.setConfig('password', self.connectWidget.password().strip())
             authConfig.setName('Boundless Connect Portal')
 
-            settings = QSettings('Boundless', 'BoundlessConnect')
             authConfig.setUri(pluginSetting('repoUrl'))
 
             if QgsAuthManager.instance().storeAuthenticationConfig(authConfig):

@@ -38,7 +38,7 @@ try:
 except:
     from ConfigParser import ConfigParser
 
-from qgis.PyQt.QtCore import Qt, QSettings, QFileInfo
+from qgis.PyQt.QtCore import Qt, QFileInfo
 
 from qgis.core import QgsApplication, QgsProject
 
@@ -47,6 +47,7 @@ from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
 from qgiscommons.oauth2 import oauth2_supported
+from qgiscommons.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect.connect import search, ConnectPlugin, loadPlugins
@@ -81,7 +82,7 @@ def functionalTests():
     repeatedLoginTest.addStep('Check that no label with you login info '
                               'is shown in the lower part of the connect panel.',
                               isVerifyStep=True)
-    repeatedLoginTest.addStep('Click on the "Sign out" button')
+    repeatedLoginTest.addStep('Click on the "Go to login" button')
     repeatedLoginTest.addStep('Login with valid credentials"')
     repeatedLoginTest.addStep('Check that in the lower part of Connect '
                               'plugin, your login name is displayed.')
@@ -154,7 +155,7 @@ def functionalTests():
                              'opens a browser where the user can '
                              'subscribe to Boundless Connect',
                              isVerifyStep=True)
-    rolesDisplayTest.addStep('Click on the "Sign out" button')
+    rolesDisplayTest.addStep('Click on the "Go to login" button')
     rolesDisplayTest.addStep('Login with credentials for Desktop Enterprise"')
     rolesDisplayTest.addStep('Switch to the "Plugin" tab. Type '
                              '"MIL-STD-2525" in the search box and '
@@ -283,19 +284,17 @@ class BoundlessConnectTests(unittest.TestCase):
 
     def testCustomRepoUrl(self):
         """Test that Connect read custom repository URL and apply it"""
-        settings = QSettings('Boundless', 'BoundlessConnect')
-        oldRepoUrl = settings.value('repoUrl', '', str)
-
-        settings.setValue('repoUrl', 'test')
-        self.assertEqual('test', settings.value('repoUrl'))
+        oldRepoUrl = pluginSetting('repoUrl')
+        setPluginSetting('repoUrl', 'test')
+        self.assertEqual('test', pluginSetting('repoUrl'))
 
         fName = os.path.join(QgsApplication.qgisSettingsDirPath(), repoUrlFile)
         with open(fName, 'w') as f:
             f.write('[general]\nrepoUrl=http://dummyurl.com')
         utils.setRepositoryUrl()
 
-        self.assertTrue('http://dummyurl.com', settings.value('repoUrl', '', str))
-        settings.setValue('repoUrl', oldRepoUrl)
+        self.assertTrue('http://dummyurl.com', pluginSetting('repoUrl'))
+        setPluginSetting('repoUrl', oldRepoUrl)
         if os.path.isfile(fName):
             os.remove(fName)
 
