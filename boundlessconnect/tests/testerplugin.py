@@ -377,7 +377,7 @@ class BasemapsTest(unittest.TestCase):
         """Use a no_auth project template for automated testing of valid project"""
         visible_maps = ['OSM Basemap B']
         prj = basemaputils.createDefaultProject(
-            utibasemaputilsls.availableMaps(
+            basemaputils.availableMaps(
                 os.path.join(self.data_dir, 'basemaps_no_auth.json')),
             visible_maps,
             self.tpl_path)
