@@ -362,6 +362,8 @@ class BasemapsTest(unittest.TestCase):
             self.tpl_path,
             'abc123')
         prj = self._standard_id(prj)
+        with open("/tmp/auth_project.qgs", "wb+") as f:
+            f.write(prj)
         # Re-generate reference:
         #with open(os.path.join(self.data_dir, 'project_default_reference.qgs'), 'wb+') as f:
         #    f.write(prj)
@@ -379,12 +381,13 @@ class BasemapsTest(unittest.TestCase):
         # Re-generate reference:
         #with open(os.path.join(self.data_dir, 'project_default_no_auth_reference.qgs'), 'wb+') as f:
         #    f.write(self._standard_id(prj))
+        prj = self._standard_id(prj)
         tmp = tempfile.mktemp('.qgs')
         with open(tmp, 'wb+') as f:
             f.write(prj)
         self.assertTrue(QgsProject.instance().read(QFileInfo(tmp)))
-        self.assertEqual(self._standard_id(prj), open(
-            os.path.join(self.data_dir, 'project_default_no_auth_reference.qgs'), 'rb').read())
+        self.assertEqual(
+            prj, open(os.path.join(self.data_dir, 'project_default_no_auth_reference.qgs'), 'rb').read())
 
 
 def unitTests():

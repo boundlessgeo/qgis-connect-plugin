@@ -83,10 +83,10 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
     """Add basemaps to the existing default project"""
     layers = []
     for m in maps:
-        connstring = u'type=xyz&url=%(url)s'
+        connstring = u'type=xyz&url={url}'
         if authcfg is not None:
-            connstring = u'authcfg=%(authcfg)s&' + connstring
-        layer = QgsRasterLayer('authcfg={authcfg}&type=xyz&url={url}'.format(url=urllib2.quote(m['endpoint']),
+            connstring = u'authcfg={authcfg}' + connstring
+        layer = QgsRasterLayer(connstring.format(url=urllib2.quote(m['endpoint']),
                                                                              authcfg=authcfg), m['name'], 'wms')
         # I've no idea why the following is required even if the crs is specified
         # in the layer definition
@@ -181,11 +181,11 @@ def createDefaultProject(available_maps, visible_maps, project_template, authcfg
     """Create a default project from a template and return it as a string"""
     layers = []
     for m in available_maps:
-        connstring = u'type=xyz&url=%(url)s'
+        connstring = u'type=xyz&url={url}'
         if authcfg is not None:
-            connstring = u'authcfg=%(authcfg)s&' + connstring
-        layer = QgsRasterLayer('authcfg={authcfg}&type=xyz&url={url}'.format(url=urllib2.quote(m['endpoint']),
-                                                                             authcfg=authcfg), m['name'], "wms")
+            connstring = u'authcfg={authcfg}&' + connstring
+        layer = QgsRasterLayer(connstring.format(url=urllib2.quote(m['endpoint']),
+                                                 authcfg=authcfg), m['name'], "wms")
         # I've no idea why the following is required even if the crs is specified
         # in the layer definition
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))

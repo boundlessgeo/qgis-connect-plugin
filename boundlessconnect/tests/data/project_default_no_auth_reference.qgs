@@ -8,7 +8,7 @@
     <!--layer-tree-layer expanded="1" checked="Qt::Unchecked" id="bluemarbleXXXXXXX" name="bluemarble">
       <customproperties/>
   </layer-tree-layer-->
-
+    
             <layer-tree-layer expanded="1" checked="Qt::Unchecked" id="OSM_Basemap_AXXXXXXX" name="OSM Basemap A">
                 <customproperties/>
             </layer-tree-layer>
@@ -52,7 +52,7 @@
     </custom-order>
   </layer-tree-canvas>
   <legend updateDrawingOrder="true">
-
+    
             <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="OSM Basemap A" showFeatureCount="0">
               <filegroup open="true" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="OSM_Basemap_AXXXXXXX" visible="0"/>
