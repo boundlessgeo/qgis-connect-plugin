@@ -111,10 +111,6 @@ def functionalTests():
                        'the search box and press Enter. Verify that '
                        'a list of results is shown.',
                        isVerifyStep=True)
-    searchTest.addStep('Type "MIL-STD-2525" in the search box and switch '
-                       'to the "Plugins" tab. Verify that one plugin '
-                       'result is shown.',
-                       isVerifyStep=True)
     searchTest.addStep('Type "lesson" in the search box and press Enter. '
                        'Verify that one plugin result is shown.',
                        isVerifyStep=True)
