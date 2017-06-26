@@ -95,7 +95,7 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
 
     if os.path.isfile(defaultProjectPath()):
         backup = defaultProjectPath().replace(
-            '.qgs', '-%s.qgs' % datetime.now().strftime('%Y-%m-%d-%H:%M:%S'))
+            '.qgs', '-%s.qgs' % datetime.now().strftime('%Y-%m-%d-%H_%M_%S'))
         shutil.copy2(defaultProjectPath(), backup)
 
    # open default project

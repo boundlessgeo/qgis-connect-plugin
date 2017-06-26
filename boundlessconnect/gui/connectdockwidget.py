@@ -393,7 +393,7 @@ class ConnectDockWidget(BASE, WIDGET):
         if os.path.isfile(basemaputils.defaultProjectPath()):
             # default project already exists, make a backup copy
             backup = basemaputils.defaultProjectPath().replace(
-                '.qgs', '-%s.qgs' % datetime.now().strftime('%Y-%m-%d-%H:%M:%S'))
+                '.qgs', '-%s.qgs' % datetime.now().strftime('%Y-%m-%d-%H_%M_%S'))
             shutil.copy2(basemaputils.defaultProjectPath(), backup)
             self._showMessage("A backup copy of the previous default project "
                               "has been saved to {}".format(backup))
