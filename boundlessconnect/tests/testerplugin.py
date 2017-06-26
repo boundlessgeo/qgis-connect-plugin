@@ -308,7 +308,7 @@ class BoundlessConnectTests(unittest.TestCase):
         # Also remove other installed plugins
         global installedPlugins
         for key in plugins.all():
-            if key in ['boundlessconnect']:
+            if key in ['boundlessconnect', 'qgistester']:
                 continue
             if utils.isBoundlessPlugin(plugins.all()[key]) and plugins.all()[key]['installed'] and key not in installedPlugins:
                 installer.uninstallPlugin(key, quiet=True)
