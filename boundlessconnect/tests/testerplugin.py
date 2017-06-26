@@ -362,13 +362,18 @@ class BasemapsTest(unittest.TestCase):
             self.tpl_path,
             'abc123')
         prj = self._standard_id(prj)
-        with open("/tmp/auth_project.qgs", "wb+") as f:
+        tmp = tempfile.mktemp('.qgs')
+        with open(tmp, "wb+") as f:
             f.write(prj)
+        self.assertTrue(QgsProject.instance().read(QFileInfo(tmp)))
         # Re-generate reference:
         #with open(os.path.join(self.data_dir, 'project_default_reference.qgs'), 'wb+') as f:
         #    f.write(prj)
-        self.assertEqual(
-            prj, open(os.path.join(self.data_dir, 'project_default_reference.qgs'), 'rb').read())
+        with open(tmp) as f:
+            prj = f.read()
+        with open(os.path.join(self.data_dir, 'project_default_reference.qgs')) as f:
+            prj2 = f.read()
+        self.assertEqual(prj,prj2)
 
     def test_utils_create_default_project(self):
         """Use a no_auth project template for automated testing of valid project"""
@@ -386,8 +391,11 @@ class BasemapsTest(unittest.TestCase):
         with open(tmp, 'wb+') as f:
             f.write(prj)
         self.assertTrue(QgsProject.instance().read(QFileInfo(tmp)))
-        self.assertEqual(
-            prj, open(os.path.join(self.data_dir, 'project_default_no_auth_reference.qgs'), 'rb').read())
+        with open(tmp) as f:
+            prj = f.read()
+        with open(os.path.join(self.data_dir, 'project_default_no_auth_reference.qgs')) as f:
+            prj2 = f.read()
+        self.assertEqual(prj,prj2)
 
 
 def unitTests():
