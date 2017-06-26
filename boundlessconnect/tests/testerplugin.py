@@ -124,8 +124,8 @@ def functionalTests():
                                prestep=lambda: _startConectPlugin())
     categorySearchTest.addStep('Switch to the "Knowledge" tab. Type '
                                '"MIL-STD-2525" in the search box and '
-                               'ensure that "Search in" combobox set to '
-                               '"All". Press Enter. Verify that multiple '
+                               'ensure no category is selected in "Search in" '
+                               'combobox. Press Enter. Verify that multiple '
                                'results are shown and they are from '
                                'different categories.',
                                isVerifyStep=True)
