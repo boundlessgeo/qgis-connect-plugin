@@ -24,6 +24,7 @@ from pyplugin_installer.installer_data import plugins
 
 from qgiscommons.networkaccessmanager import NetworkAccessManager
 from qgiscommons.settings import pluginSetting
+from qgiscommons.files import tempFilenameInTempFolder
 from qgiscommons.oauth2 import (oauth2_supported,
                                 get_oauth_authcfg
                                )
@@ -170,7 +171,7 @@ class ConnectLesson(ConnectContent):
             self.reply.deleteLater()
             return
 
-        f = QFile(utils.tempFilename(os.path.basename(self.url).split(".")[0]))
+        f = QFile(tempFilenameInTempFolder(os.path.basename(self.url).split(".")[0]))
         f.open(QFile.WriteOnly)
         f.write(self.reply.readAll())
         f.close()
@@ -322,6 +323,11 @@ class ConnectBasemap(ConnectContent):
                             "Cannot add basemap",
                             "Cannot update or create default project",
                             QgsMessageBar.WARNING)
+                    else:
+                        iface.messageBar().pushMessage(
+                        "Base map added",
+                        "Base map correctly added to default project.",
+                        QgsMessageBar.INFO)
 
         else:
             webbrowser.open_new(SUBSCRIBE_URL)

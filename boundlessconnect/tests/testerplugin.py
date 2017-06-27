@@ -270,7 +270,7 @@ class BoundlessConnectTests(unittest.TestCase):
 
         unloadPlugin('connecttest')
         result = removeDir(os.path.join(home_plugin_path, 'connecttest'))
-        self.assertFalse(result), 'Plugin directory not removed'
+        self.assertFalse(result, 'Plugin directory not removed')
         result = utils.installFromZipFile(pluginPath)
         self.assertIsNone(result), 'Error installing plugin: {}'.format(result)
         self.assertTrue('connecttest' in active_plugins), 'Plugin not activated after reinstallation'
