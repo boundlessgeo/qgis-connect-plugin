@@ -357,9 +357,9 @@ def search(text, category='', page=0):
     searchUrl = "{}/search/".format(pluginSetting("connectEndpoint"))
     nam = NetworkAccessManager()
     if category == '':
-        res, content = nam.request("{}?q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE))
+        res, content = nam.request("{}?apikey={}&version={}?q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE))
     else:
-        res, content = nam.request("{}?q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE))
+        res, content = nam.request("{}?apikey={}&version={}?q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE))
 
     j = json.loads(re.sub(r'[^\x00-\x7f]',r'', content))
     results = []
