@@ -354,7 +354,7 @@ def loadPlugins():
 
 
 def search(text, category='', page=0):
-    searchUrl = pluginSetting("search_uri")
+    searchUrl = "{}/search/".format(pluginSetting("connectEndpoint"))
     nam = NetworkAccessManager()
     if category == '':
         res, content = nam.request("{}?q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE))
@@ -396,7 +396,7 @@ def findAll(text, category):
 
 
 def searchBasemaps(text):
-    searchUrl = pluginSetting("maps_uri")
+    searchUrl = "{}/basemaps/".format(pluginSetting("connectEndpoint"))
     t = tempfile.mktemp()
     q = QgsFileDownloader(QUrl(searchUrl), t, False)
     loop = QEventLoop()
