@@ -32,12 +32,6 @@ import base64
 import webbrowser
 from datetime import datetime
 
-from qgis.utils import iface
-
-from boundlessconnect import connect
-from boundlessconnect.connect import ConnectContent
-from boundlessconnect.gui.executor import execute
-
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QUrl, QSettings, Qt
 from qgis.PyQt.QtGui import QIcon, QCursor, QPixmap
@@ -49,6 +43,7 @@ from qgis.PyQt.QtWebKitWidgets import QWebPage
 
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager
 from qgis.gui import QgsMessageBar
+from qgis.utils import iface
 
 from pyplugin_installer.installer_data import reposGroup
 
@@ -58,7 +53,10 @@ from qgiscommons.oauth2 import (oauth2_supported,
                                )
 from qgiscommons.settings import pluginSetting, setPluginSetting
 
+from boundlessconnect.connect import ConnectContent
+from boundlessconnect.gui.executor import execute
 from boundlessconnect.plugins import boundlessRepoName, authEndpointUrl
+from boundlessconnect import connect
 from boundlessconnect import utils
 from boundlessconnect import basemaputils
 
@@ -77,6 +75,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.loggedIn = False
         self.askForAuth = False
+        self.token = None
 
         self.progressBar.hide()
 
@@ -165,6 +164,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.connectWidget.setPassword("")
         self.svgLogo.show()
         self.lblSmallLogo.hide()
+        connect.resetToken()
+        self.token = None
 
     def showHelp(self):
         webbrowser.open(OFFLINE_HELP_URL)
@@ -200,6 +201,7 @@ class ConnectDockWidget(BASE, WIDGET):
         httpAuth = base64.b64encode(b"%s:%s" % (self.connectWidget.login().strip(), self.connectWidget.password().strip())).decode("ascii")
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
+        self.token = connect.getToken(self.connectWidget.login().strip(), self.connectWidget.password().strip())
         self.reply = QgsNetworkAccessManager.instance().get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
@@ -233,12 +235,17 @@ class ConnectDockWidget(BASE, WIDGET):
         return html
 
     def _search(self, category, page=0):
+        if self.token is None:
+            self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
+                              QgsMessageBar.WARNING)
+            return
+
         text = self.leSearch.text().strip()
         if text:
             self.searchPage = page
             try:
                 self._toggleSearchProgress()
-                results = execute(lambda: connect.findAll(text, category))
+                results = execute(lambda: connect.findAll(text, category, self.token))
                 if results:
                     self.searchResults = {r.url:r for r in results}
                     body = "<h1>{} results</h1><hr/>".format(len(results))
@@ -261,10 +268,15 @@ class ConnectDockWidget(BASE, WIDGET):
                                   QgsMessageBar.WARNING)
 
     def _findBasemap(self):
+        if self.token is None:
+            self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
+                              QgsMessageBar.WARNING)
+            return
+
         text = self.leSearch.text().strip()
         if text:
             try:
-                results = execute(lambda: connect.searchBasemaps(text))
+                results = execute(lambda: connect.searchBasemaps(text, self.token))
                 if results:
                     self.searchResults = {"canvas"+r.url:r for r in results}
                     self.searchResults.update({"project"+r.url:r for r in results})
@@ -358,7 +370,8 @@ class ConnectDockWidget(BASE, WIDGET):
 
         # also setup OAuth2 configuration if possible
         if oauth2_supported():
-            setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), pluginSetting("oauthEndpoint"))
+            endpointUrl = "{}/?version={}".format(pluginSetting("oauthEndpoint"), pluginSetting("apiVersion"))
+            setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), endpointUrl)
 
     def tabChanged(self, index):
         if index == 0:

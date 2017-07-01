@@ -5,6 +5,7 @@ from builtins import object
 import os
 import re
 import json
+import base64
 import urllib2
 import tempfile
 from copy import copy
@@ -353,13 +354,17 @@ def loadPlugins():
             _plugins[plugin["name"]] = copy(plugin)
 
 
-def search(text, category='', page=0):
-    searchUrl = "{}/search/".format(pluginSetting("connectEndpoint"))
+def search(text, category='', page=0, token=None):
+    searchUrl = "{}/search/?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+
+    headers = {}
+    headers["Authorization"] = "Bearer {:s}".format(token)
+
     nam = NetworkAccessManager()
     if category == '':
-        res, content = nam.request("{}?apikey={}&version={}?q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE))
+        res, content = nam.request("{}&q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE), headers=headers)
     else:
-        res, content = nam.request("{}?apikey={}&version={}?q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE))
+        res, content = nam.request("{}&q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE), headers=headers)
 
     j = json.loads(re.sub(r'[^\x00-\x7f]',r'', content))
     results = []
@@ -381,22 +386,26 @@ def search(text, category='', page=0):
     return results
 
 
-def findAll(text, category):
+def findAll(text, category, token):
     page = 0
     results = []
 
-    data = search(text, category, page)
+    data = search(text, category, page, token)
     results = data
     while len(data) == RESULTS_PER_PAGE:
         page += 1
-        data = search(text, category, page)
+        data = search(text, category, page, token)
         results.extend(data)
 
     return results
 
 
-def searchBasemaps(text):
+def searchBasemaps(text, token):
     searchUrl = "{}/basemaps/".format(pluginSetting("connectEndpoint"))
+
+    headers = {}
+    headers["authorization"] = "Bearer {}".format(token)
+
     t = tempfile.mktemp()
     q = QgsFileDownloader(QUrl(searchUrl), t, False)
     loop = QEventLoop()
@@ -421,3 +430,38 @@ def searchBasemaps(text):
                                item["accessList"]))
 
     return results
+
+token = None
+def getToken(login, password):
+    global token
+    if token:
+        return token
+
+    token = None
+
+    payload = {"username": login,
+               "password": password}
+
+    headers = {}
+    headers["Content-Type"] = "application/json"
+
+    url = "{}/token?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+
+    nam = NetworkAccessManager()
+    try:
+        res, data = nam.request(url, method="POST", body=json.dumps(payload), headers=headers)
+    except Exception as e:
+        return token
+
+    try:
+        responce = json.loads(str(data))
+        token = responce["token"]
+    except:
+        pass
+
+    return token
+
+
+def resetToken():
+    global token
+    token = None
