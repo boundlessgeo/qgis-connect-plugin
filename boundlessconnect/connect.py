@@ -358,7 +358,7 @@ def search(text, category='', page=0, token=None):
     searchUrl = "{}/search/?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
 
     headers = {}
-    headers["Authorization"] = "Bearer {:s}".format(token)
+    headers["Authorization"] = "Bearer {}".format(token)
 
     nam = NetworkAccessManager()
     if category == '':
@@ -401,21 +401,17 @@ def findAll(text, category, token):
 
 
 def searchBasemaps(text, token):
-    searchUrl = "{}/basemaps/".format(pluginSetting("connectEndpoint"))
+    searchUrl = "{}/basemaps?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
 
     headers = {}
-    headers["authorization"] = "Bearer {}".format(token)
+    headers["Authorization"] = "Bearer {}".format(token)
 
-    t = tempfile.mktemp()
-    q = QgsFileDownloader(QUrl(searchUrl), t, False)
-    loop = QEventLoop()
-    q.downloadExited.connect(loop.quit)
-    loop.exec_()
-    if not os.path.isfile(t):
-        return []
-    with open(t) as f:
-        j = json.load(f)
-    os.unlink(t)
+    nam = NetworkAccessManager()
+    res, content = nam.request(searchUrl, headers=headers)
+    try:
+        j = json.loads(content)
+    except:
+        raise Exception("Unable to parse server reply.")
 
     maps = [l for l in j if basemaputils.isSupported(l)]
 

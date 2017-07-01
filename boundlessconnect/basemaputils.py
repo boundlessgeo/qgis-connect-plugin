@@ -87,7 +87,7 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
         if authcfg is not None:
             connstring = u'authcfg={authcfg}&' + connstring
         layer = QgsRasterLayer(connstring.format(url=urllib2.quote(m['endpoint']),
-                                                                             authcfg=authcfg), m['name'], 'wms')
+                                                 authcfg=authcfg), m['name'], 'wms')
         # I've no idea why the following is required even if the crs is specified
         # in the layer definition
         layer.setCrs(QgsCoordinateReferenceSystem('EPSG:3857'))
@@ -233,30 +233,28 @@ def createOrAddDefaultBasemap(maps, visibleMaps, authcfg=None):
 
         return writeDefaultProject(prj)
 
-def availableMaps(maps_uri):
+def availableMaps(maps_uri, token):
     """Fetch the list of available maps from BCS endpoint,
     apparently this API method does not require auth"""
     # For testing purposes, we can also access to a json file directly
     if not maps_uri.startswith('http'):
         j = json.load(open(maps_uri))
     else:
-        t = tempfile.mktemp()
-        q = QgsFileDownloader(QUrl(maps_uri), t, False)
-        loop = QEventLoop()
-        q.downloadExited.connect(loop.quit)
-        loop.exec_()
-        if not os.path.isfile(t):
-            return []
+        headers = {}
+        headers["Authorization"] = "Bearer {}".format(token)
 
-        with open(t) as f:
-            j = json.load(f)
-        os.unlink(t)
+        nam = NetworkAccessManager()
+        res, content = nam.request(maps_uri, headers=headers)
+        try:
+            j = json.loads(content)
+        except:
+            raise Exception("Unable to parse server reply.")
 
     return [l for l in j if isSupported(l)]
 
 
-def getMapBoxStreetsMap():
-    allMaps = availableMaps(pluginSetting('maps_uri'))
+def getMapBoxStreetsMap(token):
+    allMaps = availableMaps(pluginSetting('maps_uri'), token)
     for m in allMaps:
         if m["name"] == "Mapbox Streets":
             return m

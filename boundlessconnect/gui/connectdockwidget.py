@@ -336,8 +336,13 @@ class ConnectDockWidget(BASE, WIDGET):
                                                QMessageBox.Yes | QMessageBox.No,
                                                QMessageBox.No)
                     if ret == QMessageBox.Yes:
-                         if self.installBaseMap():
-                             pass
+                        if self.token is None:
+                            self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
+                                              QgsMessageBar.WARNING)
+                            return
+
+                        if self.installBaseMap():
+                            pass
 
         execute(connect.loadPlugins)
         self.stackedWidget.setCurrentIndex(1)
@@ -370,7 +375,8 @@ class ConnectDockWidget(BASE, WIDGET):
 
         # also setup OAuth2 configuration if possible
         if oauth2_supported():
-            endpointUrl = "{}/?version={}".format(pluginSetting("oauthEndpoint"), pluginSetting("apiVersion"))
+            #endpointUrl = "{}/token/oauth?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+            endpointUrl = pluginSetting("oauthEndpoint")
             setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), endpointUrl)
 
     def tabChanged(self, index):
@@ -400,7 +406,7 @@ class ConnectDockWidget(BASE, WIDGET):
             return False
 
         authId = authcfg.id()
-        mapBoxStreets = basemaputils.getMapBoxStreetsMap()
+        mapBoxStreets = basemaputils.getMapBoxStreetsMap(self.token)
 
         if os.path.isfile(basemaputils.defaultProjectPath()):
             # default project already exists, make a backup copy
