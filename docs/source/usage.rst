@@ -206,7 +206,7 @@ Plugins tab
 ...........
 
 The :guilabel:`Plugins` tab can be used to search for Boundless Plugins for
-QGIS. For each result, there will be a button that allow you to
+QGIS. For each result, there will be a button that allows you to
 download and install the plugin easily.
 
 .. figure:: img/plugin_tab.png
