@@ -6,13 +6,6 @@
      "default": "https://qgis.boundlessgeo.com/plugins.xml",
      "group": "General"
     },
-    {"name":"oauthEndpoint",
-     "label": "OAuth2 endpoint",
-     "description": "URL of the OAuth2 endpoint",
-     "type": "string",
-     "default": "https://api.boundlessgeo.io/v1/token/oauth/",
-     "group": "General"
-    },
     {"name":"connectEndpoint",
      "label": "Connect endpoint",
      "description": "URI of the Connect endpoint.",

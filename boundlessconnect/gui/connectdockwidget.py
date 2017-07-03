@@ -375,8 +375,7 @@ class ConnectDockWidget(BASE, WIDGET):
 
         # also setup OAuth2 configuration if possible
         if oauth2_supported():
-            #endpointUrl = "{}/token/oauth?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
-            endpointUrl = pluginSetting("oauthEndpoint")
+            endpointUrl = "{}/token/oauth?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
             setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), endpointUrl)
 
     def tabChanged(self, index):
