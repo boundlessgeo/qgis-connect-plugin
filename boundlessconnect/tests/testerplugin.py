@@ -206,49 +206,28 @@ def functionalTests():
                                 'dock opened with active search screen.',
                                  isVerifyStep=True)
 
+    pluginSearchTest = Test("Check that plugins search results correctly retrieved")
+    pluginSearchTest.addStep('Login with valid Connect credentials',
+                             prestep=lambda: _startConectPlugin())
+    pluginSearchTest.addStep('Switch to the "Plugins" tab, type '
+                             '"MIL-STD-2525" in the search field '
+                             'and press search button')
+    pluginSearchTest.addStep('Verify that single plugin result returned.',
+                             isVerifyStep=True)
+
+    pluginSearchTest = Test("Check that plugins search results correctly retrieved")
+    pluginSearchTest.addStep('Login with valid Connect credentials',
+                             prestep=lambda: _startConectPlugin())
+    pluginSearchTest.addStep('Switch to the "Plugins" tab, type '
+                             '"MIL-STD-2525" in the search field '
+                             'and press search button')
+    pluginSearchTest.addStep('Verify that single plugin result returned.',
+                             isVerifyStep=True)
+
     return [invalidCredentialsTest, searchTest, emptySearchTest,
             repeatedLoginTest, wrongSearchTest, rolesDisplayTest,
-            toggleVisibilityTest, categorySearchTest, helpTest]
-
-
-class SearchApiTests(unittest.TestCase):
-
-    @classmethod
-    def setUpClass(cls):
-        loadPlugins()
-
-    def testPluginsSearchResultsCorrectlyRetrieved(self):
-        """Check that plugins search results correctly retrieved"""
-        results = search("MIL-STD-2525", "PLUG")
-        self.assertEqual(1, len(results), results)
-        self.assertIsInstance(results[0], ConnectPlugin)
-
-    def testNonPluginsSearchResultsCorrectlyRetrieved(self):
-        """Check that non-plugins search results correctly retrieved"""
-        results = search("gdal")
-        self.assertEqual(20, len(results))
-        results2 = search("gdal", page=0)
-        self.assertEqual(20, len(results))
-        self.assertNotEqual(results, results2)
-
-    def testEmptySearch(self):
-        "Check that empty search string returns empty results"
-        results = search("")
-        self.assertEqual(0, len(results))
-
-    def testSearchByCategory(self):
-        "Check that search by categories works"
-        results = search("what3words", "PLUG")
-        self.assertEqual(1, len(results))
-        results = search("geogig", "DOC")
-        self.assertEqual(5, len(results))
-
-    def testSearchByMultipleCategories(self):
-        "Check that search by multiple categories works"
-        results = search("what3words", "PLUG,DOC")
-        self.assertEqual(7, len(results))
-        results = search("MIL-STD-2525", "LC,PLUG")
-        self.assertEqual(2, len(results))
+            toggleVisibilityTest, categorySearchTest, helpTest,
+            pluginSearchTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
@@ -400,11 +379,9 @@ class BasemapsTest(unittest.TestCase):
 
 def unitTests():
     connectSuite = unittest.makeSuite(BoundlessConnectTests, 'test')
-    apiSuite = unittest.makeSuite(SearchApiTests, 'test')
     basemapsSuite = unittest.makeSuite(BasemapsTest, 'test')
     _tests = []
     _tests.extend(connectSuite)
-    _tests.extend(apiSuite)
     _tests.extend(basemapsSuite)
 
     return _tests
