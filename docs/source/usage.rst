@@ -70,18 +70,6 @@ a message dialog, asking you what to do.
 
    Message about invalid credentials
 
-You can also skip entering your credentials, by pressing :guilabel:`Login`
-without filling the :guilabel:`Email` and :guilabel:`Password` fields.
-
-.. note::
-
-   Even with no credentials or invalid ones, you will be able to use
-   |connect_plugin| and even perform a search in the Boundless Connect portal.
-   You will also be able to download plugins and other resources that don't
-   require authentication. But, if you try to download protected plugins or
-   access resources behind authentication, you will be asked for valid
-   credentials.
-
 If |BLQGIS| is configured to use a local directory-based repository (check this
 with your system administrator), you can leave :guilabel:`Email` and
 :guilabel:`Password` fields empty. Press :guilabel:`Login` to continue. (In this
@@ -109,7 +97,7 @@ default project.
 Searching Boundless Connect
 ---------------------------
 
-After the login (either by entering your credentials or skipping it), the
+After the login, the
 :guilabel:`Boundless Connect` panel will show a :guilabel:`Search` field which
 can be used to search for Plugins, Data and Knowledge content from Boundless
 Connect.
