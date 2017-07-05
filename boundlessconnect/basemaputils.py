@@ -237,7 +237,7 @@ def availableMaps(maps_uri, token):
     """Fetch the list of available maps from BCS endpoint,
     apparently this API method does not require auth"""
     # For testing purposes, we can also access to a json file directly
-    if not maps_uri.startswith('http'):
+    if not maps_uri.startswith('http') or token is None:
         j = json.load(open(maps_uri))
     else:
         headers = {}

@@ -68,28 +68,35 @@ def functionalTests():
     except:
         return []
 
+    emptyCredentialsTest = Test('Check Connect plugin recognize empty credentials')
+    emptyCredentialsTest.addStep('Press "Login" button without entering any credentials. '
+                                 'Check that Connect shows error message complaining about empty credentials.'
+                                 'Close error message by pressing "Ok" button.'
+                                 'Check that the Connect panel shows login page.',
+                                 prestep=lambda: _startConectPlugin(),
+                                 isVerifyStep=True)
+
     invalidCredentialsTest = Test('Check Connect plugin recognize invalid credentials')
     invalidCredentialsTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button. '
                                    'Check that Connect shows error message complaining about invalid credentials.'
-                                   'Close error message by pressing "No" button.'
-                                   'Check that the "Level:" label is not found at the bottom of the Connect panel.',
-                                   prestep=lambda: _startConectPlugin(), isVerifyStep=True)
+                                   'Close error message by pressing "Ok" button.'
+                                   'Check that the Connect panel shows login page.',
+                                   prestep=lambda: _startConectPlugin(),
+                                   isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
-    repeatedLoginTest.addStep('Accept dialog by pressing "Login" button '
-                              'without entering any credentials',
+    repeatedLoginTest.addStep('Enter valid Connect credentials and press "Login" button.',
                               prestep=lambda: _startConectPlugin())
-    repeatedLoginTest.addStep('Check that no label with you login info '
-                              'is shown in the lower part of the connect panel.',
+    repeatedLoginTest.addStep('Check that label with your login info '
+                              'is shown in the lower part of the Connect panel.',
                               isVerifyStep=True)
-    repeatedLoginTest.addStep('Click on the "Go to login" button')
-    repeatedLoginTest.addStep('Login with valid credentials"')
+    repeatedLoginTest.addStep('Click on the "Logout" button')
+    repeatedLoginTest.addStep('Login with another valid credentials')
     repeatedLoginTest.addStep('Check that in the lower part of Connect '
-                              'plugin, your login name is displayed.')
+                              'plugin, correct login name is displayed.')
 
     emptySearchTest = Test("Check empty search")
-    emptySearchTest.addStep('Accept dialog by pressing "Login" button '
-                            'without entering any credentials',
+    emptySearchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                             prestep=lambda: _startConectPlugin())
     emptySearchTest.addStep('Switch to the "Knowledge" tab. Leave search '
                             'box empty and press Enter. Verify that no '
@@ -105,23 +112,29 @@ def functionalTests():
                             isVerifyStep=True)
 
     searchTest = Test("Check normal search")
-    searchTest.addStep('Accept dialog by pressing "Login" button '
-                       'without entering any credentials',
+    searchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                        prestep=lambda: _startConectPlugin())
     searchTest.addStep('Switch to the "Knowledge" tab. Type "gdal" in '
                        'the search box and press Enter. Verify that '
                        'a list of results is shown.',
                        isVerifyStep=True)
-    searchTest.addStep('Type "lesson" in the search box and press Enter. '
-                       'Verify that one plugin result is shown.',
+    searchTest.addStep('Type "lesson" in the search box and switch '
+                       'to the "Plugins" tab. Verify that one plugin result is shown.',
                        isVerifyStep=True)
     searchTest.addStep('Type "mapbox" in the search box and switch '
                        'to the "Data" tab. Verify that a list of results is shown.',
                        isVerifyStep=True)
 
+    wrongSearchTest = Test("Check wrong search")
+    wrongSearchTest.addStep('Enter valid Connect credentials and press "Login" button.',
+                            prestep=lambda: _startConectPlugin())
+    wrongSearchTest.addStep('Switch to the "Knowledge" tab. Type '
+                            '"wrongsearch" in the search box and '
+                            'press Enter. Verify that a warning is displayed.',
+                            isVerifyStep=True)
+
     categorySearchTest = Test("Check search by categories")
-    categorySearchTest.addStep('Accept dialog by pressing "Login" '
-                               'button without entering any credentials',
+    categorySearchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                                prestep=lambda: _startConectPlugin())
     categorySearchTest.addStep('Switch to the "Knowledge" tab. Type '
                                '"MIL-STD-2525" in the search box and '
@@ -142,39 +155,39 @@ def functionalTests():
                                'are shown: lesson and learning center content.',
                                isVerifyStep=True)
 
+    pluginSearchTest = Test("Check that plugins search results correctly retrieved")
+    pluginSearchTest.addStep('Login with valid Connect credentials',
+                             prestep=lambda: _startConectPlugin())
+    pluginSearchTest.addStep('Switch to the "Plugins" tab, type '
+                             '"MIL-STD-2525" in the search field '
+                             'and press search button')
+    pluginSearchTest.addStep('Verify that single plugin result returned.',
+                             isVerifyStep=True)
+
     rolesDisplayTest = Test("Check roles display")
-    rolesDisplayTest.addStep('Accept dialog by pressing "Login" button '
-                             'without entering any credentials',
+    rolesDisplayTest.addStep('Enter valid (non-enterprise) Connect credentials and press "Login" button.',
                              prestep=lambda: _startConectPlugin())
     rolesDisplayTest.addStep('Switch to the "Plugin" tab. Type '
                              '"MIL-STD-2525" in the search box and '
                              'press Enter. Verify that one plugin result '
-                             'is shown and is not available (red)',
+                             'is shown and is not available (orange)',
                              isVerifyStep=True)
     rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it '
                              'opens a browser where the user can '
                              'subscribe to Boundless Connect',
                              isVerifyStep=True)
-    rolesDisplayTest.addStep('Click on the "Go to login" button')
-    rolesDisplayTest.addStep('Login with credentials for Desktop Enterprise"')
+    rolesDisplayTest.addStep('Click on the "Logout" button')
+    rolesDisplayTest.addStep('Login with credentials for "Desktop Enterprise"')
     rolesDisplayTest.addStep('Switch to the "Plugin" tab. Type '
                              '"MIL-STD-2525" in the search box and '
                              'press Enter. Verify that one plugin result '
-                             'is shown and is available (green)',
+                             'is shown and is available (blue)',
                              isVerifyStep=True)
     rolesDisplayTest.addStep('Click on "MIL-STD-2525" and verify it '
                              'install the plugins or tells you that it '
                              'is already installed',
                              isVerifyStep=True)
 
-    wrongSearchTest = Test("Check wrong search")
-    wrongSearchTest.addStep('Accept dialog by pressing "Login" button '
-                            'without entering any credentials',
-                            prestep=lambda: _startConectPlugin())
-    wrongSearchTest.addStep('Switch to the "Knowledge" tab. Type '
-                            '"wrongsearch" in the search box and '
-                            'press Enter. Verify that a warning is displayed.',
-                            isVerifyStep=True)
 
     helpTest = Test("Check Help displaying")
     helpTest.addStep('Click on "Help" button and verify help is '
@@ -193,8 +206,7 @@ def functionalTests():
                                  '"Boundless Connect" panel. Verify that '
                                  'dock opened with active login screen.',
                                  isVerifyStep=True)
-    toggleVisibilityTest.addStep('Login by pressing "Login" (without '
-                                 'entering credentials) button and then '
+    toggleVisibilityTest.addStep('Enter valid Connect credentials and press "Login" button and then '
                                  'close dock.')
     toggleVisibilityTest.addStep('Open dock from menu "Plugins -> Boundless '
                                  'Connect". Verify that dock opened with '
@@ -206,28 +218,10 @@ def functionalTests():
                                 'dock opened with active search screen.',
                                  isVerifyStep=True)
 
-    pluginSearchTest = Test("Check that plugins search results correctly retrieved")
-    pluginSearchTest.addStep('Login with valid Connect credentials',
-                             prestep=lambda: _startConectPlugin())
-    pluginSearchTest.addStep('Switch to the "Plugins" tab, type '
-                             '"MIL-STD-2525" in the search field '
-                             'and press search button')
-    pluginSearchTest.addStep('Verify that single plugin result returned.',
-                             isVerifyStep=True)
 
-    pluginSearchTest = Test("Check that plugins search results correctly retrieved")
-    pluginSearchTest.addStep('Login with valid Connect credentials',
-                             prestep=lambda: _startConectPlugin())
-    pluginSearchTest.addStep('Switch to the "Plugins" tab, type '
-                             '"MIL-STD-2525" in the search field '
-                             'and press search button')
-    pluginSearchTest.addStep('Verify that single plugin result returned.',
-                             isVerifyStep=True)
-
-    return [invalidCredentialsTest, searchTest, emptySearchTest,
-            repeatedLoginTest, wrongSearchTest, rolesDisplayTest,
-            toggleVisibilityTest, categorySearchTest, helpTest,
-            pluginSearchTest]
+    return [emptyCredentialsTest, invalidCredentialsTest, repeatedLoginTest,
+            emptySearchTest, searchTest, wrongSearchTest, categorySearchTest,
+            pluginSearchTest, rolesDisplayTest, helpTest, toggleVisibilityTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
@@ -316,7 +310,7 @@ class BasemapsTest(unittest.TestCase):
         """Check available maps retrieval from local test json file"""
         self.assertTrue(oauth2_supported())
         maps = basemaputils.availableMaps(os.path.join(self.data_dir,
-                                                     'basemaps.json'))
+                                                     'basemaps.json'), None)
         names = [m['name'] for m in maps]
         names.sort()
         self.assertEqual(names, [u'Boundless Basemap',
@@ -336,7 +330,7 @@ class BasemapsTest(unittest.TestCase):
         self.assertTrue(oauth2_supported())
         visible_maps = ['Mapbox Light', 'Recent Imagery']
         prj = basemaputils.createDefaultProject(
-            basemaputils.availableMaps(self.local_maps_uri),
+            basemaputils.availableMaps(self.local_maps_uri, None),
             visible_maps,
             self.tpl_path,
             'abc123')
@@ -359,7 +353,7 @@ class BasemapsTest(unittest.TestCase):
         visible_maps = ['OSM Basemap B']
         prj = basemaputils.createDefaultProject(
             basemaputils.availableMaps(
-                os.path.join(self.data_dir, 'basemaps_no_auth.json')),
+                os.path.join(self.data_dir, 'basemaps_no_auth.json'), None),
             visible_maps,
             self.tpl_path)
         # Re-generate reference:

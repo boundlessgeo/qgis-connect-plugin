@@ -187,15 +187,12 @@ class ConnectDockWidget(BASE, WIDGET):
             content.open(self.roles)
 
     def logIn(self):
-        utils.addBoundlessRepository()
         if self.connectWidget.login().strip() == "" or self.connectWidget.password().strip() == "":
-            execute(connect.loadPlugins)
-            self.stackedWidget.setCurrentIndex(1)
-            self.roles = ["open"]
-            self.labelLevel.setVisible(False)
-            self.btnSignOut.setText("Go to login")
-            self.loggedIn = True
+            self._showMessage("Please enter valid Connect credentials "
+                              "to use plugin.")
             return
+
+        utils.addBoundlessRepository()
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
         httpAuth = base64.b64encode(b"%s:%s" % (self.connectWidget.login().strip(), self.connectWidget.password().strip())).decode("ascii")
@@ -302,21 +299,15 @@ class ConnectDockWidget(BASE, WIDGET):
         if reply.error() != QNetworkReply.NoError:
             if reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 401:
                 msg = 'Your credentials seem invalid.\n' \
-                      'You will be able to access only open content.\n' \
-                      'Do you want to save credentials anyway?'
+                      'You will not be able to access any content.\n' \
+                      'Please enter valid Connect credentials to use plugin.'
             else:
                 msg = 'An error occurred when validating your ' \
                       'credentials. Server responded:\n{}.\n' \
-                      'You will be able to access only open content.\n' \
-                      'Do you want to save credentials anyway?'.format(reply.errorString())
-            ret = QMessageBox.warning(self, 'Error!', msg,
-                                      QMessageBox.Yes | QMessageBox.No,
-                                      QMessageBox.No)
-            if ret == QMessageBox.Yes:
-                self.saveOrUpdateAuthId()
-            visible = False
-            self.roles = ["open"]
-            self.btnSignOut.setText("Go to login")
+                      'You will not be able to access any content.\n' \
+                      'Please enter valid Connect credentials to use plugin'.format(reply.errorString())
+            QMessageBox.warning(self, 'Error!', msg)
+            return
         else:
             self.btnSignOut.setText("Logout")
             self.saveOrUpdateAuthId()
