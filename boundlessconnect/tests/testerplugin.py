@@ -78,8 +78,9 @@ def functionalTests():
 
     invalidCredentialsTest = Test('Check Connect plugin recognize invalid credentials')
     invalidCredentialsTest.addStep('Enter invalid Connect credentials and accept dialog by pressing "Login" button. '
-                                   'Check that Connect shows error message complaining about invalid credentials.'
-                                   'Close error message by pressing "Ok" button.'
+                                   'Check that dialog asking for credentials is shown and close it by pressing "Cancel" button. '
+                                   'Check that Connect shows error message complaining about invalid credentials. '
+                                   'Close error message by pressing "Ok" button. '
                                    'Check that the Connect panel shows login page.',
                                    prestep=lambda: _startConectPlugin(),
                                    isVerifyStep=True)
