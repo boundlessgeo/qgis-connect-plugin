@@ -291,7 +291,7 @@ class ConnectBasemap(ConnectContent):
                         QgsMessageBar.WARNING)
                 else:
                     authId = authcfg.id()
-                    layer = QgsRasterLayer('authcfg={authcfg}&type=xyz&url={url}'.format(url=urllib2.quote(self.url),
+                    layer = QgsRasterLayer('authcfg={authcfg}&type=xyz&url={url}'.format(url=urllib2.quote("{}?version={}".format(self.url, pluginSetting("apiVersion"))),
                                                                                          authcfg=authId), self.name, "wms")
                     if layer.isValid():
                         QgsMapLayerRegistry.instance().addMapLayer(layer)
@@ -412,6 +412,8 @@ def searchBasemaps(text, token):
         j = json.loads(content)
     except:
         raise Exception("Unable to parse server reply.")
+
+    print j
 
     maps = [l for l in j if basemaputils.isSupported(l)]
 
