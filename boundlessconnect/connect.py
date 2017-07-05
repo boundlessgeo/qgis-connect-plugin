@@ -413,8 +413,6 @@ def searchBasemaps(text, token):
     except:
         raise Exception("Unable to parse server reply.")
 
-    print j
-
     maps = [l for l in j if basemaputils.isSupported(l)]
 
     results = []
