@@ -254,7 +254,8 @@ def availableMaps(maps_uri, token):
 
 
 def getMapBoxStreetsMap(token):
-    allMaps = availableMaps(pluginSetting('maps_uri'), token)
+    mapsUrl = searchUrl = "{}/basemaps?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+    allMaps = availableMaps(mapsUrl, token)
     for m in allMaps:
         if m["name"] == "Mapbox Streets":
             return m
