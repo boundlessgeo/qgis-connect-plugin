@@ -121,7 +121,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Mapbox_Satellite_StreetsXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/satellite-streets/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/satellite-streets/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -166,7 +166,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Mapbox_SatelliteXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/satellite/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/satellite/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -211,7 +211,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Mapbox_OutdoorsXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/outdoors/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/outdoors/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -256,7 +256,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Mapbox_LightXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/light/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/light/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -301,7 +301,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Mapbox_DarkXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/dark/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/dark/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -346,7 +346,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Mapbox_StreetsXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/streets/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/mapbox/streets/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -391,7 +391,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Boundless_BasemapXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/boundless/osm/%7Bz%7D/%7Bx%7D/%7B-y%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/boundless/osm/%7Bz%7D/%7Bx%7D/%7B-y%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -436,7 +436,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>Recent_ImageryXXXXXXX</id>
-   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/dg/recent/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>authcfg=YYYYYY&amp;type=xyz&amp;url=http%3A//api.test.boundlessgeo.io/v1/basemaps/dg/recent/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>

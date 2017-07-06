@@ -73,7 +73,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>OSM_Basemap_AXXXXXXX</id>
-   <datasource>type=xyz&amp;url=http%3A//a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>type=xyz&amp;url=http%3A//a.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
@@ -118,7 +118,7 @@
     <ymax>ZZZZZ</ymax>
    </extent>
    <id>OSM_Basemap_BXXXXXXX</id>
-   <datasource>type=xyz&amp;url=http%3A//b.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png</datasource>
+   <datasource>type=xyz&amp;url=http%3A//b.tile.openstreetmap.org/%7Bz%7D/%7Bx%7D/%7By%7D.png%3Fversion%3D0.1</datasource>
    <keywordList>
     <value></value>
    </keywordList>
