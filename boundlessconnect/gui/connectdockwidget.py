@@ -64,8 +64,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'connectdockwidget.ui'))
 
-OFFLINE_HELP_URL = os.path.join(pluginPath, 'docs', 'html', 'index.html')
-
 
 class ConnectDockWidget(BASE, WIDGET):
 
@@ -169,7 +167,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.token = None
 
     def showHelp(self):
-        webbrowser.open(OFFLINE_HELP_URL)
+        webbrowser.open_new("file://{}".format(os.path.join(pluginPath, "docs", "html", "index.html")))
 
     def linkClicked(self, url):
         name = url.toString()
