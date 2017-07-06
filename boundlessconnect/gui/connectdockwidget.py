@@ -200,6 +200,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.request.setRawHeader('Authorization', 'Basic {}'.format(httpAuth))
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.token = connect.getToken(self.connectWidget.login().strip(), self.connectWidget.password().strip())
+        if self.token is None:
+            QMessageBox.warning(self, "Error!", "Can not get token. Please check you credentials and endpoint URL in plugin settings.")
         self.reply = QgsNetworkAccessManager.instance().get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
