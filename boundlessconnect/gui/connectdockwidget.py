@@ -162,6 +162,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.leSearch.setText("")
         self.connectWidget.setLogin("")
         self.connectWidget.setPassword("")
+        self.tabsContent.setCurrentIndex(0)
         self.svgLogo.show()
         self.lblSmallLogo.hide()
         connect.resetToken()
