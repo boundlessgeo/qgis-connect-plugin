@@ -171,7 +171,7 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
         e.appendChild(mapLayerElement)
 
     with open(defaultProjectPath(), "wb+") as f:
-        f.write(doc.toString())
+        f.write(doc.toString(2))
 
     settings = QSettings()
     settings.setValue('Qgis/newProjectDefault', True)
