@@ -130,6 +130,7 @@ def install_devtools():
 @task
 @cmdopts([
     ('tests', 't', 'Package tests with plugin'),
+    ('clean', 'c', 'clean out built artifacts first'),
 ])
 def package(options):
     """Create plugin package
@@ -144,11 +145,17 @@ def package(options):
 
 
 @task
+@cmdopts([
+    ('clean', 'c', 'clean out built artifacts first'),
+])
 def builddocs(options):
+    clean = getattr(options, 'clean', False)
     sh("git submodule init")
     sh("git submodule update")
     cwd = os.getcwd()
     os.chdir(options.sphinx.docroot)
+    if clean:
+        sh("make clean")
     sh("make html")
     os.chdir(cwd)
 
