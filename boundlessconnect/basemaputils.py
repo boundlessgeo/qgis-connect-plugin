@@ -87,7 +87,7 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
         connstring = u'type=xyz&url={url}'
         if authcfg is not None:
             connstring = u'authcfg={authcfg}&' + connstring
-        layer = QgsRasterLayer(connstring.format(url=urllib2.quote("{}/version={}".format(m['endpoint'], pluginSetting("apiVersion"))),
+        layer = QgsRasterLayer(connstring.format(url=urllib2.quote("{}?version={}".format(m['endpoint'], pluginSetting("apiVersion"))),
                                                  authcfg=authcfg), m['name'], 'wms')
         # I've no idea why the following is required even if the crs is specified
         # in the layer definition
