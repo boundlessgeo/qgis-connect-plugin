@@ -18,7 +18,8 @@ from qgis.PyQt.QtNetwork import QNetworkReply, QNetworkRequest
 
 from qgis.gui import QgsMessageBar, QgsFileDownloader
 from qgis.core import QgsNetworkAccessManager, QgsRasterLayer, QgsMapLayerRegistry
-from qgis.utils import iface, available_plugins, active_plugins
+from qgis.utils import iface
+from qgis import utils as qgsutils
 
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
@@ -142,12 +143,12 @@ class ConnectLesson(ConnectContent):
         return os.path.join(pluginPath, "icons", "howto.svg")
 
     def _open(self):
-        if LESSONS_PLUGIN_NAME not in available_plugins:
+        if LESSONS_PLUGIN_NAME not in qgsutils.available_plugins:
             iface.messageBar().pushMessage(
                 "Cannot install lessons",
                 "Lessons plugin is not installed",
                 QgsMessageBar.WARNING)
-        elif LESSONS_PLUGIN_NAME not in active_plugins:
+        elif LESSONS_PLUGIN_NAME not in qgsutils.active_plugins:
             iface.messageBar().pushMessage(
                 "Cannot install lessons",
                 "Lessons plugin is not active",
