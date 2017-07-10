@@ -277,6 +277,32 @@ def functionalTests():
     complexDefaultProjectTest.addStep('Unset default project',
                                       function=lambda: basemaputils.unsetDefaultProject())
 
+    lessonsInstallTest = Test("Check lessons installation")
+    lessonsInstallTest.addStep('Login with credentials for "Desktop Enterprise".',
+                               prestep=lambda: _startConectPlugin())
+    lessonsInstallTest.addStep('Switch to the "Plugins" tab. Type "lessons" '
+                               'in the search box and press Enter. '
+                               'Verify that single plugin result is '
+                               'shown and available for installation '
+                               '(button color is blue).',
+                               isVerifyStep=True)
+    lessonsInstallTest.addStep('Press "INSTALL" button and verify that '
+                               'plugin installed, activated and no error '
+                               'is thrown.',
+                               isVerifyStep=True)
+    lessonsInstallTest.addStep('Switch to the "Knowledge" tab, enter '
+                               '"lesson" in the search box and select '
+                               '"Lessons" from the "Search in" combobox. '
+                               'Press Enter to perform search, verify '
+                               'that lessons results are shown and no '
+                               'available (buttons are blue) and no '
+                               'error is thrown.',
+                               isVerifyStep=True)
+    lessonsInstallTest.addStep('Press "LESSON" button under any lesson '
+                               'result and verify that lessons installed, '
+                               'activated and no error is thrown.',
+                               isVerifyStep=True)
+
     helpTest = Test("Check Help displaying")
     helpTest.addStep('Click on "Help" button and verify help is '
                      'correctly open in a browser.',
@@ -310,7 +336,8 @@ def functionalTests():
     return [emptyCredentialsTest, invalidCredentialsTest, repeatedLoginTest,
             emptySearchTest, searchTest, wrongSearchTest, categorySearchTest,
             pluginSearchTest, rolesDisplayTest, basemapsLoadingTest,
-            defaultProjectTest, complexDefaultProjectTest, helpTest, toggleVisibilityTest]
+            defaultProjectTest, complexDefaultProjectTest, lessonsInstallTest,
+            helpTest, toggleVisibilityTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
