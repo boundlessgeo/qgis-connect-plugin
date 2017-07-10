@@ -242,6 +242,40 @@ def functionalTests():
                                'that it works correctly and no error '
                                'is thrown.',
                                 isVerifyStep=True)
+    defaultProjectTest.addStep('Unset default project',
+                               function=lambda: basemaputils.unsetDefaultProject())
+
+    complexDefaultProjectTest = Test("Check complex default project")
+    complexDefaultProjectTest.addStep('Login with credentials for "Desktop Enterprise".',
+                                      prestep=lambda: _startConectPlugin())
+    complexDefaultProjectTest.addStep('Switch to the "Data" tab. Type "mapbox" '
+                                      'in the search box and press Enter. '
+                                      'Verify that list of the basemaps shown.',
+                                      isVerifyStep=True)
+    complexDefaultProjectTest.addStep('Press "ADD TO DEFAULT PROJECT" button '
+                                      'under any basemap and verify that '
+                                      'message saying it was added to the '
+                                      'default project shown and no error '
+                                      'is thrown.',
+                                      isVerifyStep=True)
+    complexDefaultProjectTest.addStep('Press "ADD TO DEFAULT PROJECT" button '
+                                      'under another basemap and verify that '
+                                      'message saying it was added to the '
+                                      'default project shown and no error '
+                                      'is thrown.',
+                                      isVerifyStep=True)
+    complexDefaultProjectTest.addStep('Press "New project" button at the QGIS '
+                                      'toolbar and verify new project with '
+                                      'two basemaps added by default created.',
+                                      isVerifyStep=True)
+    complexDefaultProjectTest.addStep('Change visibility of basemap, '
+                                      'reorder them in layer tree, zoom in '
+                                      'and out, pan acros the map to ensure '
+                                      'that it works correctly and no error '
+                                      'is thrown.',
+                                      isVerifyStep=True)
+    complexDefaultProjectTest.addStep('Unset default project',
+                                      function=lambda: basemaputils.unsetDefaultProject())
 
     helpTest = Test("Check Help displaying")
     helpTest.addStep('Click on "Help" button and verify help is '
