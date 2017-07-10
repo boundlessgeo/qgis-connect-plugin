@@ -215,9 +215,32 @@ def functionalTests():
                                 'is working correctly and no error is thrown.',
                                 isVerifyStep=True)
     basemapsLoadingTest.addStep('Change visibility of both basemaps, '
-                                'reorder them in the layer treee to '
+                                'reorder them in the layer tree to '
                                 'ensure that they are working correctly '
                                 'and no error is thrown.',
+                                isVerifyStep=True)
+
+    defaultProjectTest = Test("Check simple default project")
+    defaultProjectTest.addStep('Login with credentials for "Desktop Enterprise".',
+                                prestep=lambda: _startConectPlugin())
+    defaultProjectTest.addStep('Switch to the "Data" tab. Type "mapbox" '
+                                'in the search box and press Enter. '
+                                'Verify that list of the basemaps shown.',
+                                isVerifyStep=True)
+    defaultProjectTest.addStep('Press "ADD TO DEFAULT PROJECT" button '
+                               'under any basemap and verify that '
+                               'message saying it was added to the '
+                               'default project shown and no error '
+                               'is thrown.',
+                                isVerifyStep=True)
+    defaultProjectTest.addStep('Press "New project" button at the QGIS '
+                               'toolbar and verify new project with '
+                               'basemap added by default created.',
+                                isVerifyStep=True)
+    defaultProjectTest.addStep('Change visibility of basemap, zoom in '
+                               'and out, pan acros the map to ensure '
+                               'that it works correctly and no error '
+                               'is thrown.',
                                 isVerifyStep=True)
 
     helpTest = Test("Check Help displaying")
