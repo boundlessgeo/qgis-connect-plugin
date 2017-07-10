@@ -41,8 +41,9 @@ except:
 from qgis.PyQt.QtCore import Qt, QFileInfo
 
 from qgis.core import QgsApplication, QgsProject
+from qgis.utils import home_plugin_path, unloadPlugin, iface
+from qgis import utils as qgsutils
 
-from qgis.utils import active_plugins, home_plugin_path, unloadPlugin, iface
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
@@ -306,7 +307,7 @@ class BoundlessConnectTests(unittest.TestCase):
     def tearDownClass(cls):
         # Remove installed HelloWorld plugin
         installer = QgsPluginInstaller()
-        if 'connecttest' in active_plugins:
+        if 'connecttest' in qgsutils.active_plugins:
             installer.uninstallPlugin('connecttest', quiet=True)
 
         # Also remove other installed plugins
