@@ -189,6 +189,35 @@ def functionalTests():
                              'is already installed',
                              isVerifyStep=True)
 
+    basemapsLoadingTest = Test("Check basemaps loading")
+    basemapsLoadingTest.addStep('Login with credentials for "Desktop Enterprise".',
+                                prestep=lambda: _startConectPlugin())
+    basemapsLoadingTest.addStep('Switch to the "Data" tab. Type "mapbox" '
+                                'in the search box and press Enter. '
+                                'Verify that list of the basemaps shown.',
+                                isVerifyStep=True)
+    basemapsLoadingTest.addStep('Press "ADD TO MAP" button under any '
+                                'basemap and verify that basemap added '
+                                'to the current project and no error is thrown.',
+                                isVerifyStep=True)
+    basemapsLoadingTest.addStep('Pan canvas in different directions, '
+                                'zoom in and out to ensure that basemap '
+                                'is working correctly and no error is thrown.',
+                                isVerifyStep=True)
+    basemapsLoadingTest.addStep('Press "ADD TO MAP" button under another '
+                                'basemap from the search results and '
+                                'verify that second basemap added to '
+                                'the current project and no error is thrown.',
+                                isVerifyStep=True)
+    basemapsLoadingTest.addStep('Pan canvas in different directions, '
+                                'zoom in and out to ensure that basemap '
+                                'is working correctly and no error is thrown.',
+                                isVerifyStep=True)
+    basemapsLoadingTest.addStep('Change visibility of both basemaps, '
+                                'reorder them in the layer treee to '
+                                'ensure that they are working correctly '
+                                'and no error is thrown.',
+                                isVerifyStep=True)
 
     helpTest = Test("Check Help displaying")
     helpTest.addStep('Click on "Help" button and verify help is '
