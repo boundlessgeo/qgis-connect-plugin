@@ -251,7 +251,8 @@ def functionalTests():
 
     return [emptyCredentialsTest, invalidCredentialsTest, repeatedLoginTest,
             emptySearchTest, searchTest, wrongSearchTest, categorySearchTest,
-            pluginSearchTest, rolesDisplayTest, helpTest, toggleVisibilityTest]
+            pluginSearchTest, rolesDisplayTest, basemapsLoadingTest,
+            helpTest, toggleVisibilityTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
