@@ -271,14 +271,14 @@ class BoundlessConnectTests(unittest.TestCase):
         pluginPath = os.path.join(testPath, 'data', 'connecttest.zip')
         result = utils.installFromZipFile(pluginPath)
         self.assertIsNone(result), 'Error installing plugin: {}'.format(result)
-        self.assertTrue('connecttest' in active_plugins), 'Plugin not activated'
+        self.assertTrue('connecttest' in qgsutils.active_plugins), 'Plugin not activated'
 
         unloadPlugin('connecttest')
         result = removeDir(os.path.join(home_plugin_path, 'connecttest'))
         self.assertFalse(result, 'Plugin directory not removed')
         result = utils.installFromZipFile(pluginPath)
         self.assertIsNone(result), 'Error installing plugin: {}'.format(result)
-        self.assertTrue('connecttest' in active_plugins), 'Plugin not activated after reinstallation'
+        self.assertTrue('connecttest' in qgsutils.active_plugins), 'Plugin not activated after reinstallation'
 
     def testIsBoundlessCheck(self):
         """Test that Connect detects Boundless plugins"""
