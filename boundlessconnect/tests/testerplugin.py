@@ -310,7 +310,7 @@ def functionalTests():
     return [emptyCredentialsTest, invalidCredentialsTest, repeatedLoginTest,
             emptySearchTest, searchTest, wrongSearchTest, categorySearchTest,
             pluginSearchTest, rolesDisplayTest, basemapsLoadingTest,
-            helpTest, toggleVisibilityTest]
+            defaultProjectTest, complexDefaultProjectTest, helpTest, toggleVisibilityTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):
