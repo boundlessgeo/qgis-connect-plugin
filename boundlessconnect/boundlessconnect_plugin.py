@@ -42,7 +42,11 @@ from pyplugin_installer.installer_data import (repositories,
 from qgiscommons.gui import askForFiles
 from qgiscommons.settings import (readSettings,
                                   addSettingsMenu,
-                                  removeSettingsMenu)
+                                  removeSettingsMenu,
+                                  addHelpMenu,
+                                  removeHelpMenu,
+                                  addAboutMenu,
+                                  removeAboutMenu)
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
@@ -106,6 +110,8 @@ class BoundlessConnectPlugin(object):
                     menuPlugin.insertAction(separator, self.actionPluginManager)
 
         addSettingsMenu('Boundless Connect')
+        addHelpMenu('Boundless Connect')
+        addAboutMenu('Boundless Connect')
 
         # Enable check for updates if it is not enabled
         utils.addCheckForUpdates()
@@ -129,6 +135,9 @@ class BoundlessConnectPlugin(object):
                     menuPlugin.removeAction(self.actionPluginManager)
 
         removeSettingsMenu('Boundless Connect')
+        removeHelpMenu('Boundless Connect')
+        removeAboutMenu('Boundless Connect')
+
         self.dockWidget.hide()
 
         try:
