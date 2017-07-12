@@ -123,6 +123,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self.authId = ''
             utils.setRepositoryAuth(self.authId)
 
+        self._toggleSearchControls(True)
         self.showLogin()
 
     def showEvent(self, event):
@@ -373,6 +374,7 @@ class ConnectDockWidget(BASE, WIDGET):
     def tabChanged(self, index):
         if index == 0:
             self._toggleCategoriesSelector(True)
+            self._toggleSearchControls(True)
             categories = self.cmbContentType.selectedData(Qt.UserRole)
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
@@ -380,14 +382,20 @@ class ConnectDockWidget(BASE, WIDGET):
             self._search(cat)
         elif index == 1:
             self._toggleCategoriesSelector(False)
+            self._toggleSearchControls(oauth2_supported())
             self._findBasemap()
         elif index == 2:
             self._toggleCategoriesSelector(False)
+            self._toggleSearchControls(True)
             self._search("PLUG")
 
     def _toggleCategoriesSelector(self, visible):
         self.lblCategorySearch.setVisible(visible)
         self.cmbContentType.setVisible(visible)
+
+    def _toggleSearchControls(self, enabled):
+        self.leSearch.setEnabled(enabled)
+        self.lblOAuthWarning.setVisible(not enabled)
 
     def installBaseMap(self):
         authcfg = get_oauth_authcfg()
