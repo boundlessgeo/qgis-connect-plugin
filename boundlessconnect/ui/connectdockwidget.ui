@@ -200,7 +200,7 @@
   <customwidget>
    <class>CheckComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">qgiscommons.checkcombobox</header>
+   <header location="global">qgiscommons.gui.checkcombobox</header>
   </customwidget>
   <customwidget>
    <class>ConnectCredentialsWidget</class>

@@ -45,17 +45,6 @@ def setup():
         ext_libs.rmtree()
     ext_libs.makedirs()
 
-    tmpCommonsPath = path(__file__).dirname() / "qgiscommons"
-    dst = ext_libs / "qgiscommons"
-    if dst.exists():
-        dst.rmtree()
-    r = requests.get("https://github.com/boundlessgeo/lib-qgis-commons/archive/master.zip", stream=True)
-    z = zipfile.ZipFile(StringIO.StringIO(r.content))
-    z.extractall(path=tmpCommonsPath.abspath())
-    src = tmpCommonsPath / "lib-qgis-commons-master" / "qgiscommons"
-    src.copytree(dst.abspath())
-    tmpCommonsPath.rmtree()
-
     tmpCommonsPath = path(__file__).dirname() / "boundlesscommons"
     dst = ext_libs / "boundlesscommons"
     if dst.exists():

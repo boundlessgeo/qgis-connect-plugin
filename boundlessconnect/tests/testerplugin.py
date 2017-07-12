@@ -47,7 +47,7 @@ from qgis import utils as qgsutils
 from pyplugin_installer.installer import QgsPluginInstaller
 from pyplugin_installer.installer_data import reposGroup, plugins, removeDir
 
-from qgiscommons.oauth2 import oauth2_supported
+from qgiscommons.network.oauth2 import oauth2_supported
 from qgiscommons.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget

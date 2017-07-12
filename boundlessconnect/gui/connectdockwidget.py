@@ -47,7 +47,7 @@ from qgis.utils import iface
 
 from pyplugin_installer.installer_data import reposGroup
 
-from qgiscommons.oauth2 import (oauth2_supported,
+from qgiscommons.network.oauth2 import (oauth2_supported,
                                 setup_oauth,
                                 get_oauth_authcfg
                                )
