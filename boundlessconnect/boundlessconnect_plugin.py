@@ -39,14 +39,14 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
-from qgiscommons.gui import askForFiles
+from qgiscommons.gui import (askForFiles,
+                                addHelpMenu,
+                                removeHelpMenu,
+                                addAboutMenu,
+                                removeAboutMenu)
 from qgiscommons.settings import (readSettings,
                                   addSettingsMenu,
-                                  removeSettingsMenu,
-                                  addHelpMenu,
-                                  removeHelpMenu,
-                                  addAboutMenu,
-                                  removeAboutMenu)
+                                  removeSettingsMenu)
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
