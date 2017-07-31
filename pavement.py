@@ -6,6 +6,8 @@
 import os
 import zipfile
 import StringIO
+import json
+from collections import defaultdict
 
 import requests
 from paver.easy import *
@@ -133,14 +135,48 @@ def package(options):
     return package_file
 
 
+def create_settings_docs(options):
+    settings_file = path(options.plugin.name) / "settings.json"
+    doc_file = options.sphinx.sourcedir / "settingsconf.rst"
+    with open(settings_file) as f:
+        settings = json.load(f)
+
+    grouped = defaultdict(list)
+    for setting in settings:
+        grouped[setting["group"]].append(setting)
+    with open (doc_file, "w") as f:
+        f.write("Plugin settings\n===============\n\n"
+                "The plugin can be adjusted using the following settings, "
+                "to be found in its settings dialog.\n")
+        for groupName, group in grouped.iteritems():
+            section_marks = "-" * len(groupName)
+            f.write("\n%s\n%s\n\n"
+                    ".. list-table::\n"
+                    "   :header-rows: 1\n"
+                    "   :stub-columns: 1\n"
+                    "   :widths: 20 80\n"
+                    "   :class: non-responsive\n\n"
+                    "   * - Option\n"
+                    "     - Description\n"
+                    % (groupName, section_marks))
+            for setting in group:
+                f.write("   * - %s\n"
+                        "     - %s\n"
+                        % (setting["label"], setting["description"]))
+
+
 @task
 @cmdopts([
     ('clean', 'c', 'clean out built artifacts first'),
 ])
 def builddocs(options):
     clean = getattr(options, 'clean', False)
-    sh("git submodule init")
-    sh("git submodule update")
+    try: #this might fail if the plugin code is not in a git repo
+        sh("git submodule init")
+        sh("git submodule update")
+    except:
+        pass
+    create_settings_docs(options)
     cwd = os.getcwd()
     os.chdir(options.sphinx.docroot)
     if clean:

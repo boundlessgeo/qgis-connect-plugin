@@ -29,9 +29,11 @@ version provides:
 Documentation contents:
 
 .. toctree::
+   :glob:
    :maxdepth: 2
 
    installation
    usage
    plugins_installation
    sysadmins
+   *
