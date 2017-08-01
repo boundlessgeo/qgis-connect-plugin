@@ -245,22 +245,17 @@ class ConnectDockWidget(BASE, WIDGET):
             try:
                 self._toggleSearchProgress()
                 results = execute(lambda: connect.findAll(text, category, self.token))
+                body = "<h1>{} results</h1><hr/>".format(len(results))
                 if results:
                     self.searchResults = {r.url:r for r in results}
-                    body = "<h1>{} results</h1><hr/>".format(len(results))
                     body += "<ul>"
                     for r in results:
                         body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     body += "</ul>"
 
-                    self.webView.setHtml(self._getSearchHtml(body))
-                    self.webView.setVisible(True)
-                    self._toggleSearchProgress(False)
-                else:
-                    self._toggleSearchProgress(False)
-                    self._showMessage("No search matching the entered text was found.",
-                                      QgsMessageBar.WARNING)
-                    self.webView.setVisible(False)
+                self.webView.setHtml(self._getSearchHtml(body))
+                self.webView.setVisible(True)
+                self._toggleSearchProgress(False)
             except Exception as e:
                 self._toggleSearchProgress(False)
                 self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
@@ -276,20 +271,16 @@ class ConnectDockWidget(BASE, WIDGET):
         if text:
             try:
                 results = execute(lambda: connect.searchBasemaps(text, self.token))
+                body = "<h1>{} results</h1><hr/>".format(len(results))
                 if results:
                     self.searchResults = {"canvas"+r.url:r for r in results}
                     self.searchResults.update({"project"+r.url:r for r in results})
-                    body = "<h1>{} results</h1><hr/>".format(len(results))
                     body += "<ul>"
                     for r in results:
                         body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                     body += "</ul>"
-                    self.webView.setHtml(self._getSearchHtml(body))
-                    self.webView.setVisible(True)
-                else:
-                    self._showMessage("No search matching the entered text was found.",
-                                      QgsMessageBar.WARNING)
-                    self.webView.setVisible(False)
+                self.webView.setHtml(self._getSearchHtml(body))
+                self.webView.setVisible(True)
             except Exception as e:
                 self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
                                   QgsMessageBar.WARNING)
