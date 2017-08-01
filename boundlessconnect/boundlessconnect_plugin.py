@@ -44,9 +44,9 @@ from qgiscommons.gui import (askForFiles,
                                 removeHelpMenu,
                                 addAboutMenu,
                                 removeAboutMenu)
-from qgiscommons.settings import (readSettings,
-                                  addSettingsMenu,
-                                  removeSettingsMenu)
+from qgiscommons.gui.settings import (readSettings,
+                                      addSettingsMenu,
+                                      removeSettingsMenu)
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils

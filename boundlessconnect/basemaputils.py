@@ -38,7 +38,7 @@ from qgis.core import (QgsApplication,
 from qgis.gui import QgsFileDownloader
 
 from qgiscommons.network.networkaccessmanager import NetworkAccessManager
-from qgiscommons.settings import pluginSetting
+from qgiscommons.gui.settings import pluginSetting
 
 PROJECT_DEFAULT_TEMPLATE = os.path.join(os.path.dirname(__file__), 'resources', 'project_default.qgs.tpl')
 

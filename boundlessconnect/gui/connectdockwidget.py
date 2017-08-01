@@ -51,7 +51,7 @@ from qgiscommons.network.oauth2 import (oauth2_supported,
                                 setup_oauth,
                                 get_oauth_authcfg
                                )
-from qgiscommons.settings import pluginSetting, setPluginSetting
+from qgiscommons.gui.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
