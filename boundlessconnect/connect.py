@@ -72,14 +72,13 @@ class ConnectContent(object):
         s = """<div class="icon"><div class="icon-container">
                <img src="{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
-               <a class="btn{available}" href="{url}">{itemType}</a>
+               <a class="btn{available}" href="{url}">OPEN</a>
                </div>
             """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
                        title=self.name,
                        description=desc,
                        available=canInstall,
-                       url=self.url,
-                       itemType=self.typeName().upper())
+                       url=self.url)
         return s
 
 
@@ -155,6 +154,24 @@ class ConnectLesson(ConnectContent):
                 QgsMessageBar.WARNING)
         else:
             self.downloadAndInstall()
+
+    def asHtmlEntry(self, roles):
+        canInstall = "Green" if self.canOpen(roles) else "Orange"
+        desc = self.description
+        if len(self.description) < 100:
+            desc = self.description + "&nbsp;  " * (100-len(self.description))
+        s = """<div class="icon"><div class="icon-container">
+               <img src="{image}"></div></div>
+               <div class="description"><h2>{title}</h2><p>{description}</p>
+               <a class="btn{available}" href="{url}">INSTALL</a>
+               </div>
+            """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
+                       title=self.name,
+                       description=desc,
+                       available=canInstall,
+                       url=self.url)
+        return s
+
 
     def downloadAndInstall(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
