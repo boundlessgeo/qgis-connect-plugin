@@ -240,26 +240,25 @@ class ConnectDockWidget(BASE, WIDGET):
             return
 
         text = self.leSearch.text().strip()
-        if text:
-            self.searchPage = page
-            try:
-                self._toggleSearchProgress()
-                results = execute(lambda: connect.findAll(text, category, self.token))
-                body = "<h1>{} results</h1><hr/>".format(len(results))
-                if results:
-                    self.searchResults = {r.url:r for r in results}
-                    body += "<ul>"
-                    for r in results:
-                        body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
-                    body += "</ul>"
+        self.searchPage = page
+        try:
+            self._toggleSearchProgress()
+            results = execute(lambda: connect.findAll(text, category, self.token))
+            body = "<h1>{} results</h1><hr/>".format(len(results))
+            if results:
+                self.searchResults = {r.url:r for r in results}
+                body += "<ul>"
+                for r in results:
+                    body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                body += "</ul>"
 
-                self.webView.setHtml(self._getSearchHtml(body))
-                self.webView.setVisible(True)
-                self._toggleSearchProgress(False)
-            except Exception as e:
-                self._toggleSearchProgress(False)
-                self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
-                                  QgsMessageBar.WARNING)
+            self.webView.setHtml(self._getSearchHtml(body))
+            self.webView.setVisible(True)
+            self._toggleSearchProgress(False)
+        except Exception as e:
+            self._toggleSearchProgress(False)
+            self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                              QgsMessageBar.WARNING)
 
     def _findBasemap(self):
         if self.token is None:
@@ -268,22 +267,21 @@ class ConnectDockWidget(BASE, WIDGET):
             return
 
         text = self.leSearch.text().strip()
-        if text:
-            try:
-                results = execute(lambda: connect.searchBasemaps(text, self.token))
-                body = "<h1>{} results</h1><hr/>".format(len(results))
-                if results:
-                    self.searchResults = {"canvas"+r.url:r for r in results}
-                    self.searchResults.update({"project"+r.url:r for r in results})
-                    body += "<ul>"
-                    for r in results:
-                        body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
-                    body += "</ul>"
-                self.webView.setHtml(self._getSearchHtml(body))
-                self.webView.setVisible(True)
-            except Exception as e:
-                self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
-                                  QgsMessageBar.WARNING)
+        try:
+            results = execute(lambda: connect.searchBasemaps(text, self.token))
+            body = "<h1>{} results</h1><hr/>".format(len(results))
+            if results:
+                self.searchResults = {"canvas"+r.url:r for r in results}
+                self.searchResults.update({"project"+r.url:r for r in results})
+                body += "<ul>"
+                for r in results:
+                    body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                body += "</ul>"
+            self.webView.setHtml(self._getSearchHtml(body))
+            self.webView.setVisible(True)
+        except Exception as e:
+            self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                              QgsMessageBar.WARNING)
 
     def requestFinished(self):
         QApplication.restoreOverrideCursor()

@@ -373,6 +373,9 @@ def loadPlugins():
 
 
 def search(text, category='', page=0, token=None):
+    if text == '':
+        text = '%'
+
     searchUrl = "{}/search/?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
 
     headers = {}
@@ -434,14 +437,23 @@ def searchBasemaps(text, token):
     maps = [l for l in j if basemaputils.isSupported(l)]
 
     results = []
-    for item in maps:
-        if text.lower() in item["name"].lower() or text.lower() in item["description"].lower():
+    if text == '':
+        for item in maps:
             results.append(
                 ConnectBasemap(item["endpoint"],
                                item["name"],
                                item["description"],
                                item,
                                item["accessList"]))
+    else:
+        for item in maps:
+            if text.lower() in item["name"].lower() or text.lower() in item["description"].lower():
+                results.append(
+                    ConnectBasemap(item["endpoint"],
+                                   item["name"],
+                                   item["description"],
+                                   item,
+                                   item["accessList"]))
 
     return results
 
