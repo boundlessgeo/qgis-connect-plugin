@@ -373,19 +373,20 @@ def loadPlugins():
 
 
 def search(text, category='', page=0, token=None):
-    if text == '':
-        text = '%'
-
-    searchUrl = "{}/search/?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+    if text != '':
+        text = '&q=' + text
+        searchUrl = "{}/search/?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+    else:
+        searchUrl = "{}/search/matchAll?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
 
     headers = {}
     headers["Authorization"] = "Bearer {}".format(token)
 
     nam = NetworkAccessManager()
     if category == '':
-        res, content = nam.request("{}&q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE), headers=headers)
+        res, content = nam.request("{}{}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE), headers=headers)
     else:
-        res, content = nam.request("{}&q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE), headers=headers)
+        res, content = nam.request("{}{}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE), headers=headers)
 
     j = json.loads(re.sub(r'[^\x00-\x7f]',r'', content))
     results = []
