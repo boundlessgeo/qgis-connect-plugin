@@ -397,7 +397,7 @@ def search(text, category='', page=0, token=None):
         if category != "PLUG":
             title = props["title"] or props["description"].split(".")[0]
             if category in categories:
-                results.append(categories[category][0](props["url"],
+                results.append(categories[category][0](props["url"].replace("\n", ""),
                                                         title,
                                                         props["description"],
                                                         roles))
