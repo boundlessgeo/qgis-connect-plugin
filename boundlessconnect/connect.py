@@ -24,10 +24,10 @@ from qgis import utils as qgsutils
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
 
-from qgiscommons.network.networkaccessmanager import NetworkAccessManager
-from qgiscommons.gui.settings import pluginSetting
-from qgiscommons.files import tempFilenameInTempFolder
-from qgiscommons.network.oauth2 import (oauth2_supported,
+from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
+from qgiscommons2.gui.settings import pluginSetting
+from qgiscommons2.files import tempFilenameInTempFolder
+from qgiscommons2.network.oauth2 import (oauth2_supported,
                                 get_oauth_authcfg
                                )
 from boundlessconnect.gui.executor import execute

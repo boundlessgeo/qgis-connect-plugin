@@ -39,12 +39,12 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
-from qgiscommons.gui import (askForFiles,
+from qgiscommons2.gui import (askForFiles,
                                 addHelpMenu,
                                 removeHelpMenu,
                                 addAboutMenu,
                                 removeAboutMenu)
-from qgiscommons.gui.settings import (readSettings,
+from qgiscommons2.gui.settings import (readSettings,
                                       addSettingsMenu,
                                       removeSettingsMenu)
 

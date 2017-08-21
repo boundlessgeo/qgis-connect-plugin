@@ -60,7 +60,7 @@ from pyplugin_installer.installer_data import (reposGroup,
 from pyplugin_installer.version_compare import compareVersions
 from pyplugin_installer.unzip import unzip
 
-from qgiscommons.settings import pluginSetting, setPluginSetting
+from qgiscommons2.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.plugins import (boundlessRepoName,
                                       repoUrlFile,

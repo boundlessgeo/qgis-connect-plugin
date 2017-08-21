@@ -47,11 +47,11 @@ from qgis.utils import iface
 
 from pyplugin_installer.installer_data import reposGroup
 
-from qgiscommons.network.oauth2 import (oauth2_supported,
+from qgiscommons2.network.oauth2 import (oauth2_supported,
                                 setup_oauth,
                                 get_oauth_authcfg
                                )
-from qgiscommons.gui.settings import pluginSetting, setPluginSetting
+from qgiscommons2.gui.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute

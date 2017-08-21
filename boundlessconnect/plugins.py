@@ -45,7 +45,7 @@ from pyplugin_installer.installer_data import (settingsGroup,
 from pyplugin_installer.version_compare import (compareVersions,
                                                 normalizeVersion,
                                                 isCompatible)
-from qgiscommons.settings import pluginSetting, setPluginSetting
+from qgiscommons2.settings import pluginSetting, setPluginSetting
 
 pluginPath = os.path.dirname(__file__)
 
