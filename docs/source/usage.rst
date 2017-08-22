@@ -84,7 +84,7 @@ like to add Boundless basemap to your default project?*. If you choose
 project. After this, every time you open a new project it will contain the
 Mapbox basemap layer.
 
-You can revert this setting in going to :menuselection:`Settings -->
+You can revert this setting going to :menuselection:`Settings -->
 Options` and, in the :guilabel:`General` tab, reset the default project clicking
 :guilabel:`Reset default`. You can also replace your default project by the
 one loaded in QGIS by clicking :guilabel:`Set current project as default`
