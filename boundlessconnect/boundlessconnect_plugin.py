@@ -19,7 +19,7 @@
 import site
 import os
 
-site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/ext-libs'))
+site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/extlibs'))
 
 from builtins import object
 
