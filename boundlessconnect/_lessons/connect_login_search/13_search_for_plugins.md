@@ -13,4 +13,8 @@ A list of available plugins will show.
 
 ![plugins_results.png](plugins_results.png)
 
+**Note:** You can list all available plugins by
+clicking the **Search** icon (or pressing `Enter` on your keyboard)
+without entering any keyword.
+
 When you are done, click **Next Step**.
