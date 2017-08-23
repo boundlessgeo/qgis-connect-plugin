@@ -259,6 +259,7 @@ class ConnectPlugin(ConnectContent):
         def _install():
             installer = pyplugin_installer.instance()
             installer.installPlugin(self.plugin["id"])
+            self.plugin["status"] = "installed"
 
         execute(_install)
 
