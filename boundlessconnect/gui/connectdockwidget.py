@@ -361,25 +361,31 @@ class ConnectDockWidget(BASE, WIDGET):
             setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), endpointUrl)
 
     def tabChanged(self, index):
-        if self.leSearch.text() != "":
-            if index == 0:
-                self._toggleCategoriesSelector(True)
-                self._toggleSearchControls(True)
-                categories = self.cmbContentType.selectedData(Qt.UserRole)
-                if len(categories) == 0:
-                    categories = list(connect.categories.keys())
-                cat = ','.join(categories)
+        if index == 0:
+            self._toggleCategoriesSelector(True)
+            self._toggleSearchControls(True)
+            categories = self.cmbContentType.selectedData(Qt.UserRole)
+            if len(categories) == 0:
+                categories = list(connect.categories.keys())
+            cat = ','.join(categories)
+            if self.leSearch.text() != "":
                 self._search(cat)
-            elif index == 1:
-                self._toggleCategoriesSelector(False)
-                self._toggleSearchControls(oauth2_supported())
+            else:
+                self.webView.hide()
+        elif index == 1:
+            self._toggleCategoriesSelector(False)
+            self._toggleSearchControls(oauth2_supported())
+            if self.leSearch.text() != "":
                 self._findBasemap()
-            elif index == 2:
-                self._toggleCategoriesSelector(False)
-                self._toggleSearchControls(True)
+            else:
+                self.webView.hide()
+        elif index == 2:
+            self._toggleCategoriesSelector(False)
+            self._toggleSearchControls(True)
+            if self.leSearch.text() != "":
                 self._search("PLUG")
-        else:
-            self.webView.hide()
+            else:
+                self.webView.hide()
 
     def _toggleCategoriesSelector(self, visible):
         self.lblCategorySearch.setVisible(visible)
