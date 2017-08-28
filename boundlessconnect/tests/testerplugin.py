@@ -112,7 +112,18 @@ def functionalTests():
                             'box empty and press Enter. Verify that no '
                             'results are shown and no error is thrown',
                             isVerifyStep=True)
-
+    emptySearchTest.addStep('Switch to the "Knowledge" tab. Type "mapbox" in '
+                            'the search box and press Enter. Verify that some '
+                            'results are shown and no error is thrown',
+                            isVerifyStep=True)
+    emptySearchTest.addStep('Switch to the "Plugins" tab. Verify that no '
+                            'results are shown and no error is thrown',
+                            isVerifyStep=True)
+    emptySearchTest.addStep('Clear search field and switch to the "Data" '
+                            'tab. Verify that no results list is hidden and '
+                            'no error is thrown',
+                            isVerifyStep=True)
+    
     searchTest = Test("Check normal search")
     searchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                        prestep=lambda: _startConectPlugin())
