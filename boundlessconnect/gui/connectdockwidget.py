@@ -361,22 +361,25 @@ class ConnectDockWidget(BASE, WIDGET):
             setup_oauth(self.connectWidget.login().strip(), self.connectWidget.password().strip(), endpointUrl)
 
     def tabChanged(self, index):
-        if index == 0:
-            self._toggleCategoriesSelector(True)
-            self._toggleSearchControls(True)
-            categories = self.cmbContentType.selectedData(Qt.UserRole)
-            if len(categories) == 0:
-                categories = list(connect.categories.keys())
-            cat = ','.join(categories)
-            self._search(cat)
-        elif index == 1:
-            self._toggleCategoriesSelector(False)
-            self._toggleSearchControls(oauth2_supported())
-            self._findBasemap()
-        elif index == 2:
-            self._toggleCategoriesSelector(False)
-            self._toggleSearchControls(True)
-            self._search("PLUG")
+        if self.leSearch.text() != "":
+            if index == 0:
+                self._toggleCategoriesSelector(True)
+                self._toggleSearchControls(True)
+                categories = self.cmbContentType.selectedData(Qt.UserRole)
+                if len(categories) == 0:
+                    categories = list(connect.categories.keys())
+                cat = ','.join(categories)
+                self._search(cat)
+            elif index == 1:
+                self._toggleCategoriesSelector(False)
+                self._toggleSearchControls(oauth2_supported())
+                self._findBasemap()
+            elif index == 2:
+                self._toggleCategoriesSelector(False)
+                self._toggleSearchControls(True)
+                self._search("PLUG")
+        else:
+            self.webView.hide()
 
     def _toggleCategoriesSelector(self, visible):
         self.lblCategorySearch.setVisible(visible)
