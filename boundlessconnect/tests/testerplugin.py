@@ -85,6 +85,14 @@ def functionalTests():
                                    'Check that the Connect panel shows login page.',
                                    prestep=lambda: _startConectPlugin(),
                                    isVerifyStep=True)
+    
+    invalidEndpointTest = Test('Check login with wrong endpoint')
+    invalidEndpointTest.addStep('Open plugin settings from "PLugins -> Boundless Connect -> Plugin Settings" menu. '
+                                'Enter "https://dummy.com" as Connect endpoint and close dialog by pressing OK.')
+    invalidEndpointTest.addStep('Enter valid Connect credentials and press "Login" button. Verify that error '
+                                'message about token is shown and login page is active.',
+                                prestep=lambda: _startConectPlugin(),
+                                isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
     repeatedLoginTest.addStep('Enter valid Connect credentials and press "Login" button.',
@@ -345,10 +353,10 @@ def functionalTests():
 
 
     return [emptyCredentialsTest, invalidCredentialsTest, repeatedLoginTest,
-            emptySearchTest, searchTest, wrongSearchTest, categorySearchTest,
-            pluginSearchTest, rolesDisplayTest, basemapsLoadingTest,
-            defaultProjectTest, complexDefaultProjectTest, lessonsInstallTest,
-            helpTest, toggleVisibilityTest]
+            invalidEndpointTest, emptySearchTest, searchTest, wrongSearchTest,
+            categorySearchTest, pluginSearchTest, rolesDisplayTest,
+            basemapsLoadingTest, defaultProjectTest, complexDefaultProjectTest,
+            lessonsInstallTest, helpTest, toggleVisibilityTest]
 
 
 class BoundlessConnectTests(unittest.TestCase):

@@ -144,7 +144,6 @@ class ConnectDockWidget(BASE, WIDGET):
             self.connectWidget.setLogin(username)
             self.connectWidget.setPassword(password)
 
-
         BASE.showEvent(self, event)
 
     def keyPressEvent(self, event):
@@ -201,6 +200,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.token = connect.getToken(self.connectWidget.login().strip(), self.connectWidget.password().strip())
         if self.token is None:
             QMessageBox.warning(self, "Error!", "Can not get token. Please check you credentials and endpoint URL in plugin settings.")
+            return
         self.reply = QgsNetworkAccessManager.instance().get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
