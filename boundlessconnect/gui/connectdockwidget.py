@@ -199,6 +199,7 @@ class ConnectDockWidget(BASE, WIDGET):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.token = connect.getToken(self.connectWidget.login().strip(), self.connectWidget.password().strip())
         if self.token is None:
+            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, "Error!", "Can not get token. Please check you credentials and endpoint URL in plugin settings.")
             return
         self.reply = QgsNetworkAccessManager.instance().get(self.request)
