@@ -213,9 +213,9 @@ class ConnectDockWidget(BASE, WIDGET):
             cat = ','.join(categories)
             self._search(cat, page)
         elif self.tabsContent.currentIndex() == 1:
-            self._findBasemap()
+            self._findBasemaps()
         elif self.tabsContent.currentIndex() == 2:
-            self._search("PLUG", page)
+            self._findPlugins()
 
         self.svgLogo.hide()
         self.lblSmallLogo.show()
@@ -225,13 +225,13 @@ class ConnectDockWidget(BASE, WIDGET):
                               <html>
                               <head>
                               <style>
-                              %s
+                              {}
                               </style>
                               </head>
                               <body>
-                              %s
+                              {}
                               </body>
-                              </html>''' % (self.css, body)
+                              </html>'''.format(self.css, body)
         return html
 
     def _search(self, category, page=0):
@@ -244,7 +244,39 @@ class ConnectDockWidget(BASE, WIDGET):
         self.searchPage = page
         try:
             self._toggleSearchProgress()
-            results = execute(lambda: connect.findAll(text, category, self.token))
+            results = execute(lambda: connect.search(text, category, self.searchPage, self.token))
+            body = "<h1>{} results</h1><hr/>".format(len(results))
+            if results:
+                self.searchResults = {r.url:r for r in results}
+                body += "<ul>"
+                for r in results:
+                    body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                body += "</ul>"
+
+                if len(results) == connect.RESULTS_PER_PAGE:
+                    if self.searchPage == 0:
+                        body += "<a class='btnGreen' href='next'>Next</a>"
+                    else:
+                        body += "<a class='btnGreen' href='previous'>Previous</a><a class='btnGreen' href='next'>Next</a>"
+
+            self.webView.setHtml(self._getSearchHtml(body))
+            self.webView.setVisible(True)
+            self._toggleSearchProgress(False)
+        except Exception as e:
+            self._toggleSearchProgress(False)
+            self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                              QgsMessageBar.WARNING)
+
+    def _findPlugins(self):
+        if self.token is None:
+            self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
+                              QgsMessageBar.WARNING)
+            return
+
+        text = self.leSearch.text().strip()
+        try:
+            self._toggleSearchProgress()
+            results = execute(lambda: connect.findAll(text, "PLUG", self.token))
             body = "<h1>{} results</h1><hr/>".format(len(results))
             if results:
                 self.searchResults = {r.url:r for r in results}
@@ -261,7 +293,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
                               QgsMessageBar.WARNING)
 
-    def _findBasemap(self):
+    def _findBasemaps(self):
         if self.token is None:
             self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
                               QgsMessageBar.WARNING)
