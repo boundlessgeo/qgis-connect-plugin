@@ -211,7 +211,7 @@ class ConnectDockWidget(BASE, WIDGET):
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
             cat = ','.join(categories)
-            self._findContent(cat)
+            self._findContent(cat, page)
         elif self.tabsContent.currentIndex() == 1:
             if oauth2_supported():
                 self._findBasemaps()
