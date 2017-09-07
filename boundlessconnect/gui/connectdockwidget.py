@@ -211,7 +211,7 @@ class ConnectDockWidget(BASE, WIDGET):
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
             cat = ','.join(categories)
-            self._search(cat, page)
+            self._findContent(cat)
         elif self.tabsContent.currentIndex() == 1:
             self._findBasemaps()
         elif self.tabsContent.currentIndex() == 2:
@@ -234,7 +234,7 @@ class ConnectDockWidget(BASE, WIDGET):
                               </html>'''.format(self.css, body)
         return html
 
-    def _search(self, category, page=0):
+    def _findContent(self, category, page=0):
         if self.token is None:
             self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
                               QgsMessageBar.WARNING)
