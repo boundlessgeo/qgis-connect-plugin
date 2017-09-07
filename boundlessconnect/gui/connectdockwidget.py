@@ -258,6 +258,9 @@ class ConnectDockWidget(BASE, WIDGET):
                         body += "<a class='btnGreen' href='next'>Next</a>"
                     else:
                         body += "<a class='btnGreen' href='previous'>Previous</a><a class='btnGreen' href='next'>Next</a>"
+                else:
+                    if self.searchPage != 0:
+                        body += "<a class='btnGreen' href='previous'>Previous</a>"
 
             self.webView.setHtml(self._getSearchHtml(body))
             self.webView.setVisible(True)
