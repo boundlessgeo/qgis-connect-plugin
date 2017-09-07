@@ -213,7 +213,8 @@ class ConnectDockWidget(BASE, WIDGET):
             cat = ','.join(categories)
             self._findContent(cat)
         elif self.tabsContent.currentIndex() == 1:
-            self._findBasemaps()
+            if oauth2_supported():
+                self._findBasemaps()
         elif self.tabsContent.currentIndex() == 2:
             self._findPlugins()
 
@@ -411,7 +412,8 @@ class ConnectDockWidget(BASE, WIDGET):
         elif index == 1:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(oauth2_supported())
-            self._findBasemaps()
+            if oauth2_supported():
+                self._findBasemaps()
         elif index == 2:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(True)
