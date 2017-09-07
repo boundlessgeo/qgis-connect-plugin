@@ -245,7 +245,6 @@ class ConnectDockWidget(BASE, WIDGET):
         try:
             self._toggleSearchProgress()
             results = execute(lambda: connect.search(text, category, self.searchPage, self.token))
-            body = "<h1>{} results</h1><hr/>".format(len(results))
             if results:
                 self.searchResults = {r.url:r for r in results}
                 body += "<ul>"
