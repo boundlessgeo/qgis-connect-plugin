@@ -365,6 +365,9 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.loggedIn = True
 
+        cat = ",".join(list(connect.categories.keys()))
+        self._findContent(cat)
+
     def saveOrUpdateAuthId(self):
         if self.authId == '':
             authConfig = QgsAuthMethodConfig('Basic')
