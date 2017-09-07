@@ -263,6 +263,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self._toggleSearchProgress(False)
         except Exception as e:
             self._toggleSearchProgress(False)
+            self.webView.setHtml("")
             self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
                               QgsMessageBar.WARNING)
 
@@ -289,6 +290,7 @@ class ConnectDockWidget(BASE, WIDGET):
             self._toggleSearchProgress(False)
         except Exception as e:
             self._toggleSearchProgress(False)
+            self.webView.setHtml("")
             self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
                               QgsMessageBar.WARNING)
 
@@ -312,6 +314,8 @@ class ConnectDockWidget(BASE, WIDGET):
             self.webView.setHtml(self._getSearchHtml(body))
             self.webView.setVisible(True)
         except Exception as e:
+            self._toggleSearchProgress(False)
+            self.webView.setHtml("")
             self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
                               QgsMessageBar.WARNING)
 
