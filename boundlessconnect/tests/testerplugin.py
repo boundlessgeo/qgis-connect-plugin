@@ -85,7 +85,7 @@ def functionalTests():
                                    'Check that the Connect panel shows login page.',
                                    prestep=lambda: _startConectPlugin(),
                                    isVerifyStep=True)
-    
+
     invalidEndpointTest = Test('Check login with wrong endpoint')
     invalidEndpointTest.addStep('Open plugin settings from "PLugins -> Boundless Connect -> Plugin Settings" menu. '
                                 'Enter "https://dummy.com" as Connect endpoint and close dialog by pressing OK.')
@@ -108,36 +108,35 @@ def functionalTests():
     emptySearchTest = Test("Check empty search")
     emptySearchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                             prestep=lambda: _startConectPlugin())
-    emptySearchTest.addStep('Switch to the "Knowledge" tab. Leave search '
-                            'box empty and press Enter. Verify that no '
-                            'results are shown and no error is thrown',
+    emptySearchTest.addStep('Verify that "Knowledge" tab is shown, '
+                            'populated with content and no error is thrown',
                             isVerifyStep=True)
-    emptySearchTest.addStep('Switch to the "Data" tab. Leave search '
-                            'box empty and press Enter. Verify that no '
-                            'results are shown and no error is thrown',
+    emptySearchTest.addStep('Switch to the "Data" tab. Verify that '
+                            'some results are shown and no error is thrown',
                             isVerifyStep=True)
-    emptySearchTest.addStep('Switch to the "Plugins" tab. Leave search '
-                            'box empty and press Enter. Verify that no '
-                            'results are shown and no error is thrown',
+    emptySearchTest.addStep('Switch to the "Plugins" tab. Verify that '
+                            'some results are shown and no error is thrown',
                             isVerifyStep=True)
-    emptySearchTest.addStep('Switch to the "Knowledge" tab. Type "mapbox" in '
-                            'the search box and press Enter. Verify that some '
+    emptySearchTest.addStep('Type "mapbox" in the search box and Switch '
+                            'to the "Knowledge" tab. Verify that some '
                             'results are shown and no error is thrown',
                             isVerifyStep=True)
     emptySearchTest.addStep('Switch to the "Plugins" tab. Verify that no '
                             'results are shown and no error is thrown',
                             isVerifyStep=True)
     emptySearchTest.addStep('Clear search field and switch to the "Data" '
-                            'tab. Verify that no results list is hidden and '
+                            'tab. Verify that some results are shown and '
                             'no error is thrown',
                             isVerifyStep=True)
-    
+
     searchTest = Test("Check normal search")
     searchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                        prestep=lambda: _startConectPlugin())
-    searchTest.addStep('Switch to the "Knowledge" tab. Type "gdal" in '
-                       'the search box and press Enter. Verify that '
-                       'a list of results is shown.',
+    searchTest.addStep('Verify that "Knowledge" tab is shown, '
+                       'populated with content and no error is thrown',
+                       isVerifyStep=True)
+    searchTest.addStep('Type "gdal" in the search box and press Enter. '
+                       'Verify that a list of results is shown.',
                        isVerifyStep=True)
     searchTest.addStep('Type "lesson" in the search box and switch '
                        'to the "Plugins" tab. Verify that one plugin result is shown.',
@@ -146,19 +145,49 @@ def functionalTests():
                        'to the "Data" tab. Verify that a list of results is shown.',
                        isVerifyStep=True)
 
+    paginationTest = Test("Check normal search")
+    paginationTest.addStep('Enter valid Connect credentials and press "Login" button.',
+                           prestep=lambda: _startConectPlugin())
+    paginationTest.addStep('Verify that "Knowledge" tab is shown, '
+                           'populated with content and no error is thrown',
+                           isVerifyStep=True)
+    paginationTest.addStep('Type "geogig" in the search box and press Enter. '
+                           'Verify that a list of results is shown and there is'
+                           'a "Next" button at the bottom',
+                           isVerifyStep=True)
+    paginationTest.addStep('Click on the "Next" button. Verify that new '
+                           'results are loaded and at the bottom there are '
+                           'two buttons: "Next" and "Previous"',
+                           isVerifyStep=True)
+    paginationTest.addStep('Continue clicking on the "Next" button until '
+                           'last page loaded. Verify that only "Previous" '
+                           'is shown at the bottom of the results list',
+                            isVerifyStep=True)
+    paginationTest.addStep('Click on the "Previous" button. Verify that '
+                           'new you returned to the previous page.',
+                           isVerifyStep=True)
+    paginationTest.addStep('Continue clicking on the "Previous" button until '
+                           'first page loaded. Verify that only "Next" '
+                           'is shown at the bottom of the results list',
+                            isVerifyStep=True)
+
     wrongSearchTest = Test("Check wrong search")
     wrongSearchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                             prestep=lambda: _startConectPlugin())
-    wrongSearchTest.addStep('Switch to the "Knowledge" tab. Type '
-                            '"wrongsearch" in the search box and '
+    wrongSearchTest.addStep('Verify that "Knowledge" tab is shown, '
+                            'populated with content and no error is thrown',
+                            isVerifyStep=True)
+    wrongSearchTest.addStep('Type "wrongsearch" in the search box and '
                             'press Enter. Verify that a warning is displayed.',
                             isVerifyStep=True)
 
     categorySearchTest = Test("Check search by categories")
     categorySearchTest.addStep('Enter valid Connect credentials and press "Login" button.',
                                prestep=lambda: _startConectPlugin())
-    categorySearchTest.addStep('Switch to the "Knowledge" tab. Type '
-                               '"MIL-STD-2525" in the search box and '
+    categorySearchTest.addStep('Verify that "Knowledge" tab is shown, '
+                               'populated with content and no error is thrown',
+                               isVerifyStep=True)
+    categorySearchTest.addStep('Type "MIL-STD-2525" in the search box and '
                                'ensure no category is selected in "Search in" '
                                'combobox. Press Enter. Verify that multiple '
                                'results are shown and they are from '
@@ -179,6 +208,9 @@ def functionalTests():
     pluginSearchTest = Test("Check that plugins search results correctly retrieved")
     pluginSearchTest.addStep('Login with valid Connect credentials',
                              prestep=lambda: _startConectPlugin())
+    pluginSearchTest.addStep('Verify that "Knowledge" tab is shown, '
+                             'populated with content and no error is thrown',
+                             isVerifyStep=True)
     pluginSearchTest.addStep('Switch to the "Plugins" tab, type '
                              '"MIL-STD-2525" in the search field '
                              'and press search button')
@@ -188,6 +220,9 @@ def functionalTests():
     rolesDisplayTest = Test("Check roles display")
     rolesDisplayTest.addStep('Enter valid (non-enterprise) Connect credentials and press "Login" button.',
                              prestep=lambda: _startConectPlugin())
+    rolesDisplayTest.addStep('Verify that "Knowledge" tab is shown, '
+                             'populated with content and no error is thrown',
+                             isVerifyStep=True)
     rolesDisplayTest.addStep('Switch to the "Plugin" tab. Type '
                              '"MIL-STD-2525" in the search box and '
                              'press Enter. Verify that one plugin result '
@@ -199,6 +234,9 @@ def functionalTests():
                              isVerifyStep=True)
     rolesDisplayTest.addStep('Click on the "Logout" button')
     rolesDisplayTest.addStep('Login with credentials for "Desktop Enterprise"')
+    rolesDisplayTest.addStep('Verify that "Knowledge" tab is shown, '
+                             'populated with content and no error is thrown',
+                             isVerifyStep=True)
     rolesDisplayTest.addStep('Switch to the "Plugin" tab. Type '
                              '"MIL-STD-2525" in the search box and '
                              'press Enter. Verify that one plugin result '
@@ -212,9 +250,12 @@ def functionalTests():
     basemapsLoadingTest = Test("Check basemaps loading")
     basemapsLoadingTest.addStep('Login with credentials for "Desktop Enterprise".',
                                 prestep=lambda: _startConectPlugin())
-    basemapsLoadingTest.addStep('Switch to the "Data" tab. Type "mapbox" '
-                                'in the search box and press Enter. '
-                                'Verify that list of the basemaps shown.',
+    basemapsLoadingTest.addStep('Verify that "Knowledge" tab is shown, '
+                                'populated with content and no error is thrown',
+                                isVerifyStep=True)
+    basemapsLoadingTest.addStep('Type "mapbox" in the search box and '
+                                'switch to the "Data" tab. Verify that '
+                                'list of the basemaps shown.',
                                 isVerifyStep=True)
     basemapsLoadingTest.addStep('Press "ADD TO MAP" button under any '
                                 'basemap and verify that basemap added '
@@ -353,8 +394,8 @@ def functionalTests():
 
 
     return [emptyCredentialsTest, invalidCredentialsTest, repeatedLoginTest,
-            invalidEndpointTest, emptySearchTest, searchTest, wrongSearchTest,
-            categorySearchTest, pluginSearchTest, rolesDisplayTest,
+            invalidEndpointTest, emptySearchTest, searchTest, paginationTest,
+            wrongSearchTest, categorySearchTest, pluginSearchTest, rolesDisplayTest,
             basemapsLoadingTest, defaultProjectTest, complexDefaultProjectTest,
             lessonsInstallTest, helpTest, toggleVisibilityTest]
 
