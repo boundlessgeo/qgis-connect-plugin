@@ -404,6 +404,7 @@ class ConnectDockWidget(BASE, WIDGET):
         if index == 0:
             self._toggleCategoriesSelector(True)
             self._toggleSearchControls(True)
+            self.webView.setHtml("")
             categories = self.cmbContentType.selectedData(Qt.UserRole)
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
@@ -412,11 +413,13 @@ class ConnectDockWidget(BASE, WIDGET):
         elif index == 1:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(oauth2_supported())
+            self.webView.setHtml("")
             if oauth2_supported():
                 self._findBasemaps()
         elif index == 2:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(True)
+            self.webView.setHtml("")
             self._findPlugins()
 
     def _toggleCategoriesSelector(self, visible):
