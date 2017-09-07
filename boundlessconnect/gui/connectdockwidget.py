@@ -247,7 +247,7 @@ class ConnectDockWidget(BASE, WIDGET):
             results = execute(lambda: connect.search(text, category, self.searchPage, self.token))
             if results:
                 self.searchResults = {r.url:r for r in results}
-                body += "<ul>"
+                body = "<ul>"
                 for r in results:
                     body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
                 body += "</ul>"
@@ -407,7 +407,7 @@ class ConnectDockWidget(BASE, WIDGET):
         elif index == 1:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(oauth2_supported())
-            self._findBasemap()
+            self._findBasemaps()
         elif index == 2:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(True)
