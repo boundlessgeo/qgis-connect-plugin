@@ -400,24 +400,15 @@ class ConnectDockWidget(BASE, WIDGET):
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
             cat = ','.join(categories)
-            if self.leSearch.text() != "":
-                self._search(cat)
-            else:
-                self.webView.hide()
+            self._findContent(cat)
         elif index == 1:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(oauth2_supported())
-            if self.leSearch.text() != "":
-                self._findBasemap()
-            else:
-                self.webView.hide()
+            self._findBasemap()
         elif index == 2:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(True)
-            if self.leSearch.text() != "":
-                self._search("PLUG")
-            else:
-                self.webView.hide()
+            self._findPlugins()
 
     def _toggleCategoriesSelector(self, visible):
         self.lblCategorySearch.setVisible(visible)
