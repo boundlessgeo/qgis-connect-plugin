@@ -109,7 +109,10 @@ class ConnectDockWidget(BASE, WIDGET):
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         cssFile = os.path.join(pluginPath, "resources", "search.css")
         with open(cssFile) as f:
-            self.css = f.read()
+            content = f.read()
+
+        self.css = content.replace("#PLUGIN_PATH#", QUrl.fromLocalFile(pluginPath).toString())
+
         self.webView.linkClicked.connect(self.linkClicked)
 
         for cat, cls in connect.categories.items():
@@ -255,12 +258,12 @@ class ConnectDockWidget(BASE, WIDGET):
 
                 if len(results) == connect.RESULTS_PER_PAGE:
                     if self.searchPage == 0:
-                        body += "<a class='btnGreen' href='next'>Next</a>"
+                        body += "<div class='pagination'><div class='next'><a href='next'>Next</a></div></div>"
                     else:
-                        body += "<a class='btnGreen' href='previous'>Previous</a><a class='btnGreen' href='next'>Next</a>"
+                        body += "<div class='pagination'><div class='prev'><a href='previous'>Previous</a></div><div class='next'><a href='next'>Next</a></div></div>"
                 else:
                     if self.searchPage != 0:
-                        body += "<a class='btnGreen' href='previous'>Previous</a>"
+                        body += "<div class='pagination'><div class='prev'><a href='previous'>Previous</a></div></div>"
 
             self.webView.setHtml(self._getSearchHtml(body))
             self.webView.setVisible(True)
