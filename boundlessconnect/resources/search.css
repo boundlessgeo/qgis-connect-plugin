@@ -134,12 +134,16 @@ img {
   text-decoration: none;
   text-decoration: none;
   text-transform: uppercase;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
 .prev {
   float: left;
   display:inline;
   margin-left:30px;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .prev a {
@@ -159,6 +163,8 @@ img {
   float: right;
   display:inline;
   margin-right:30px;
+  font-size: 14px;
+  line-height: 20px;
 }
 
 .next a {
