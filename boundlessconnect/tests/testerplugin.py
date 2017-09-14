@@ -126,17 +126,7 @@ def functionalTests():
                               'filled with login and password you used at '
                               'the previous login',
                               isVerifyStep=True)
-    repeatedLoginTest.addStep('Uncheck "Remember me" checkbox and press '
-                              '"Login" button.',
-                              isVerifyStep=True)
-    repeatedLoginTest.addStep('Check that in the lower part of Connect '
-                              'plugin, correct login name is displayed.',
-                              isVerifyStep=True)
-    repeatedLoginTest.addStep('Click on the "Logout" button')
-    repeatedLoginTest.addStep('Verify that login and password fields are '
-                              'empty and "Remember me" checkbox is unchecked.',
-                              isVerifyStep=True)
-    repeatedLoginTest.addStep('Close Connect dock.')
+    repeatedLoginTest.addStep('Uncheck "Remember me". Close Connect dock.',)
     repeatedLoginTest.addStep('Open Connect dock from "Plugins -> Boundless Connect" '
                               'menu. Verify that login and password fields are '
                               'empty and "Remember me" checkbox is unchecked.',
