@@ -73,7 +73,6 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.loggedIn = False
         self.token = None
-        self.fillCredentials = pluginSetting("rememberCredentials")
 
         self.progressBar.hide()
 
@@ -105,6 +104,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.labelLevel.linkActivated.connect(self.showLogin)
         self.leSearch.buttonClicked.connect(self.search)
         self.leSearch.returnPressed.connect(self.search)
+        self.connectWidget.rememberStateChanged.connect(self.updateSettings)
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         cssFile = os.path.join(pluginPath, "resources", "search.css")
@@ -130,7 +130,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.showLogin()
 
     def showEvent(self, event):
-        if self.authId != '' and self.fillCredentials and not self.loggedIn:
+        fillCredentials = pluginSetting("rememberCredentials")
+        if self.authId != '' and fillCredentials and not self.loggedIn:
             authConfig = QgsAuthMethodConfig()
             if self.authId in QgsAuthManager.instance().configIds():
                 QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
@@ -167,8 +168,8 @@ class ConnectDockWidget(BASE, WIDGET):
         connect.resetToken()
         self.token = None
 
-        self.fillCredentials = pluginSetting("rememberCredentials")
-        if self.fillCredentials:
+        fillCredentials = pluginSetting("rememberCredentials")
+        if fillCredentials:
             self.connectWidget.setRemember(Qt.Checked)
 
             username = ""
@@ -212,7 +213,6 @@ class ConnectDockWidget(BASE, WIDGET):
             return
 
         setPluginSetting("rememberCredentials", self.connectWidget.remember())
-        self.fillCredentials = self.connectWidget.remember()
 
         utils.addBoundlessRepository()
 
@@ -520,6 +520,12 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self._showMessage("Basemap added to the default project.")
         return True
+
+    def updateSettings(self, state):
+        if state == Qt.Checked:
+            setPluginSetting("rememberCredentials", True)
+        else:
+            setPluginSetting("rememberCredentials", False)
 
     def _toggleSearchProgress(self, show=True):
         if show:
