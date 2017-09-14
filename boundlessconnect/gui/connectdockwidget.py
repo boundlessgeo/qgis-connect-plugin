@@ -72,8 +72,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.setupUi(self)
 
         self.loggedIn = False
-        self.askForAuth = False
         self.token = None
+        self.fillCredentials = pluginSetting("rememberCredentials")
 
         self.progressBar.hide()
 
@@ -130,7 +130,7 @@ class ConnectDockWidget(BASE, WIDGET):
         self.showLogin()
 
     def showEvent(self, event):
-        if self.authId != '' and self.askForAuth and not self.loggedIn:
+        if self.authId != '' and self.fillCredentials and not self.loggedIn:
             authConfig = QgsAuthMethodConfig()
             if self.authId in QgsAuthManager.instance().configIds():
                 QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
@@ -161,13 +161,30 @@ class ConnectDockWidget(BASE, WIDGET):
         self.webView.setVisible(False)
         self.webView.setHtml("")
         self.leSearch.setText("")
-        self.connectWidget.setLogin("")
-        self.connectWidget.setPassword("")
         self.tabsContent.setCurrentIndex(0)
         self.svgLogo.show()
         self.lblSmallLogo.hide()
         connect.resetToken()
         self.token = None
+
+        self.fillCredentials = pluginSetting("rememberCredentials")
+        if self.fillCredentials:
+            self.connectWidget.setRemember(Qt.Checked)
+
+            username = ""
+            password = ""
+            if self.authId != "":
+                authConfig = QgsAuthMethodConfig()
+                if self.authId in QgsAuthManager.instance().configIds():
+                    QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
+                    username = authConfig.config("username")
+                    password = authConfig.config("password")
+                self.connectWidget.setLogin(username)
+                self.connectWidget.setPassword(password)
+        else:
+            self.connectWidget.setRemember(Qt.Unchecked)
+            self.connectWidget.setLogin("")
+            self.connectWidget.setPassword("")
 
     def showHelp(self):
         webbrowser.open_new("file://{}".format(os.path.join(pluginPath, "docs", "html", "index.html")))
@@ -193,6 +210,9 @@ class ConnectDockWidget(BASE, WIDGET):
             self._showMessage("Please enter valid Connect credentials "
                               "to use plugin.")
             return
+
+        setPluginSetting("rememberCredentials", self.connectWidget.remember())
+        self.fillCredentials = self.connectWidget.remember()
 
         utils.addBoundlessRepository()
 

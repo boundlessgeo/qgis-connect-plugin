@@ -40,13 +40,13 @@ from qgis.gui import QgsMessageBar, QgsMessageBarItem
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
 from qgiscommons2.gui import (askForFiles,
-                                addHelpMenu,
-                                removeHelpMenu,
-                                addAboutMenu,
-                                removeAboutMenu)
+                              addHelpMenu,
+                              removeHelpMenu,
+                              addAboutMenu,
+                              removeAboutMenu)
 from qgiscommons2.gui.settings import (readSettings,
-                                      addSettingsMenu,
-                                      removeSettingsMenu)
+                                       addSettingsMenu,
+                                       removeSettingsMenu)
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
@@ -165,8 +165,6 @@ class BoundlessConnectPlugin(object):
         if firstRun:
             self.dockWidget.show()
             utils.installFromStandardPath()
-
-        self.dockWidget.askForAuth = True
 
     def installPlugin(self):
         fileName = askForFiles(self.iface.mainWindow(),
