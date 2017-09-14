@@ -95,15 +95,52 @@ def functionalTests():
                                 isVerifyStep=True)
 
     repeatedLoginTest = Test("Check repeated logging")
-    repeatedLoginTest.addStep('Enter valid Connect credentials and press "Login" button.',
+    repeatedLoginTest.addStep('Enter valid Connect credentials, check "Remember me" '
+                              'checkbox and press "Login" button.',
                               prestep=lambda: _startConectPlugin())
     repeatedLoginTest.addStep('Check that label with your login info '
                               'is shown in the lower part of the Connect panel.',
                               isVerifyStep=True)
     repeatedLoginTest.addStep('Click on the "Logout" button')
-    repeatedLoginTest.addStep('Login with another valid credentials')
+    repeatedLoginTest.addStep('Verify that login and password fields are '
+                              'filled with login and password you used at '
+                              'the previous login and "Remember me" checkbox '
+                              'is checked.',
+                              isVerifyStep=True)
+    repeatedLoginTest.addStep('Enter another another valid credentials and '
+                              'keep "Remember me" checkbox checked. Press '
+                              '"Login" button.',
+                              isVerifyStep=True)
     repeatedLoginTest.addStep('Check that in the lower part of Connect '
-                              'plugin, correct login name is displayed.')
+                              'plugin, correct login name is displayed.',
+                              isVerifyStep=True)
+    repeatedLoginTest.addStep('Click on the "Logout" button')
+    repeatedLoginTest.addStep('Verify that login and password fields are '
+                              'filled with login and password you used at '
+                              'the previous login and "Remember me" checkbox '
+                              'is checked.',
+                              isVerifyStep=True)
+    repeatedLoginTest.addStep('Close Connect dock.')
+    repeatedLoginTest.addStep('Open Connect dock from "Plugins -> Boundless Connect" '
+                              'menu. Verify that login and password fields are '
+                              'filled with login and password you used at '
+                              'the previous login',
+                              isVerifyStep=True)
+    repeatedLoginTest.addStep('Uncheck "Remember me" checkbox and press '
+                              '"Login" button.',
+                              isVerifyStep=True)
+    repeatedLoginTest.addStep('Check that in the lower part of Connect '
+                              'plugin, correct login name is displayed.',
+                              isVerifyStep=True)
+    repeatedLoginTest.addStep('Click on the "Logout" button')
+    repeatedLoginTest.addStep('Verify that login and password fields are '
+                              'empty and "Remember me" checkbox is unchecked.',
+                              isVerifyStep=True)
+    repeatedLoginTest.addStep('Close Connect dock.')
+    repeatedLoginTest.addStep('Open Connect dock from "Plugins -> Boundless Connect" '
+                              'menu. Verify that login and password fields are '
+                              'empty and "Remember me" checkbox is unchecked.',
+                              isVerifyStep=True)
 
     emptySearchTest = Test("Check empty search")
     emptySearchTest.addStep('Enter valid Connect credentials and press "Login" button.',
