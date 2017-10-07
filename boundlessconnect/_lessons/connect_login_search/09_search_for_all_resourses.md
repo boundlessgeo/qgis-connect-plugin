@@ -4,7 +4,8 @@ without entering any keyword.
 
 In the **Knowledge** tab searching without a keyword will return
 thousands of results, which may end up being useless. On the other hand
-if you filter the search using the categories its another story. For example, selecting the *Lessons* category only, will list all
+if you filter the search using the filter categories, then it makes sense.
+For example, selecting the *Lessons* category only, will list all
 lessons available.
 
 1. Click the widget down arrow to expand the categories.
