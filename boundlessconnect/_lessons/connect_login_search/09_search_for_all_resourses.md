@@ -4,7 +4,8 @@ without entering any keyword.
 
 In the **Knowledge** tab searching without a keyword will return
 thousands of results, which may end up being useless. On the other hand
-if you filter the search using the filter categories, then it makes sense.
+if you filter the search using the filter categories, then you can limit
+your search to the results you really want to see.
 For example, selecting the *Lessons* category only, will list all
 lessons available.
 

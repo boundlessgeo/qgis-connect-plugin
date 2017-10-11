@@ -184,6 +184,12 @@ clicking **Open** will open it in your default web browser.
 
    .. figure:: img/enter_credentials_in_learning_center.png
 
+In the :guilabel:`Knowledge` tab, clicking the :guilabel:`Search` icon (or
+pressing :kbd:`Enter` on your keyboard) without entering any keyword will list
+all knowledge resources, which are thousands. Therefore, we strongly
+suggest you filter the search using the categories (for example, select only
+the *Lessons* category to list all lessons available).
+
 .. _connect-data-tab:
 
 Data tab
@@ -200,6 +206,10 @@ will be two action buttons available:
 
 .. figure:: img/data_tab.png
 
+To list all available data resources, click the
+:guilabel:`Search` icon (or press :kbd:`Enter` on your keyboard) without
+entering any keyword.
+
 Plugins tab
 ...........
 
@@ -209,6 +219,8 @@ download and install the plugin easily.
 
 .. figure:: img/plugin_tab.png
 
+To list all available Boundless Plugins for QGIS, click the :guilabel:`Search`
+icon (or press :kbd:`Enter` on your keyboard) without entering any keyword.
 
 .. note::
 
