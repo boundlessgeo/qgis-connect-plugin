@@ -182,6 +182,7 @@ htmlhelp_basename = 'BoundlessConnectdoc'
 rst_epilog = """
 .. |BLQGIS| replace:: *Boundless Desktop*
 .. |connect_plugin| replace:: *Boundless Connect Plugin*
+.. |path_to_settings| replace:: :menuselection:`Plugins --> Boundless Connect --> Plugin settings...`
 """
 
 
