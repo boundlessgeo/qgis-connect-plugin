@@ -93,9 +93,7 @@ To start containers use following command:
 
   docker-compose up  -d
 
-More details available in `README
-<https://github.com/boundlessgeo/qgis-plugin-repos/blob/master/docker-plugins-xml/README.md>`_
-file inside GitHub repository.
+More details available in `README`_ file inside GitHub repository.
 
 *NOTE*: our scripts are just sample and should not be used in production. Before
 deploying this repository in production it is necessary to perform additional
@@ -121,5 +119,7 @@ To add a new plugin to the repository follow these steps:
 
 Run `plugins-xml.sh --help` to get information about script usage and subcommands.
 
-More details in `README <https://github.com/boundlessgeo/qgis-plugins-xml/blob/master/README.md>`_
-file inside GitHub repository.
+More details in `README`_ file inside GitHub repository.
+
+.. External links
+.. _README: https://github.com/boundlessgeo/qgis-plugins-xml/blob/master/README.md
