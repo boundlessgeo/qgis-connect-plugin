@@ -501,6 +501,7 @@ class BasemapsTest(unittest.TestCase):
 
     def _standard_id(self, tpl):
         """Change the layer ids to XXXXXXXX and also clear extents"""
+        tpl = re.sub(r'version="(\d+\.)?(\d+\.)?(\*|\d+)"', 'version="XXXXXXX"', tpl)
         tpl = re.sub(r'id="([^\d]+)[^"]*"', 'id="\g<1>XXXXXXX"', tpl)
         tpl = re.sub(
             r'<item>([^\d]+).*?</item>', '<item>\g<1>XXXXXXX</item>', tpl)
