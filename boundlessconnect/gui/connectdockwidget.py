@@ -284,6 +284,8 @@ class ConnectDockWidget(BASE, WIDGET):
                 else:
                     if self.searchPage != 0:
                         body += "<div class='pagination'><div class='prev'><a href='previous'>Prev</a></div></div>"
+            else:
+                body = ""
 
             self.webView.setHtml(self._getSearchHtml(body))
             self.webView.setVisible(True)
