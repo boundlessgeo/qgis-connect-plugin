@@ -33,7 +33,7 @@ import webbrowser
 from datetime import datetime
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QUrl, QSettings, Qt
+from qgis.PyQt.QtCore import QUrl, Qt
 from qgis.PyQt.QtGui import QIcon, QCursor, QPixmap
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
 from qgis.PyQt.QtNetwork import (QNetworkRequest,
@@ -44,6 +44,12 @@ from qgis.PyQt.QtWebKitWidgets import QWebPage
 from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManager
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
+
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
+
 
 from pyplugin_installer.installer_data import reposGroup
 

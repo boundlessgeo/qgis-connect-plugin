@@ -27,7 +27,7 @@ import urllib2
 import tempfile
 from datetime import datetime
 
-from qgis.PyQt.QtCore import QSettings, QEventLoop, QUrl
+from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 
 from qgis.core import (QgsApplication,
@@ -36,6 +36,11 @@ from qgis.core import (QgsApplication,
                        QgsRasterLayer
                       )
 from qgis.gui import QgsFileDownloader
+
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
 
 from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
 from qgiscommons2.gui.settings import pluginSetting

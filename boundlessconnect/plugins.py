@@ -29,13 +29,18 @@ import os
 import sys
 import codecs
 
-from qgis.PyQt.QtCore import QCoreApplication, QFileInfo, QObject, QSettings
+from qgis.PyQt.QtCore import QCoreApplication, QFileInfo, QObject
 from qgis.PyQt.QtXml import QDomDocument
 
 try:
     from qgis.core import QGis
 except ImportError:
     from qgis.core import Qgis as QGis
+
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
 
 import qgis.utils
 
