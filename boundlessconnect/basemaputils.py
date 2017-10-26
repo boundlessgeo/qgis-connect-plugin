@@ -63,7 +63,7 @@ def defaultProjectPath():
 def unsetDefaultProject():
     """Just store the setting"""
     settings = QSettings()
-    settings.setValue('Qgis/newProjectDefault', False)
+    settings.setValue('/qgis/newProjectDefault', False)
 
 
 def writeDefaultProject(content, overwrite=False):
@@ -81,7 +81,7 @@ def writeDefaultProject(content, overwrite=False):
         f.write(content)
 
     settings = QSettings()
-    settings.setValue('Qgis/newProjectDefault', True)
+    settings.setValue('/qgis/newProjectDefault', True)
     return True
 
 
@@ -179,7 +179,7 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
         f.write(doc.toString(2))
 
     settings = QSettings()
-    settings.setValue('Qgis/newProjectDefault', True)
+    settings.setValue('/qgis/newProjectDefault', True)
     return True
 
 
