@@ -27,7 +27,7 @@ import urllib2
 import tempfile
 from datetime import datetime
 
-from qgis.PyQt.QtCore import QSettings, QEventLoop, QUrl
+from qgis.PyQt.QtCore import QEventLoop, QUrl
 from qgis.PyQt.QtXml import QDomDocument, QDomElement
 
 from qgis.core import (QgsApplication,
@@ -36,6 +36,11 @@ from qgis.core import (QgsApplication,
                        QgsRasterLayer
                       )
 from qgis.gui import QgsFileDownloader
+
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
 
 from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
 from qgiscommons2.gui.settings import pluginSetting
@@ -58,7 +63,7 @@ def defaultProjectPath():
 def unsetDefaultProject():
     """Just store the setting"""
     settings = QSettings()
-    settings.setValue('Qgis/newProjectDefault', False)
+    settings.setValue('/qgis/newProjectDefault', False)
 
 
 def writeDefaultProject(content, overwrite=False):
@@ -76,7 +81,7 @@ def writeDefaultProject(content, overwrite=False):
         f.write(content)
 
     settings = QSettings()
-    settings.setValue('Qgis/newProjectDefault', True)
+    settings.setValue('/qgis/newProjectDefault', True)
     return True
 
 
@@ -174,7 +179,7 @@ def addToDefaultProject(maps, visibleMaps, authcfg=None):
         f.write(doc.toString(2))
 
     settings = QSettings()
-    settings.setValue('Qgis/newProjectDefault', True)
+    settings.setValue('/qgis/newProjectDefault', True)
     return True
 
 

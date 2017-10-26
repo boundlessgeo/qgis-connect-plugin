@@ -31,11 +31,17 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
+
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
+
 
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)

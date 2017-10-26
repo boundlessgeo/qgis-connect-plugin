@@ -40,7 +40,7 @@ try:
 except:
     from ConfigParser import ConfigParser
 
-from qgis.PyQt.QtCore import QSettings, QDir, QFile, QCoreApplication
+from qgis.PyQt.QtCore import QDir, QFile, QCoreApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import (iface,
@@ -50,6 +50,12 @@ from qgis.utils import (iface,
                         unloadPlugin,
                         updateAvailablePlugins,
                         home_plugin_path)
+
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
+
 
 import pyplugin_installer
 from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
