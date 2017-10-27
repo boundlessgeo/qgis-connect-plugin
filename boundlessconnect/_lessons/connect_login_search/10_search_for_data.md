@@ -12,4 +12,8 @@ A list of available mapbox data resources will show.
 
 ![search_data_mapbox_results.png](search_data_mapbox_results.png)
 
+**Note:** You can list all available data resources by
+clicking the **Search** icon (or pressing `Enter` on your keyboard)
+without entering any keyword.
+
 When you are done, click **Next Step**.

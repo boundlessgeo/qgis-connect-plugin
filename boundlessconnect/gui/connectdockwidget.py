@@ -33,7 +33,7 @@ import webbrowser
 from datetime import datetime
 
 from qgis.PyQt import uic
-from qgis.PyQt.QtCore import QUrl, QSettings, Qt
+from qgis.PyQt.QtCore import QUrl, Qt
 from qgis.PyQt.QtGui import QIcon, QCursor, QPixmap
 from qgis.PyQt.QtWidgets import QApplication, QDialogButtonBox, QMessageBox
 from qgis.PyQt.QtNetwork import (QNetworkRequest,
@@ -45,13 +45,19 @@ from qgis.core import QgsAuthManager, QgsAuthMethodConfig, QgsNetworkAccessManag
 from qgis.gui import QgsMessageBar
 from qgis.utils import iface
 
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
+
+
 from pyplugin_installer.installer_data import reposGroup
 
-from qgiscommons.network.oauth2 import (oauth2_supported,
+from qgiscommons2.network.oauth2 import (oauth2_supported,
                                 setup_oauth,
                                 get_oauth_authcfg
                                )
-from qgiscommons.settings import pluginSetting, setPluginSetting
+from qgiscommons2.gui.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.connect import ConnectContent
 from boundlessconnect.gui.executor import execute
@@ -72,7 +78,6 @@ class ConnectDockWidget(BASE, WIDGET):
         self.setupUi(self)
 
         self.loggedIn = False
-        self.askForAuth = False
         self.token = None
 
         self.progressBar.hide()
@@ -105,11 +110,15 @@ class ConnectDockWidget(BASE, WIDGET):
         self.labelLevel.linkActivated.connect(self.showLogin)
         self.leSearch.buttonClicked.connect(self.search)
         self.leSearch.returnPressed.connect(self.search)
+        self.connectWidget.rememberStateChanged.connect(self.updateSettings)
 
         self.webView.page().setLinkDelegationPolicy(QWebPage.DelegateAllLinks)
         cssFile = os.path.join(pluginPath, "resources", "search.css")
         with open(cssFile) as f:
-            self.css = f.read()
+            content = f.read()
+
+        self.css = content.replace("#PLUGIN_PATH#", QUrl.fromLocalFile(pluginPath).toString())
+
         self.webView.linkClicked.connect(self.linkClicked)
 
         for cat, cls in connect.categories.items():
@@ -127,7 +136,8 @@ class ConnectDockWidget(BASE, WIDGET):
         self.showLogin()
 
     def showEvent(self, event):
-        if self.authId != '' and self.askForAuth and not self.loggedIn:
+        fillCredentials = pluginSetting("rememberCredentials")
+        if self.authId != '' and fillCredentials and not self.loggedIn:
             authConfig = QgsAuthMethodConfig()
             if self.authId in QgsAuthManager.instance().configIds():
                 QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
@@ -144,7 +154,6 @@ class ConnectDockWidget(BASE, WIDGET):
             self.connectWidget.setLogin(username)
             self.connectWidget.setPassword(password)
 
-
         BASE.showEvent(self, event)
 
     def keyPressEvent(self, event):
@@ -159,13 +168,30 @@ class ConnectDockWidget(BASE, WIDGET):
         self.webView.setVisible(False)
         self.webView.setHtml("")
         self.leSearch.setText("")
-        self.connectWidget.setLogin("")
-        self.connectWidget.setPassword("")
         self.tabsContent.setCurrentIndex(0)
         self.svgLogo.show()
         self.lblSmallLogo.hide()
         connect.resetToken()
         self.token = None
+
+        fillCredentials = pluginSetting("rememberCredentials")
+        if fillCredentials:
+            self.connectWidget.setRemember(Qt.Checked)
+
+            username = ""
+            password = ""
+            if self.authId != "":
+                authConfig = QgsAuthMethodConfig()
+                if self.authId in QgsAuthManager.instance().configIds():
+                    QgsAuthManager.instance().loadAuthenticationConfig(self.authId, authConfig, True)
+                    username = authConfig.config("username")
+                    password = authConfig.config("password")
+                self.connectWidget.setLogin(username)
+                self.connectWidget.setPassword(password)
+        else:
+            self.connectWidget.setRemember(Qt.Unchecked)
+            self.connectWidget.setLogin("")
+            self.connectWidget.setPassword("")
 
     def showHelp(self):
         webbrowser.open_new("file://{}".format(os.path.join(pluginPath, "docs", "html", "index.html")))
@@ -192,6 +218,8 @@ class ConnectDockWidget(BASE, WIDGET):
                               "to use plugin.")
             return
 
+        setPluginSetting("rememberCredentials", self.connectWidget.remember())
+
         utils.addBoundlessRepository()
 
         self.request = QNetworkRequest(QUrl(authEndpointUrl))
@@ -200,7 +228,9 @@ class ConnectDockWidget(BASE, WIDGET):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         self.token = connect.getToken(self.connectWidget.login().strip(), self.connectWidget.password().strip())
         if self.token is None:
+            QApplication.restoreOverrideCursor()
             QMessageBox.warning(self, "Error!", "Can not get token. Please check you credentials and endpoint URL in plugin settings.")
+            return
         self.reply = QgsNetworkAccessManager.instance().get(self.request)
         self.reply.finished.connect(self.requestFinished)
 
@@ -210,11 +240,12 @@ class ConnectDockWidget(BASE, WIDGET):
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
             cat = ','.join(categories)
-            self._search(cat, page)
+            self._findContent(cat, page)
         elif self.tabsContent.currentIndex() == 1:
-            self._findBasemap()
+            if oauth2_supported():
+                self._findBasemaps()
         elif self.tabsContent.currentIndex() == 2:
-            self._search("PLUG", page)
+            self._findPlugins()
 
         self.svgLogo.hide()
         self.lblSmallLogo.show()
@@ -224,75 +255,104 @@ class ConnectDockWidget(BASE, WIDGET):
                               <html>
                               <head>
                               <style>
-                              %s
+                              {}
                               </style>
                               </head>
                               <body>
-                              %s
+                              {}
                               </body>
-                              </html>''' % (self.css, body)
+                              </html>'''.format(self.css, body)
         return html
 
-    def _search(self, category, page=0):
+    def _findContent(self, category, page=0):
         if self.token is None:
             self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
                               QgsMessageBar.WARNING)
             return
 
         text = self.leSearch.text().strip()
-        if text:
-            self.searchPage = page
-            try:
-                self._toggleSearchProgress()
-                results = execute(lambda: connect.findAll(text, category, self.token))
-                if results:
-                    self.searchResults = {r.url:r for r in results}
-                    body = "<h1>{} results</h1><hr/>".format(len(results))
-                    body += "<ul>"
-                    for r in results:
-                        body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
-                    body += "</ul>"
+        self.searchPage = page
+        try:
+            self._toggleSearchProgress()
+            results = execute(lambda: connect.search(text, category, self.searchPage, self.token))
+            if results:
+                self.searchResults = {r.url:r for r in results}
+                body = "<ul>"
+                for r in results:
+                    body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                body += "</ul>"
 
-                    self.webView.setHtml(self._getSearchHtml(body))
-                    self.webView.setVisible(True)
-                    self._toggleSearchProgress(False)
+                if len(results) == connect.RESULTS_PER_PAGE:
+                    if self.searchPage == 0:
+                        body += "<div class='pagination'><div class='next'><a href='next'>Next</a></div></div>"
+                    else:
+                        body += "<div class='pagination'><div class='prev'><a href='previous'>Prev</a></div><div class='next'><a href='next'>Next</a></div></div>"
                 else:
-                    self._toggleSearchProgress(False)
-                    self._showMessage("No search matching the entered text was found.",
-                                      QgsMessageBar.WARNING)
-                    self.webView.setVisible(False)
-            except Exception as e:
-                self._toggleSearchProgress(False)
-                self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
-                                  QgsMessageBar.WARNING)
+                    if self.searchPage != 0:
+                        body += "<div class='pagination'><div class='prev'><a href='previous'>Prev</a></div></div>"
+            else:
+                body = ""
 
-    def _findBasemap(self):
+            self.webView.setHtml(self._getSearchHtml(body))
+            self.webView.setVisible(True)
+            self._toggleSearchProgress(False)
+        except Exception as e:
+            self._toggleSearchProgress(False)
+            self.webView.setHtml("")
+            self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                              QgsMessageBar.WARNING)
+
+    def _findPlugins(self):
         if self.token is None:
             self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
                               QgsMessageBar.WARNING)
             return
 
         text = self.leSearch.text().strip()
-        if text:
-            try:
-                results = execute(lambda: connect.searchBasemaps(text, self.token))
-                if results:
-                    self.searchResults = {"canvas"+r.url:r for r in results}
-                    self.searchResults.update({"project"+r.url:r for r in results})
-                    body = "<h1>{} results</h1><hr/>".format(len(results))
-                    body += "<ul>"
-                    for r in results:
-                        body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
-                    body += "</ul>"
-                    self.webView.setHtml(self._getSearchHtml(body))
-                    self.webView.setVisible(True)
-                else:
-                    self._showMessage("No search matching the entered text was found.",
-                                      QgsMessageBar.WARNING)
-                    self.webView.setVisible(False)
-            except Exception as e:
-                self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
-                                  QgsMessageBar.WARNING)
+        try:
+            self._toggleSearchProgress()
+            results = execute(lambda: connect.findAll(text, "PLUG", self.token))
+            body = "<h1>{} results</h1><hr/>".format(len(results))
+            if results:
+                self.searchResults = {r.url:r for r in results}
+                body += "<ul>"
+                for r in results:
+                    body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                body += "</ul>"
+
+            self.webView.setHtml(self._getSearchHtml(body))
+            self.webView.setVisible(True)
+            self._toggleSearchProgress(False)
+        except Exception as e:
+            self._toggleSearchProgress(False)
+            self.webView.setHtml("")
+            self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                              QgsMessageBar.WARNING)
+
+    def _findBasemaps(self):
+        if self.token is None:
+            self._showMessage("Seems you have no Connect token. Login with valid Connect credentials and try again.",
+                              QgsMessageBar.WARNING)
+            return
+
+        text = self.leSearch.text().strip()
+        try:
+            results = execute(lambda: connect.searchBasemaps(text, self.token))
+            body = "<h1>{} results</h1><hr/>".format(len(results))
+            if results:
+                self.searchResults = {"canvas"+r.url:r for r in results}
+                self.searchResults.update({"project"+r.url:r for r in results})
+                body += "<ul>"
+                for r in results:
+                    body += "<li>%s</li>" % r.asHtmlEntry(self.roles)
+                body += "</ul>"
+            self.webView.setHtml(self._getSearchHtml(body))
+            self.webView.setVisible(True)
+        except Exception as e:
+            self._toggleSearchProgress(False)
+            self.webView.setHtml("")
+            self._showMessage("There has been a problem performing the search:\n{}".format(str(e.args[0])),
+                              QgsMessageBar.WARNING)
 
     def requestFinished(self):
         QApplication.restoreOverrideCursor()
@@ -344,6 +404,9 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self.loggedIn = True
 
+        cat = ",".join(list(connect.categories.keys()))
+        self._findContent(cat)
+
     def saveOrUpdateAuthId(self):
         if self.authId == '':
             authConfig = QgsAuthMethodConfig('Basic')
@@ -375,19 +438,23 @@ class ConnectDockWidget(BASE, WIDGET):
         if index == 0:
             self._toggleCategoriesSelector(True)
             self._toggleSearchControls(True)
+            self.webView.setHtml("")
             categories = self.cmbContentType.selectedData(Qt.UserRole)
             if len(categories) == 0:
                 categories = list(connect.categories.keys())
             cat = ','.join(categories)
-            self._search(cat)
+            self._findContent(cat)
         elif index == 1:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(oauth2_supported())
-            self._findBasemap()
+            self.webView.setHtml("")
+            if oauth2_supported():
+                self._findBasemaps()
         elif index == 2:
             self._toggleCategoriesSelector(False)
             self._toggleSearchControls(True)
-            self._search("PLUG")
+            self.webView.setHtml("")
+            self._findPlugins()
 
     def _toggleCategoriesSelector(self, visible):
         self.lblCategorySearch.setVisible(visible)
@@ -461,6 +528,12 @@ class ConnectDockWidget(BASE, WIDGET):
 
         self._showMessage("Basemap added to the default project.")
         return True
+
+    def updateSettings(self, state):
+        if state == Qt.Checked:
+            setPluginSetting("rememberCredentials", True)
+        else:
+            setPluginSetting("rememberCredentials", False)
 
     def _toggleSearchProgress(self, show=True):
         if show:

@@ -22,13 +22,12 @@ lesson.addStep("Enable Boundless Connect Panel",
 lesson.addStep("Enter username and password",
                "03_enter_username_and_password.md",
                steptype=Step.MANUALSTEP)
-lesson.addStep("Set master password", "04_set_master_password.md",
+lesson.addStep("Set master password",
+               "04_set_master_password.md",
                steptype=Step.MANUALSTEP)
 lesson.addStep("Confirm login",
                "05_confirm_login.md",
                steptype=Step.MANUALSTEP)
-
-
 lesson.addStep("Search for Knowledge Content",
                "06_searching_for_knowledge_content.md",
                steptype=Step.MANUALSTEP)
@@ -38,17 +37,21 @@ lesson.addStep("Filter Knowledge results",
 lesson.addStep("Open Knowledge resources",
                "08_open_knowledge_resources.md",
                steptype=Step.MANUALSTEP)
+lesson.addStep("Search for all resources",
+               "09_search_for_all_resources.md",
+               steptype=Step.MANUALSTEP)
 lesson.addStep("Search for data",
-               "09_search_for_data.md",
+               "10_search_for_data.md",
                steptype=Step.MANUALSTEP)
 lesson.addStep("Add data to map",
-               "10_add_data_to_map.md",
+               "11_add_data_to_map.md",
                steptype=Step.MANUALSTEP)
 lesson.addStep("Add data to default project",
-               "11_add_data_to_default_project.md",
+               "12_add_data_to_default_project.md",
                steptype=Step.MANUALSTEP)
 lesson.addStep("Search for plugins",
-               "12_search_for_plugins.md",
+               "13_search_for_plugins.md",
                steptype=Step.MANUALSTEP)
-lesson.addStep("Install plugins", "13_install_plugins.md",
+lesson.addStep("Install plugins",
+               "14_install_plugins.md",
                steptype=Step.MANUALSTEP)

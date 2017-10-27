@@ -20,9 +20,9 @@
      "default": "0.1",
      "group": "General"
     },
-    {"name":"enabled",
-     "label": "Add the Boundless basemap to your default project",
-     "description": "Add the Boundless basemap to your default project",
+    {"name":"rememberCredentials",
+     "label": "Remember last entered credentials and autofill them",
+     "description": "Remember last entered credentials and autofill them",
      "type": "bool",
      "default": false,
      "group": "General"

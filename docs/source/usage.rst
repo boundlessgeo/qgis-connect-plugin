@@ -28,10 +28,11 @@ If you want to install Boundless plugins from the remote *Boundless QGIS Plugin
 Repository* or search and access `Boundless Connect
 <https://connect.boundlessgeo.com/>`_ additional resources, you will need to
 enter `Boundless Connect <https://connect.boundlessgeo.com/>`_ credentials in
-the :guilabel:`email` and :guilabel:`password` fields, and press
-:guilabel:`Login`.
+the :guilabel:`email` and :guilabel:`password` fields. If you wish the plugin to
+fill in your the credentials for you in future sessions, enable the
+:guilabel:`Remember me` option. Press :guilabel:`Login`.
 
-After pressing the :guilabel:`Login` button, |connect_plugin| will try to
+After you press the :guilabel:`Login` button, |connect_plugin| will try to
 validate your credentials in Boundless Connect portal (internet connection is
 needed). If the credentials are valid, it will save them in QGIS's
 authentication encrypted database, so that you don't have to enter them again.
@@ -60,10 +61,10 @@ authentication encrypted database, so that you don't have to enter them again.
       Entering QGIS master authentication password
 
 If the credentials are invalid (unknown email or wrong password), you will see
-a message dialog, asking you what to do.
+a message dialog, asking you what to do:
 
-* Press :guilabel:`No` to enter valid credentials and try again
-* Press :guilabel:`Yes` to use/save the invalid credentials
+* Press :guilabel:`No` to enter valid credentials and try again,
+* Or press :guilabel:`Yes` to use/save the invalid credentials.
 
 .. figure:: img/invalid-credentials.png
    :align: center
@@ -109,7 +110,8 @@ Connect.
 
 Under the search field, there are three tabs which allow you to choose the
 type content to search for: :guilabel:`Knowledge`, :guilabel:`Data`, and
-:guilabel:`Plugins`.
+:guilabel:`Plugins`. By default, after the login, the :guilabel:`Knowledge` tab
+is open, and all its content listed.
 
 At the bottom of the :guilabel:`Boundless Connect` panel, you can find the
 user's email you have logged with and a :guilabel:`Logout` button (clicking the
@@ -117,7 +119,8 @@ user's email you have logged with and a :guilabel:`Logout` button (clicking the
 new credentials).
 
 To search for Boundless Connect content, select the appropriate tab, type some
-text in the field and click the :guilabel:`Search` icon (or press :kbd:`Enter`
+keyword in the field and click the :guilabel:`Search` icon (or press
+:kbd:`Enter`
 on your keyboard).
 
 .. figure:: img/search-results.png
@@ -125,15 +128,23 @@ on your keyboard).
 
    Search results
 
-At the top of the results list, is shown the number of results. Each item of
-the search results will show an icon, a title and a description
+Clicking the :guilabel:`Search` icon (or press :kbd:`Enter` on your keyboard)
+without entering any keyword will list all results for the current tab.
+
+Each item of results list will show an icon, a title and a description
 about it. There will also be some buttons that, depending on the type of
 resource found, will allow different actions. See the next sub-sections for
 more details.
 
+If the search returns too many results, the list will be paginated. In that
+case, at the bottom of the results list, you will find :guilabel:`NEXT` and
+:guilabel:`PREV` buttons to navigate between result pages.
+
+.. figure:: img/page_navigation_buttons.png
+
 .. note::
 
-   You will note that some resources buttons are red (instead of blue). That
+   You will note that some resources buttons are orange (instead of blue). That
    means your Boundless Connect subscription level is lower than what is
    required for accessing that resource, clicking it will point you to the
    subscription page in Boundless Connect, where you can upgrade your
@@ -158,14 +169,13 @@ the search runs through all categories.
 
 .. figure:: img/knowledge_tab.png
 
-Under each result, there is a button that informs the category of the resource.
-Clicking it will perform a different action depending on the resource type.
-For lessons resources, it will download and install the lesson (you will
-need to `Lesson plugin <https://connect.boundlessgeo
+Under each result, there is a button that allows performing a different action
+depending on the resource type.
+For lessons resources, clicking **Install** it will download and install
+the lesson (you will need to `Lesson plugin <https://connect.boundlessgeo
 .com/docs/desktop/plugins/lessons/>`_ installed to use them). For other
-knowledge resources,
-like Documentation or Learning Center online content, it will open it in your
-default web browser.
+knowledge resources, like Documentation or Learning Center online content,
+clicking **Open** will open it in your default web browser.
 
 .. note::
 
@@ -173,6 +183,12 @@ default web browser.
    your Boundless Connect credential again in your browser.
 
    .. figure:: img/enter_credentials_in_learning_center.png
+
+In the :guilabel:`Knowledge` tab, clicking the :guilabel:`Search` icon (or
+pressing :kbd:`Enter` on your keyboard) without entering any keyword will list
+all knowledge resources, which are thousands. Therefore, we strongly
+suggest you filter the search using the categories (for example, select only
+the *Lessons* category to list all lessons available).
 
 .. _connect-data-tab:
 
@@ -190,6 +206,10 @@ will be two action buttons available:
 
 .. figure:: img/data_tab.png
 
+To list all available data resources, click the
+:guilabel:`Search` icon (or press :kbd:`Enter` on your keyboard) without
+entering any keyword.
+
 Plugins tab
 ...........
 
@@ -198,6 +218,9 @@ QGIS. For each result, there will be a button that allows you to
 download and install the plugin easily.
 
 .. figure:: img/plugin_tab.png
+
+To list all available Boundless Plugins for QGIS, click the :guilabel:`Search`
+icon (or press :kbd:`Enter` on your keyboard) without entering any keyword.
 
 .. note::
 

@@ -40,7 +40,7 @@ try:
 except:
     from ConfigParser import ConfigParser
 
-from qgis.PyQt.QtCore import QSettings, QDir, QFile, QCoreApplication
+from qgis.PyQt.QtCore import QDir, QFile, QCoreApplication
 
 from qgis.core import QgsApplication
 from qgis.utils import (iface,
@@ -51,6 +51,12 @@ from qgis.utils import (iface,
                         updateAvailablePlugins,
                         home_plugin_path)
 
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
+
+
 import pyplugin_installer
 from pyplugin_installer.qgsplugininstallerinstallingdialog import QgsPluginInstallerInstallingDialog
 from pyplugin_installer.installer_data import (reposGroup,
@@ -60,7 +66,7 @@ from pyplugin_installer.installer_data import (reposGroup,
 from pyplugin_installer.version_compare import compareVersions
 from pyplugin_installer.unzip import unzip
 
-from qgiscommons.settings import pluginSetting, setPluginSetting
+from qgiscommons2.settings import pluginSetting, setPluginSetting
 
 from boundlessconnect.plugins import (boundlessRepoName,
                                       repoUrlFile,

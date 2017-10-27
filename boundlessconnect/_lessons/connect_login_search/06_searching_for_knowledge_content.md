@@ -1,8 +1,9 @@
 After the login, the **Boundless Connect** panel shows a search field and some
-tabs. By default, the **Knowledge** tab is visible. This tab can be used to
+tabs. By default, the **Knowledge** tab is visible already showing all results.
+This tab can be used to
 search for knowledge-based content like Product documentation, Tutorials from
 the learning center, Questions and Answers, Blog posts, and interactive lessons
-for QGIS.
+for QGIS. You can filter the results by providing a keyword.
 
 1. In the search field, type *MGRS* and press **Enter** or click the magnifying
 glass icon.

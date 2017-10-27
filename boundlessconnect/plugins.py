@@ -29,13 +29,18 @@ import os
 import sys
 import codecs
 
-from qgis.PyQt.QtCore import QCoreApplication, QFileInfo, QObject, QSettings
+from qgis.PyQt.QtCore import QCoreApplication, QFileInfo, QObject
 from qgis.PyQt.QtXml import QDomDocument
 
 try:
     from qgis.core import QGis
 except ImportError:
     from qgis.core import Qgis as QGis
+
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
 
 import qgis.utils
 
@@ -45,7 +50,7 @@ from pyplugin_installer.installer_data import (settingsGroup,
 from pyplugin_installer.version_compare import (compareVersions,
                                                 normalizeVersion,
                                                 isCompatible)
-from qgiscommons.settings import pluginSetting, setPluginSetting
+from qgiscommons2.settings import pluginSetting, setPluginSetting
 
 pluginPath = os.path.dirname(__file__)
 

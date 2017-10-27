@@ -1,4 +1,4 @@
-# -*- coding: cp1252 -*-
+# -*- coding: utf-8 -*-
 
 from builtins import object
 
@@ -24,10 +24,10 @@ from qgis import utils as qgsutils
 import pyplugin_installer
 from pyplugin_installer.installer_data import plugins
 
-from qgiscommons.network.networkaccessmanager import NetworkAccessManager
-from qgiscommons.settings import pluginSetting
-from qgiscommons.files import tempFilenameInTempFolder
-from qgiscommons.network.oauth2 import (oauth2_supported,
+from qgiscommons2.network.networkaccessmanager import NetworkAccessManager
+from qgiscommons2.gui.settings import pluginSetting
+from qgiscommons2.files import tempFilenameInTempFolder
+from qgiscommons2.network.oauth2 import (oauth2_supported,
                                 get_oauth_authcfg
                                )
 from boundlessconnect.gui.executor import execute
@@ -72,14 +72,13 @@ class ConnectContent(object):
         s = """<div class="icon"><div class="icon-container">
                <img src="{image}"></div></div>
                <div class="description"><h2>{title}</h2><p>{description}</p>
-               <a class="btn{available}" href="{url}">{itemType}</a>
+               <a class="btn{available}" href="{url}">OPEN</a>
                </div>
             """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
                        title=self.name,
                        description=desc,
                        available=canInstall,
-                       url=self.url,
-                       itemType=self.typeName().upper())
+                       url=self.url)
         return s
 
 
@@ -155,6 +154,24 @@ class ConnectLesson(ConnectContent):
                 QgsMessageBar.WARNING)
         else:
             self.downloadAndInstall()
+
+    def asHtmlEntry(self, roles):
+        canInstall = "Green" if self.canOpen(roles) else "Orange"
+        desc = self.description
+        if len(self.description) < 100:
+            desc = self.description + "&nbsp;  " * (100-len(self.description))
+        s = """<div class="icon"><div class="icon-container">
+               <img src="{image}"></div></div>
+               <div class="description"><h2>{title}</h2><p>{description}</p>
+               <a class="btn{available}" href="{url}">INSTALL</a>
+               </div>
+            """.format(image=QUrl.fromLocalFile(self.iconPath()).toString(),
+                       title=self.name,
+                       description=desc,
+                       available=canInstall,
+                       url=self.url)
+        return s
+
 
     def downloadAndInstall(self):
         QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
@@ -242,6 +259,7 @@ class ConnectPlugin(ConnectContent):
         def _install():
             installer = pyplugin_installer.instance()
             installer.installPlugin(self.plugin["id"])
+            self.plugin["status"] = "installed"
 
         execute(_install)
 
@@ -356,16 +374,20 @@ def loadPlugins():
 
 
 def search(text, category='', page=0, token=None):
-    searchUrl = "{}/search/?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+    if text != '':
+        text = '&q=' + text
+        searchUrl = "{}/search/?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
+    else:
+        searchUrl = "{}/search/matchAll?version={}".format(pluginSetting("connectEndpoint"), pluginSetting("apiVersion"))
 
     headers = {}
     headers["Authorization"] = "Bearer {}".format(token)
 
     nam = NetworkAccessManager()
     if category == '':
-        res, content = nam.request("{}&q={}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE), headers=headers)
+        res, content = nam.request("{}{}&si={}&c={}".format(searchUrl, text, int(page), RESULTS_PER_PAGE), headers=headers)
     else:
-        res, content = nam.request("{}&q={}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE), headers=headers)
+        res, content = nam.request("{}{}&cat={}&si={}&c={}".format(searchUrl, text, category, int(page), RESULTS_PER_PAGE), headers=headers)
 
     j = json.loads(re.sub(r'[^\x00-\x7f]',r'', content))
     results = []
@@ -376,7 +398,7 @@ def search(text, category='', page=0, token=None):
         if category != "PLUG":
             title = props["title"] or props["description"].split(".")[0]
             if category in categories:
-                results.append(categories[category][0](props["url"],
+                results.append(categories[category][0](props["url"].replace("\n", ""),
                                                         title,
                                                         props["description"],
                                                         roles))
@@ -417,14 +439,23 @@ def searchBasemaps(text, token):
     maps = [l for l in j if basemaputils.isSupported(l)]
 
     results = []
-    for item in maps:
-        if text.lower() in item["name"].lower() or text.lower() in item["description"].lower():
+    if text == '':
+        for item in maps:
             results.append(
                 ConnectBasemap(item["endpoint"],
                                item["name"],
                                item["description"],
                                item,
                                item["accessList"]))
+    else:
+        for item in maps:
+            if text.lower() in item["name"].lower() or text.lower() in item["description"].lower():
+                results.append(
+                    ConnectBasemap(item["endpoint"],
+                                   item["name"],
+                                   item["description"],
+                                   item,
+                                   item["accessList"]))
 
     return results
 

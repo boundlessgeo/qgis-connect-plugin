@@ -19,7 +19,7 @@
 import site
 import os
 
-site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/ext-libs'))
+site.addsitedir(os.path.abspath(os.path.dirname(__file__) + '/extlibs'))
 
 from builtins import object
 
@@ -31,22 +31,28 @@ __copyright__ = '(C) 2016 Boundless, http://boundlessgeo.com'
 
 __revision__ = '$Format:%H$'
 
-from qgis.PyQt.QtCore import QSettings, Qt
+from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QAction
 from qgis.PyQt.QtGui import QIcon
 
 from qgis.gui import QgsMessageBar, QgsMessageBarItem
 
+try:
+    from qgis.core import QgsSettings as QSettings
+except ImportError:
+    from qgis.PyQt.QtCore import QSettings
+
+
 from pyplugin_installer.installer_data import (repositories,
                                                plugins)
-from qgiscommons.gui import (askForFiles,
-                                addHelpMenu,
-                                removeHelpMenu,
-                                addAboutMenu,
-                                removeAboutMenu)
-from qgiscommons.settings import (readSettings,
-                                  addSettingsMenu,
-                                  removeSettingsMenu)
+from qgiscommons2.gui import (askForFiles,
+                              addHelpMenu,
+                              removeHelpMenu,
+                              addAboutMenu,
+                              removeAboutMenu)
+from qgiscommons2.gui.settings import (readSettings,
+                                       addSettingsMenu,
+                                       removeSettingsMenu)
 
 from boundlessconnect.gui.connectdockwidget import getConnectDockWidget
 from boundlessconnect import utils
@@ -165,8 +171,6 @@ class BoundlessConnectPlugin(object):
         if firstRun:
             self.dockWidget.show()
             utils.installFromStandardPath()
-
-        self.dockWidget.askForAuth = True
 
     def installPlugin(self):
         fileName = askForFiles(self.iface.mainWindow(),

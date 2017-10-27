@@ -121,3 +121,61 @@ img {
   float: left;
   background: rgba(246,140,80,0.59);
 }
+
+.pagination {
+  margin-top: 10px;
+  margin-bottom: 10px;
+
+}
+
+.pagination a {
+  color: #F2773F;
+  size: 10px;
+  text-decoration: none;
+  text-decoration: none;
+  text-transform: uppercase;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.prev {
+  float: left;
+  display:inline;
+  margin-left:30px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.prev a {
+  padding-left:18px;
+  display: block;
+  background: url("#PLUGIN_PATH#/icons/pagination-arrow-prev.svg");
+  background-repeat: no-repeat;
+  background-position: left;
+}
+
+.prev a:hover {
+  opacity: .7;
+  transition: all 0.2s linear;
+}
+
+.next {
+  float: right;
+  display:inline;
+  margin-right:30px;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.next a {
+  padding-right:18px;
+  display: block;
+  background: url("#PLUGIN_PATH#/icons/pagination-arrow-next.svg");
+  background-repeat: no-repeat;
+  background-position: right;
+}
+
+.next a:hover {
+  opacity: .7;
+  transition: all 0.2s linear;
+}
