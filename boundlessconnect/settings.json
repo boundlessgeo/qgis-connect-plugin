@@ -10,7 +10,7 @@
      "label": "Connect endpoint",
      "description": "URI of the Connect endpoint.",
      "type": "string",
-     "default": "https://api.boundlessgeo.com",
+     "default": "https://bcs.boundlessgeo.io",
      "group": "General"
     },
     {"name":"apiVersion",
